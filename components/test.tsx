@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import anime from 'animejs';
 import * as THREE from 'three';
 
 export function ThreeScene() {
@@ -40,4 +41,33 @@ export function ThreeScene() {
 
   return <canvas ref={canvasRef} />;
 };
+
+export function AnimeExample() {
+  const boxRef = useRef(null);
+
+  useEffect(() => {
+    const boxElement = boxRef.current;
+
+    anime({
+      targets: boxElement,
+      translateX: '200px',
+      backgroundColor: '#00ff00',
+      duration: 2000,
+      loop: true,
+      direction: 'alternate',
+      easing: 'easeInOutQuad',
+    });
+
+    return () => {
+      anime.remove(boxElement);
+    };
+  }, []);
+
+  return (
+    <div className="box" ref={boxRef}>
+      Anime.js Example
+    </div>
+  );
+};
+
 

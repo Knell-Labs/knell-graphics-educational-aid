@@ -1,11 +1,25 @@
 "use client"
 import * as THREE from 'three';
-import { ThreeScene } from "../../components/test"
+import { useEffect, useState } from 'react';
+import { ThreeScene, AnimeExample } from "../../components/test"
+import WebGL from 'three/addons/capabilities/WebGL.js';
+
 
 export default function Home() {
+    const [isWebGLAvailable, setIsWebGLAvailable] = useState(false);  
+    useEffect(() => {
+     setIsWebGLAvailable(WebGL.isWebGLAvailable());
+    }, []);
+
   return (
-    <>
-     <ThreeScene/>
-    </>
-  )
+    <div className="relative flex">
+      <div className="w-1/2">
+        <h1 className="text-2xl font-bold mb-4">
+          {isWebGLAvailable ? 'WebGL is working nice !' : 'WebGL is not working :('}
+        </h1>
+        <AnimeExample/>
+        <ThreeScene />
+      </div>
+    </div>
+  );
 }
