@@ -1,7 +1,7 @@
 "use client"
 import * as THREE from 'three';
 import { useEffect, useState } from 'react';
-import { ThreeScene, AnimeExample } from "../../components/test"
+import { ThreeScene, AnimeExample, ReactFiber  } from "../../components/test"
 import WebGL from 'three/addons/capabilities/WebGL.js';
 
 
@@ -20,6 +20,7 @@ export default function Home() {
         <AnimeExample/>
         <ThreeScene />
       </div>
+    <ReactFiber/>
     </div>
   );
 }
