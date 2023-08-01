@@ -19,9 +19,10 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v2.1.5
         with:
-          node-version: 14
+          node-version: 16
       # -- add echo -- #
       - run: |
+          npm install -g npm@latest
           npm i supabase@">=1.8.1" --save-dev
           npm run update-types
           echo "$(cat types/database/index.ts)"
