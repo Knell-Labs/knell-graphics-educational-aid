@@ -12,6 +12,7 @@ jobs:
     env:
         SUPABASE_URL: ${{secrets.SUPABASE_URL}}
         SUPABASE_SERVICE_ROLE: ${{secrets.SUPABASE_SERVICE_ROLE}}
+        SUPABASE_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
