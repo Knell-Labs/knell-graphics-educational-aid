@@ -22,6 +22,7 @@ jobs:
           node-version: 14
       # -- add echo -- #
       - run: |
+          npm i supabase@">=1.8.1" --save-dev
           npm run update-types
           echo "$(cat types/database/index.ts)"
       - name: check for file changes
