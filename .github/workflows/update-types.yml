@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         SUPABASE_URL: ${{secrets.SUPABASE_URL}}
-        SUPABASE_ANON_KEY: ${{secrets.SUPABASE_URL}}
+        SUPABASE_SERVICE_ROLE: ${{secrets.SUPABASE_SERVICE_ROLE}}
     steps:
       - uses: actions/checkout@v2
         with:
