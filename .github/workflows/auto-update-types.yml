@@ -1,0 +1,47 @@
+name: Update database types
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+        SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+        SUPABASE_SERVICE_ROLE: ${{secrets.SUPABASE_SERVICE_ROLE}}
+        SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16
+      # -- add echo -- #
+      - run: |
+          npm install -g npm@latest
+          npm i supabase@">=1.8.1" --save-dev
+          npm run update-types
+          echo "$(cat types/database/index.ts)"
+      - name: check for file changes
+        id: git_status
+        run: |
+          echo "::set-output name=status::$(git status -s)"
+      - name: Commit files
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        # -- change git stage filename -- #
+        run: |
+          git add ./server/supabase-types/database.types.ts
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "billy-github-actions[bot]"
+          git commit -m "Update database types" -a
+      - name: Push changes
+        if: ${{contains(steps.git_status.outputs.status, ' ')}}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: ${{ github.ref }}

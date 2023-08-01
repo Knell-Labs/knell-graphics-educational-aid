@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-types": "npx supabase gen types typescript --project-id exckzbkyyoeyztlpqjsa > ./server/supabase-types/database.types.ts"
   },
   "dependencies": {
     "@react-three/drei": "9.79.4",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/animejs": "3.1.7",
-    "@types/three": "0.152.1"
+    "@types/three": "0.152.1",
+    "supabase": "^1.82.2"
   }
 }
