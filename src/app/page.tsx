@@ -19,11 +19,11 @@ export default function Home() {
     <>
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden items-center justify-center">
             <BasicScene/>
-                <div className="absolute w-10 h-[19px] mb-10 inset-x-0 bottom-0 flex justify-center items-center z-0 bg-red-200 mx-auto">
+                <div className="absolute w-10 h-[19px] mb-10 inset-x-0 bottom-0 flex justify-center items-center z-0 bg-red-200 mx-auto rounded-lg">
 
-                <button className= "cursor-auto select-none absolute justify-center"
+                <button className= "cursor-auto select-none absolute justify-center bg-black-100"
                         onClick = {() => console.log("hello there")}>
-                        fafa
+                        Perspective
                 </button>
 
                 </div>
