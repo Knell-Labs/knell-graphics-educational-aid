@@ -1,21 +1,30 @@
+import { Dispatch, SetStateAction } from "react";
 import React from 'react';
-import { Html } from '@react-three/drei'
 
-export function Overlay() {
-  return (
-    <div className = "absolute">
-        <button 
-            onClick={ () => console.log("fadsfa")}
-        > 
-            Center thing 
-        </button>
-    </div>
-    );
+interface props {
+  isOrthographic: boolean;
+  setIsOrthographic: Dispatch<SetStateAction<boolean>>;
 }
 
+export function CameraSwitch(orthographicSwitch: props) {
+  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
 
-/*
- 
-          <button className="absolute block z-50 left-1/2 top-1/2"> Center fdsafasdf
-        </button>
- * */
+  const toggleOrthographic = () => {
+    setIsOrthographic(!isOrthographic);
+  };
+
+  const GradientDirection = isOrthographic ? "to right, blue 46%, red 50%" : "to left, blue 54%, white 46%";
+
+  return (
+    <div className="absolute w-30 h-[19px] mb-10 inset-x-0 bottom-0 flex justify-center items-center z-0  mx-auto">
+      <button className="cursor-auto select-none relative rounded-lg text-black text-lg overflow-hidden"
+        onClick={  toggleOrthographic }
+        style={{
+                background: `linear-gradient(${GradientDirection})`,
+
+                }}>
+                    Perspective Orthographic
+      </button>
+    </div>
+  );
+}
