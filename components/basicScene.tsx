@@ -37,11 +37,3 @@ export function BasicScene() {
     </>
   )
 }
-
-
-/*
-          <SwitchBetweenCameras
-            isOrthographic={isOrthographic}
-            setIsOrthographic={setIsOrthographic}
-          />
- */
