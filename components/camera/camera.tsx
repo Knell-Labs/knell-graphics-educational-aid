@@ -1,17 +1,38 @@
-import { OrbitControls } from '@react-three/drei'
+import React from 'react';
+import { Dispatch, SetStateAction } from "react";
+import { PerspectiveCamera, OrthographicCamera } from '@react-three/drei'
 
-export function CustomCamera(){
-    return (
-        orbitContorlsCall()
-    )
+interface props {
+  isOrthographic: boolean;
+  setIsOrthographic: Dispatch<SetStateAction<boolean>>;
 }
 
-function orbitContorlsCall(){
-    return (
-        <>
-            <OrbitControls enableDamping = { false } 
-             position={[ 0, 5, 0]}
-            />
-        </>
-    )
+function orthographicCameraExport(){
+  return (
+    <OrthographicCamera
+      makeDefault
+      zoom={10}
+      top={100}
+      bottom={-100}
+      left={100}
+      right={-100}
+      near={1}
+      far={2000}
+      position={[0, 0, 1]}
+    />
+  )
+}
+
+function perspectiveCameraExport(){
+  return (
+    <PerspectiveCamera/>
+  )
+}
+
+export function SwitchBetweenCameras(orthographicSwitch: props) {
+  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
+
+  return (
+    isOrthographic ? perspectiveCameraExport() : orthographicCameraExport() 
+  );
 }

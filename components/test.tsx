@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import anime from 'animejs';
 import * as THREE from 'three';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Grid} from '@react-three/drei'
 
 function Box(props: ThreeElements['mesh']) {
   const ref = useRef<THREE.Mesh>(null!)
@@ -26,16 +26,34 @@ function Box(props: ThreeElements['mesh']) {
 
 export function ReactFiber() {
   return (
-    <Canvas style={{ width: '800px', height: '600px' }}>
+    <Canvas>
       <OrbitControls enableDamping = { false } />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
       <color args={ [ '#F5F5DC' ] } attach="background" />
+      <Ground/>
     </Canvas>
   )
 }
+
+
+
+function Ground() {
+  const gridConfig = {
+    cellSize: 0.5,
+    cellThickness: 0.5,
+    cellColor: '#6f6f6f',
+    sectionSize: 3,
+    sectionThickness: 1,
+    sectionColor: '#9d4b4b',
+    followCamera: false,
+    infiniteGrid: true
+  }
+  return <Grid position={[0, 0, 0]} args={[10.5, 10.5]} {...gridConfig} />
+}
+
+
+
 
 export function ThreeScene() {
   const canvasRef = useRef(null);

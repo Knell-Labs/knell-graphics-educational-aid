@@ -5,6 +5,7 @@ import { ThreeScene, AnimeExample, ReactFiber  } from "../../components/test"
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { testSupabase } from '../../server/db/example';
 import { BasicScene }  from "../../components/basicScene";
+import {CameraSwitch} from "../../components/ui/buttons/cameraSwitch"
 
 export default function Home() {
     const [isWebGLAvailable, setIsWebGLAvailable] = useState(false);  
@@ -15,9 +16,12 @@ export default function Home() {
     }, []);
 
   return (
-    <div className="h-screen bg-blue-500 flex items-center justify-center">
-    <BasicScene/>
-    </div>
+    <>
+        <div className="fixed top-0 left-0 w-full h-full overflow-hidden items-center justify-center">
+            <BasicScene/>
+        </div>
+
+    </>
   );
 
 }
