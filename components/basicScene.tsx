@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber'
 import {AxesHelper} from "./axesHelperCustom/axesHelper"
 import {CustomCameraControls} from "./controls/CameraControls"
-import {CameraSwitch} from "./ui/buttons/cameraSwitch"
+import {CameraSwitch2} from "./ui/buttons/cameraSwitch"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
+import { Html } from '@react-three/drei';
 
 
 export function BasicScene() {
@@ -29,11 +30,15 @@ export function BasicScene() {
             position={[0, -0.01, 0]}
           />
           <AxesHelper width = {6} length = {2} />
+
+
+
+
+          <CameraSwitch2
+          isOrthographic={isOrthographic}
+          setIsOrthographic={setIsOrthographic}
+          />
         </Canvas>
-        <CameraSwitch
-            isOrthographic={isOrthographic}
-            setIsOrthographic={setIsOrthographic}
-        />
     </>
   )
 }
