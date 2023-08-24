@@ -1,4 +1,3 @@
-import { Html } from "@react-three/drei";
 import { Dispatch, SetStateAction } from "react";
 import React from 'react';
 

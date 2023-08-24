@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber'
-import {AxesHelper} from "./axesHelperCustom/axesHelper"
-import {CustomCameraControls} from "./controls/CameraControls"
-import { CameraSwitch} from "./ui/buttons/cameraSwitch"
+import { AxesHelper } from "./axesHelperCustom/axesHelper"
+import { CustomCameraControls } from "./controls/CameraControls"
+import { CameraSwitch } from "./ui/buttons/cameraSwitch"
+import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 
@@ -35,6 +36,7 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
+        <ToolPanel/>
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
