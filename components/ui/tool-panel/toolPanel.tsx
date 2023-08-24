@@ -11,17 +11,18 @@ export function ToolPanel(){
       padding: '5px 10px', // Add some padding around the text
       userSelect: 'none',
       borderRadius: '10px',
+      display: 'flex',
+      alignItems: 'center'
     }}>
 
-      <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded p-1"
+      <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
        onClick = { () => console.log("pressed")}>
-         More tools here
+         Save
       </button>
 
 
       <LineSeparator/>
-        <button className="inline-flex items-center justify-center bg-blue-500">
-
+        <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="20" />
       </button>
 
