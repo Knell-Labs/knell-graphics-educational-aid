@@ -49,12 +49,6 @@ export function BasicScene() {
           visible = { false }
         />
           
-        <Plane 
-          name = "test-plane"
-          rotation={[-Math.PI / 2, 0, 0]} 
-          args={[1, 1]} 
-          position={[1.5, -0.01, 1.5]} 
-        />
 
 
 
