@@ -6,13 +6,20 @@ import { CameraSwitch } from "./ui/buttons/cameraSwitch"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
+import { CreateCube } from './objects/Cube';
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState(true);
+  const [cubeCount, setCubeCount] = useState(0); // using a count to manage number of cubes
 
   useEffect(() => {
     console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
+
+  // add cube
+  const addCubeToScene = () => {
+    setCubeCount(prevCount => prevCount + 1); // increase the count
+  };
 
   return (
     <>
@@ -24,7 +31,12 @@ export function BasicScene() {
           setIsOrthographic={setIsOrthographic}
         />
 
-        <TestBox/>
+        {/* Render cubes based on the count */}
+        {Array.from({ length: cubeCount }).map((_, idx) => 
+          <CreateCube key = {idx} />
+        )}
+
+        {/*<TestBox/>*/}
 
         <color args={ [ '#343a45' ] } attach="background" />
 
@@ -36,7 +48,7 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-        <ToolPanel/>
+        <ToolPanel onAddCube = { addCubeToScene } /> {/* Pass down the callback */}
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
