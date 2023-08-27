@@ -42,7 +42,7 @@ export function BasicScene() {
         />
 
         <Plane 
-          name = "test-plane"
+          name = "gird-plane-hidden"
           rotation={[-Math.PI / 2, 0, 0]} 
           args={[20, 20]} 
           position={[0, -0.01, 0]} 
