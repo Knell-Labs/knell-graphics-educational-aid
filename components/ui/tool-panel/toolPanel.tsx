@@ -13,8 +13,8 @@ export function ToolPanel(objectButtonPress: props){
   const { isObjectButtonPressed, setIsObjectButtonPressed } = objectButtonPress;
 
   const toggleOrthographic = () => {
-    console.log(isObjectButtonPressed)
     setIsObjectButtonPressed(!isObjectButtonPressed);
+    console.log(isObjectButtonPressed)
   };
 
   return (
@@ -28,18 +28,25 @@ export function ToolPanel(objectButtonPress: props){
       userSelect: 'none',
       borderRadius: '10px',
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      gap: '5px'  // <-- added this for spacing
+
     }}>
 
       <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
-       onClick = {toggleOrthographic}>
+       onClick = { () => console.log("saved")}>
          Save
       </button>
 
 
       <LineSeparator/>
-        <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="20" />
+      </button>
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = {toggleOrthographic}>
+        <img src="Box.svg" width="20" />
       </button>
 
     </div>
