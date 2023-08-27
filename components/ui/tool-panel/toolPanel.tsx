@@ -1,6 +1,22 @@
 import React from 'react';
+import {RayCaster} from '../../raycast/raycaster' 
+import { Dispatch, SetStateAction } from "react";
 
-export function ToolPanel(){
+
+interface props {
+  isObjectButtonPressed: boolean;
+  setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
+}
+
+
+export function ToolPanel(objectButtonPress: props){
+  const { isObjectButtonPressed, setIsObjectButtonPressed } = objectButtonPress;
+
+  const toggleOrthographic = () => {
+    console.log(isObjectButtonPressed)
+    setIsObjectButtonPressed(!isObjectButtonPressed);
+  };
+
   return (
     <div style={{
       position: 'fixed', // Use fixed position to overlay on the 3D canvas
@@ -16,7 +32,7 @@ export function ToolPanel(){
     }}>
 
       <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
-       onClick = { () => console.log("pressed")}>
+       onClick = {toggleOrthographic}>
          Save
       </button>
 
