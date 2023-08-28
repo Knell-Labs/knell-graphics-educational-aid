@@ -12,6 +12,7 @@ import { Plane } from '@react-three/drei';
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
+  const [objectTypePressed, setObjectTypePressed] = useState<string>("")
 
   useEffect(() => {
     console.log(`orthographic set to : ${isOrthographic}`);
@@ -30,6 +31,7 @@ export function BasicScene() {
         />
 
         <TestBox/>
+
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
         />
@@ -48,9 +50,6 @@ export function BasicScene() {
           position={[0, -0.01, 0]} 
           visible = { false }
         />
-          
-
-
 
         <AxesHelper width = {6} length = {2} />
 
@@ -59,11 +58,15 @@ export function BasicScene() {
         <ToolPanel
          isObjectButtonPressed = {isObjectButtonPressed}  
          setIsObjectButtonPressed={setIsObjectButtonPressed}
+         objectTypePressed = {objectTypePressed}
+         setObjectTypePressed = { setObjectTypePressed}
+
         />
 
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
+
         />
     </>
   )

@@ -6,30 +6,36 @@ import { Dispatch, SetStateAction } from "react";
 interface props {
   isObjectButtonPressed: boolean;
   setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
+  objectTypePressed: string
+  setObjectTypePressed: Dispatch<SetStateAction<string>>;
 }
 
 
 export function ToolPanel(objectButtonPress: props){
-  const { isObjectButtonPressed, setIsObjectButtonPressed } = objectButtonPress;
+  const { isObjectButtonPressed, setIsObjectButtonPressed, objectTypePressed, setObjectTypePressed } = objectButtonPress;
 
-  const toggleOrthographic = () => {
+  const toggleButtonPressed = (objectType: string) => {
     setIsObjectButtonPressed(!isObjectButtonPressed);
-    console.log(isObjectButtonPressed)
+    setObjectTypePressed(objectType)
   };
+
+  const currObjectTypePressed = (objectType: string) => {
+    setObjectTypePressed(objectType)
+  }
 
   return (
     <div style={{
-      position: 'fixed', // Use fixed position to overlay on the 3D canvas
+      position: 'fixed',
       top: 10,
-      left: '50%', // Move the div to the horizontal center
-      transform: 'translateX(-50%)', // Adjust for centering
+      left: '50%',
+      transform: 'translateX(-50%)',
       background: 'black',
-      padding: '5px 10px', // Add some padding around the text
+      padding: '5px 10px',
       userSelect: 'none',
       borderRadius: '10px',
       display: 'flex',
       alignItems: 'center',
-      gap: '5px'  // <-- added this for spacing
+      gap: '5px'
 
     }}>
 
@@ -45,7 +51,7 @@ export function ToolPanel(objectButtonPress: props){
       </button>
 
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {toggleOrthographic}>
+        onClick = {toggleButtonPressed}>
         <img src="Box.svg" width="20" />
       </button>
 
