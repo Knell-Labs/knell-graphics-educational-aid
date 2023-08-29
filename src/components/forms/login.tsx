@@ -35,6 +35,7 @@ export const LoginForm: React.FC = () => {
 
     const [ state, dispatch ] = useReducer(reducer, initialState );
 
+<<<<<<< HEAD
     const handleSubmit = ( e:Event ) => {
         e.preventDefault();
 
@@ -45,6 +46,9 @@ export const LoginForm: React.FC = () => {
             console.log(state);
         }
     }
+=======
+    const handleSubmit = (e:Event) => 
+>>>>>>> main
 
     const { register, handleSubmit, errors, watch } = useForm<State>();
     const password = useRef({});
