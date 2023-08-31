@@ -12,6 +12,7 @@ function orbitContorlsCall(){
         <>
             <OrbitControls enableDamping = { false } 
              position={[ 0, 5, 0]}
+             makeDefault
             />
         </>
     )
