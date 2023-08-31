@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+export type User = {
+  id:         string;
+  email:      string;
+  name?:      string;
+  created_at: Date;
+};
+=======
 export type Json =
   | string
   | number
@@ -54,3 +62,4 @@ export interface Database {
     }
   }
 }
+>>>>>>> main

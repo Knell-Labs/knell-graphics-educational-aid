@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
-import { CameraSwitch } from "./ui/buttons/cameraSwitch"
+import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
