@@ -25,7 +25,7 @@ export function BasicScene() {
   return (
     <>
       <Canvas >
-            <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.5} position = {[4,4,4]}/>
 
         <GetSceneInfo
             fetchedObjects={ fetchedObjects }
@@ -54,7 +54,7 @@ export function BasicScene() {
         />
 
         <Plane 
-          name = "gird-plane-hidden"
+          name = "grid-plane-hidden"
           rotation={[-Math.PI / 2, 0, 0]} 
           args={[20, 20]} 
           position={[0, -0.01, 0]} 
@@ -65,7 +65,11 @@ export function BasicScene() {
 
         </Canvas>
 
-        { !!sceneInfo && <LeftPanel props = {sceneInfo}/> }
+        { !!sceneInfo && <LeftPanel 
+                          sceneInfo = {sceneInfo} 
+                          sceneTitle = { "Untitled" }
+                          />
+        }
 
         <ToolPanel
          isObjectButtonPressed = {isObjectButtonPressed}  
@@ -87,6 +91,7 @@ export function BasicScene() {
 
 function GetSceneInfo({fetchedObjects, setFetchedObjects, setSceneInfo}){
     if(!fetchedObjects){
+      console.log("here")
       setSceneInfo( useThree().scene.children )
       setFetchedObjects(true)
     }

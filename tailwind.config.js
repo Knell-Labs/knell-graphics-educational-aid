@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        customGray: '#1E1D20'
+        grayFill: '#1E1D20',
+        graySubFill: '#29282B'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

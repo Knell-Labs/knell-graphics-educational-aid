@@ -29,7 +29,7 @@ export function ToolPanel(objectButtonPress: props){
       top: 10,
       left: '50%',
       transform: 'translateX(-50%)',
-      background: 'black',
+      background: 'rgb(30,29,32)',
       padding: '5px 10px',
       userSelect: 'none',
       borderRadius: '10px',
@@ -39,7 +39,7 @@ export function ToolPanel(objectButtonPress: props){
 
     }}>
 
-      <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
+      <button className = "bg-graySubFill text-white hover:bg-blue-500 rounded-lg p-1"
        onClick = { () => console.log("saved")}>
          Save
       </button>
