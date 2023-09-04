@@ -5,11 +5,18 @@ interface LeftPanelProps {
   sceneTitle: string;
 }
 
+type StringDictionary = {
+    [key: string]: string;
+};
 
-const threeJsGeometryMapping = {
+const threeJsGeometryMapping: StringDictionary = {
     "BoxGeometry": "Box"
 }
 
+const threeJsFileMapping: StringDictionary = {
+    "Box": "box.svg",
+    "AmbientLight": "AmbientLight.svg" 
+}
 
 export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
 
@@ -44,15 +51,15 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
 
         <div className="w-full flex-grow px-7 pt-1 pb-6">
           <div className="bg-graySubFill h-full rounded-lg">
-            <ul>
-              {generateListItems(sceneInfo)}
+            <ul className="flex flex-col">
+            {generateListItems(sceneInfo)}
             </ul>
           </div>
         </div>
 
-        <div className="flex  items-center pb-6 px-5"> 
+        <button className="flex  items-center pb-6 px-5"> 
           Import
-        </div>
+        </button>
 
       </div>
   );
@@ -80,15 +87,15 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
       displayType = threeJsGeometryMapping[object.geometry.type] || object.type;
     }
 
+    console.log(displayType)
     return (
-      <li key={object.uuid} onClick={ () => console.log(object.uuid)}>
+      <li key={object.uuid} className="flex items-center space-x-1" onClick={ () => console.log(object.uuid)}>
+        <img src="line-object.svg" className="w-6 h-6"  width="20" />
+        <img src={threeJsFileMapping[displayType]} className="w-10 h-6"   />
         {displayType}
       </li>
     );
   });
-
-
-
 }
 
 
