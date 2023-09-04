@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-types": "npx supabase gen types typescript --project-id exckzbkyyoeyztlpqjsa > ./server/supabase-types/database.types.ts"
+    "update-types": "npx supabase gen types typescript --project-id exckzbkyyoeyztlpqjsa > ./src/utils/types/dbTypes.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.80.6",
