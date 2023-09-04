@@ -37,7 +37,7 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
           </button>
         </div>
         
-        <div className="flex items-center pt-3"> 
+        <div className="flex items-center pt-3 pb-3"> 
           <input 
             type="text" 
             placeholder="search" 
@@ -45,6 +45,7 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
           />
         </div>
 
+        <LineSeparator/>
         <div className="flex justify-between w-full items-center pt-2 px-5"> 
           Scene Info
         </div>
@@ -57,9 +58,12 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
           </div>
         </div>
 
-        <button className="flex  items-center pb-6 px-5"> 
+        <LineSeparator/>
+
+        <button className="flex items-center pb-6 px-5 pt-2"> 
           Import
         </button>
+
 
       </div>
   );
@@ -99,3 +103,8 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 }
 
 
+function LineSeparator(){
+  return(
+    <div className = "bg-gray-500 w-11/12 h-1 rounded-lg"/>
+  )
+}
