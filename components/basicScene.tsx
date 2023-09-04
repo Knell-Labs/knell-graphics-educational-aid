@@ -7,9 +7,16 @@ import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
+<<<<<<< Updated upstream
+=======
+import { RayCaster } from './raycast/raycaster';
+import { Plane } from '@react-three/drei';
+>>>>>>> Stashed changes
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState(true);
+  const [cubeCount, setCubeCount] = useState(0); // using a count to manage number of cubes
+
   const [cubeCount, setCubeCount] = useState(0); // using a count to manage number of cubes
 
   useEffect(() => {
@@ -48,7 +55,26 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
+<<<<<<< Updated upstream
         <ToolPanel onAddCube = { addCubeToScene } /> {/* Pass down the callback */}
+=======
+
+        { !!sceneInfo && <LeftPanel 
+                          sceneInfo = {sceneInfo} 
+                          sceneTitle = { "Untitled" }
+                          />
+        }
+
+        <ToolPanel
+         isObjectButtonPressed = {isObjectButtonPressed}  
+         setIsObjectButtonPressed={setIsObjectButtonPressed}
+         objectTypePressed = {objectTypePressed}
+         setObjectTypePressed = { setObjectTypePressed}
+         onAddCube = { addCubeToScene }
+
+        />
+
+>>>>>>> Stashed changes
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
