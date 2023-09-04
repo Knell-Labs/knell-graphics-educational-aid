@@ -7,11 +7,8 @@ import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
-<<<<<<< Updated upstream
-=======
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
->>>>>>> Stashed changes
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState(true);
@@ -55,9 +52,6 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-<<<<<<< Updated upstream
-        <ToolPanel onAddCube = { addCubeToScene } /> {/* Pass down the callback */}
-=======
 
         { !!sceneInfo && <LeftPanel 
                           sceneInfo = {sceneInfo} 
@@ -74,7 +68,6 @@ export function BasicScene() {
 
         />
 
->>>>>>> Stashed changes
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}

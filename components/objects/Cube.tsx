@@ -20,22 +20,12 @@ export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProp
       ref={ref}
       scale={clicked ? 1.5 : 1}
 
-<<<<<<< Updated upstream
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
-=======
       onClick       = {(event) => click(!clicked)}
       onPointerOver = {(event) => hover(true)}
       onPointerOut  = {(event) => hover(false)}>
->>>>>>> Stashed changes
 
       <boxGeometry args={size} />
       <meshStandardMaterial color={meshColor} />
     </mesh>
   )
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

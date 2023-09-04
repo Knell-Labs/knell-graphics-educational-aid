@@ -4,9 +4,6 @@ type ToolPanelProps = {
   onAddCube: () => void; // Define a prop for the callback
 };
 
-<<<<<<< Updated upstream
-export function ToolPanel({ onAddCube }: ToolPanelProps) {  
-=======
 interface props {
   isObjectButtonPressed: boolean;
   setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
@@ -32,7 +29,6 @@ export function ToolPanel(objectButtonPress: props){
     setObjectTypePressed(objectType)
   }
 
->>>>>>> Stashed changes
   return (
     <div style={{
       position: 'fixed', // Use fixed position to overlay on the 3D canvas
@@ -52,15 +48,6 @@ export function ToolPanel(objectButtonPress: props){
          Save
       </button>
 
-<<<<<<< Updated upstream
-      <LineSeparator/>
-
-      {/* Temporary butoon to add a cube */}
-      <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
-        onClick={onAddCube} // Attach the passed down callback
-      >
-        Cube
-=======
       <LineSeparator/>
 
       {/* Temporary butoon to add a cube */}
@@ -74,7 +61,6 @@ export function ToolPanel(objectButtonPress: props){
       
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="20" />
->>>>>>> Stashed changes
       </button>
 
       <LineSeparator/>
