@@ -1,52 +1,32 @@
 import { ThreeElements } from '@react-three/fiber'
 import { useRef, useState, useEffect} from 'react';
-import { OrbitControls, TransformControls } from '@react-three/drei'
-import { TransformControlsProps } from '@react-three/drei';// need this
+import { useCursor  } from '@react-three/drei'
 
+import TransformCustomControls  from "../../components/controls/objectControls/TransformCustomControls"
 
 export function TestBox(props: ThreeElements['mesh']) {
   const ref = useRef<THREE.Mesh>(null!)
   const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  //constants for scale rotate and translate in clude below
-  const [mode, setMode] = useState<TransformControlsProps["mode"]>('translate')
-//need a seperate file for controls
-  useEffect(()=>{
-    const onKeyPress = (e)=>{
-      switch ( e.keyCode ) {
+  useCursor(hovered)
+  const [transformActive, setTransformActive] = useState(false);
+  
 
-        case 84: // T
-          setMode( 'translate' );
-          break;
-
-        case 82: // R
-          setMode( 'rotate' );
-          break;
-
-        case 83: // S
-          setMode( 'scale' );
-          break;
-      }
-    }
-    window.addEventListener( 'keydown', onKeyPress )
-    
-    return()=> window.removeEventListener('keydown',onKeyPress)
-  },[])
-//end of selection node
-  return (
-    //Transform Controls( add this to every shape)
-    <TransformControls mode = {mode} >
-    
+  return ( 
+    <>
     <mesh
       {...props}
       ref={ref}
-      //scale={clicked ? 1.5 : 1}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
+      onClick={(event) => (event.stopPropagation(),setTransformActive(true))}
+      onPointerMissed={(event) => event.type === 'click' && setTransformActive(false)}
+      //onClick={() => setTransformActive(!transformActive)}
+      //onClick={(event) => click(!clicked)}
+      onPointerOver={(event) => (event.stopPropagation(), hover(true))}
+      onPointerOut={(event) => hover(false)}
+      >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      <meshStandardMaterial color={transformActive ? 'orange' : 'white'} />
     </mesh>
-  </TransformControls>
+    {transformActive && <TransformCustomControls mesh = {ref}/>}
+    </>
   )
 }
