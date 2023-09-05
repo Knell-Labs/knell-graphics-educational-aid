@@ -11,14 +11,14 @@ function orthographicCameraExport(){
   return (
     <OrthographicCamera
       makeDefault
-      zoom={10}
+      zoom={20}
       top={100}
       bottom={-100}
-      left={100}
-      right={-100}
+      left={-100}
+      right={100}
       near={1}
       far={2000}
-      position={[0, 0, 1]}
+      position={[0, 0, 100]}
     />
   )
 }

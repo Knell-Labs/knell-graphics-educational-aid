@@ -14,7 +14,9 @@ export function CameraSwitch(orthographicSwitch: props) {
     setIsOrthographic(!isOrthographic);
   };
 
-  const GradientDirection = isOrthographic ? "to right, blue 46%, red 50%" : "to left, blue 54%, white 46%";
+  const GradientDirection = isOrthographic ? 
+      "to right, white 0%, white 49%, gray 49%, gray 100%" : 
+      "to left, white 0%, white 53%, gray 53%, gray 100%";
 
   return (
     <>
@@ -33,11 +35,12 @@ export function CameraSwitch(orthographicSwitch: props) {
             userSelect: 'none',
             cursor: 'auto',
             borderRadius: '10px',
-            padding: '0 10px',
+            padding: '10px 30px',
             color: 'rgb(0, 0, 0)'
           }}>
-            Perspective Orthographic
+            Perspective &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Orthographic
         </button>
+
       </div>
     </>
   );
