@@ -3,7 +3,7 @@ import { TransformControls ,TransformControlsProps} from '@react-three/drei'//an
 interface TransformCustomControlsProps {
     mesh: THREE.Mesh
 }
-function TransformCustomControls<TransformCustomControlsProps>({ mesh }) {
+export function TransformCustomControls<TransformCustomControlsProps>({ mesh }) {
     const [mode, setMode] = useState<TransformControlsProps["mode"]>('translate')
     
     //need a seperate file for controls
@@ -30,12 +30,5 @@ function TransformCustomControls<TransformCustomControlsProps>({ mesh }) {
     },[])
     return (
         <TransformControls object={mesh} mode = {mode}></TransformControls>
-        
-
-
     )
-
 }
-
-
-export default TransformCustomControls
