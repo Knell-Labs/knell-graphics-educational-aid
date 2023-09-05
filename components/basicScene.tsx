@@ -36,6 +36,7 @@ export function BasicScene() {
         <ambientLight intensity={0.5} position = {[4,4,4]}/>
 
         <GetSceneInfo
+            cubeCount = { cubeCount }
             fetchedObjects={ fetchedObjects }
             setFetchedObjects={ setFetchedObjects }
             setSceneInfo={setSceneInfo}
@@ -54,7 +55,6 @@ export function BasicScene() {
         )}
 
         {/*<TestBox/>*/}
-        <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -103,13 +103,19 @@ export function BasicScene() {
   )
 }
 
-function GetSceneInfo({fetchedObjects, setFetchedObjects, setSceneInfo}){
-    if(!fetchedObjects){
-      setSceneInfo( useThree().scene.children )
-      setFetchedObjects(true)
-    }
+function GetSceneInfo({cubeCount, fetchedObjects, setFetchedObjects, setSceneInfo}){
+  const { scene } = useThree();
 
-    return null;
+  useEffect(() => {
+    if (!fetchedObjects || cubeCount > 0) {
+      setSceneInfo(scene.children);
+      if (!fetchedObjects) {
+        setFetchedObjects(true);
+      }
+    }
+  }, [cubeCount, fetchedObjects, scene]);
+
+  return null;
 }
 
 
