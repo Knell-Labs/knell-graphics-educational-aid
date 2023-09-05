@@ -14,6 +14,7 @@ export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
+  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([2,2,2])
 
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
@@ -38,12 +39,14 @@ export function BasicScene() {
         <SwitchBetweenCameras
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
+          cameraCoordinates={cameraCoordinates}
         />
 
         <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
+          setCoordinates = {setCameraCoordinates}
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
@@ -83,7 +86,6 @@ export function BasicScene() {
         <CameraSwitch
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
-
         />
     </>
   )

@@ -5,34 +5,35 @@ import { PerspectiveCamera, OrthographicCamera } from '@react-three/drei'
 interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
+  cameraCoordinates: number[];
 }
 
-function orthographicCameraExport(){
+function orthographicCameraExport(cords: number[]){
   return (
     <OrthographicCamera
       makeDefault
       zoom={20}
-      top={100}
-      bottom={-100}
-      left={-100}
-      right={100}
       near={1}
       far={2000}
-      position={[0, 0, 100]}
+      position = { [ cords[0], cords[1], cords[2],]}
     />
   )
 }
 
-function perspectiveCameraExport(){
+function perspectiveCameraExport(cords: number[]){
   return (
-    <PerspectiveCamera/>
+    <PerspectiveCamera
+      makeDefault
+      position = { [ cords[0], cords[1], cords[2],]}
+    />
   )
 }
 
 export function SwitchBetweenCameras(orthographicSwitch: props) {
-  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
+  const { isOrthographic, setIsOrthographic, cameraCoordinates } = orthographicSwitch;
 
+  console.log(cameraCoordinates)
   return (
-    isOrthographic ? perspectiveCameraExport() : orthographicCameraExport() 
+    isOrthographic ? perspectiveCameraExport(cameraCoordinates) : orthographicCameraExport(cameraCoordinates) 
   );
 }
