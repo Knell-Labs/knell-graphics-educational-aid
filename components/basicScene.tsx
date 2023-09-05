@@ -54,6 +54,7 @@ export function BasicScene() {
         )}
 
         {/*<TestBox/>*/}
+        <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -101,13 +102,17 @@ export function BasicScene() {
   )
 }
 
-
 function GetSceneInfo({fetchedObjects, setFetchedObjects, setSceneInfo}){
     if(!fetchedObjects){
-      console.log("here")
       setSceneInfo( useThree().scene.children )
       setFetchedObjects(true)
     }
 
     return null;
 }
+
+
+
+
+
+

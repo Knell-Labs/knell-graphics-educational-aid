@@ -52,16 +52,10 @@ export function ToolPanel(objectButtonPress: props){
       <LineSeparator/>
 
       {/* Temporary butoon to add a cube */}
-      <button className = "bg-gray-400 text-white hover:bg-blue-500 rounded-lg p-1"
+      <button className = "bg-graySubFill text-white hover:bg-blue-500 rounded-lg p-1"
         onClick={onAddCube} // Attach the passed down callback
       >
         Cube
-      </button>
-
-      <LineSeparator/>
-      
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
-        <img src="CursorSelect.svg" width="20" />
       </button>
 
       <LineSeparator/>
