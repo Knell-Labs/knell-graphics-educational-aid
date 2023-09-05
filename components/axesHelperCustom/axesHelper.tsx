@@ -8,7 +8,7 @@ type AxesHelperParams = {
 export function AxesHelper({width, length}: AxesHelperParams){
     return (
         <>
-            <group>
+            <group name= 'axes-helper'>
               <Line
                   points={[[0, 0, 0], [length, 0, 0]]}       
                   color="red"

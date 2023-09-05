@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
-import { CameraSwitch } from "./ui/buttons/cameraSwitch"
+import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
+import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { RayCaster } from './raycast/raycaster';
@@ -14,6 +15,9 @@ export function BasicScene() {
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
 
+  const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
+  const [sceneInfo, setSceneInfo] = useState(null)
+
   useEffect(() => {
     console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
@@ -21,7 +25,13 @@ export function BasicScene() {
   return (
     <>
       <Canvas >
-            <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.5} position = {[4,4,4]}/>
+
+        <GetSceneInfo
+            fetchedObjects={ fetchedObjects }
+            setFetchedObjects={ setFetchedObjects }
+            setSceneInfo={setSceneInfo}
+        />
 
         <CustomCameraControls/>
 
@@ -35,6 +45,7 @@ export function BasicScene() {
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
         />
+
         <color args={ [ '#343a45' ] } attach="background" />
 
         <gridHelper
@@ -44,7 +55,7 @@ export function BasicScene() {
         />
 
         <Plane 
-          name = "gird-plane-hidden"
+          name = "grid-plane-hidden-helper"
           rotation={[-Math.PI / 2, 0, 0]} 
           args={[20, 20]} 
           position={[0, -0.01, 0]} 
@@ -54,6 +65,12 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
+
+        { !!sceneInfo && <LeftPanel 
+                          sceneInfo = {sceneInfo} 
+                          sceneTitle = { "Untitled" }
+                          />
+        }
 
         <ToolPanel
          isObjectButtonPressed = {isObjectButtonPressed}  
@@ -70,4 +87,14 @@ export function BasicScene() {
         />
     </>
   )
+}
+
+
+function GetSceneInfo({fetchedObjects, setFetchedObjects, setSceneInfo}){
+    if(!fetchedObjects){
+      setSceneInfo( useThree().scene.children )
+      setFetchedObjects(true)
+    }
+
+    return null;
 }

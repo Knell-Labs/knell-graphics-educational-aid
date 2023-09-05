@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v2.1.5
         with:
-          node-version: 16
+          node-version: 20
       # -- add echo -- #
       - run: |
           npm install -g npm@latest
@@ -35,7 +35,7 @@ jobs:
         if: ${{contains(steps.git_status.outputs.status, ' ')}}
         # -- change git stage filename -- #
         run: |
-          git add ./server/supabase-types/database.types.ts
+          git add ./src/utils/types/dbTypes.ts
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "billy-github-actions[bot]"
           git commit -m "Update database types" -a

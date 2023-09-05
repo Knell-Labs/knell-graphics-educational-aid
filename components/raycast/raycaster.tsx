@@ -25,7 +25,7 @@ export function RayCaster({isObjectButtonPressed}: props){
 
         raycaster.setFromCamera(mouseCords, camera)
 
-        let objectFound = world.scene.getObjectByName("gird-plane-hidden")
+        let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")
 
         const intersect = raycaster.intersectObject(objectFound)
 
