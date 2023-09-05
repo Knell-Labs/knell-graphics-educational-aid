@@ -59,6 +59,7 @@ export function BasicScene() {
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
         />
+
         <color args={ [ '#343a45' ] } attach="background" />
 
         <gridHelper
@@ -68,7 +69,7 @@ export function BasicScene() {
         />
 
         <Plane 
-          name = "grid-plane-hidden"
+          name = "grid-plane-hidden-helper"
           rotation={[-Math.PI / 2, 0, 0]} 
           args={[20, 20]} 
           position={[0, -0.01, 0]} 
