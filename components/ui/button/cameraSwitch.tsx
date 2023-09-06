@@ -1,6 +1,19 @@
 import { Dispatch, SetStateAction } from "react";
 import React from 'react';
+import SwitchSelector from "react-switch-selector";
 
+const toggleOptions = [
+  {
+    label: "Perspective",
+    value: "perspective",
+    selectedBackgroundColor: "gray"
+  },
+  {
+    label: "Orthographic",
+    value: "orthographic",
+    selectedBackgroundColor: "gray"
+  }
+];
 
 interface props {
   isOrthographic: boolean;
@@ -22,22 +35,22 @@ export function CameraSwitch(orthographicSwitch: props) {
       
       <div style={{
         position: 'fixed', // Use fixed position to overlay on the 3D canvas
-        bottom: 10,
-        width: '100%',
+        bottom: 30,
+        width: '30%',
+        height: '50px',
+        left: '35%',
         textAlign: 'center'
       }}>
-        <button
-          onClick={ toggleOrthographic }
-          style={{
-            background: `linear-gradient(${GradientDirection})`,
-            userSelect: 'none',
-            cursor: 'auto',
-            borderRadius: '10px',
-            padding: '0 10px',
-            color: 'rgb(0, 0, 0)'
-          }}>
-            Perspective Orthographic
-        </button>
+        
+        <SwitchSelector
+          onChange = { toggleOrthographic }
+          options = {toggleOptions}
+          initialSelectedIndex = {toggleOptions.findIndex(({ value }) => value == "perspective")}
+          backgroundColor = {"white"}
+          selectionIndicatorMargin = {0}
+          fontSize = {20}
+        />
+
       </div>
     </>
   );
