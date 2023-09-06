@@ -1,21 +1,32 @@
 import { ThreeElements } from '@react-three/fiber'
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect} from 'react';
+import { useCursor  } from '@react-three/drei'
+
+import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
 
 export function TestBox(props: ThreeElements['mesh']) {
   const ref = useRef<THREE.Mesh>(null!)
   const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
+  useCursor(hovered)
+  const [transformActive, setTransformActive] = useState(false);
+  
 
-  return (
+  return ( 
+    <>
     <mesh
       {...props}
       ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
+      //clicks on event 
+      onClick={(event) => (event.stopPropagation(),setTransformActive(true))}
+      onPointerMissed={(event) => event.type === 'click' && setTransformActive(false)}
+
+      onPointerOver={(event) => (event.stopPropagation(), hover(true))}
+      onPointerOut={(event) => hover(false)}
+      >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      <meshStandardMaterial color={transformActive ? 'orange' : 'white'} />
     </mesh>
+    {transformActive && <TransformCustomControls mesh = {ref}/>}
+    </>
   )
 }
