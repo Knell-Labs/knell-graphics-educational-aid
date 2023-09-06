@@ -20,6 +20,12 @@ export function BasicScene() {
   const [sceneInfo, setSceneInfo] = useState(null)
 
   const [cubeCount, setCubeCount] = useState(0); // using a count to manage number of cubes
+  //const [objectAdded, setObjectAdded] = useState<number>(0); // Initialize it to 0
+  const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
+
+  const [cursorPosition, setCursorPosition] = useState<THREE.Vector3 | null>(null);
+
+  
 
   useEffect(() => {
     console.log(`orthographic set to : ${isOrthographic}`);
@@ -30,13 +36,18 @@ export function BasicScene() {
     setCubeCount(prevCount => prevCount + 1); // increase the count
   };
 
+  const addObjectToScene = (type: string, props: any = {}) => {
+    setObjectsAdded(prevObjects => [...prevObjects, { type, props }]);
+  };
+
   return (
     <>
       <Canvas >
         <ambientLight intensity={0.5} position = {[4,4,4]}/>
 
         <GetSceneInfo
-            cubeCount = { cubeCount }
+            cubeCount = {cubeCount}
+            objectsAdded = {objectsAdded}
             fetchedObjects={ fetchedObjects }
             setFetchedObjects={ setFetchedObjects }
             setSceneInfo={setSceneInfo}
@@ -54,10 +65,19 @@ export function BasicScene() {
           <CreateCube key = {idx} />
         )}
 
-        {/*<TestBox/>*/}
+        {objectsAdded.map((object, idx) => {
+            switch (object.type) {
+                case 'cube':
+                    return <CreateCube key={idx} {...object.props} />;
+                // Add more cases for other shapes
+                default:
+                    return null;
+            }
+        })}
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
+          addObjectToScene = { addObjectToScene }
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
@@ -81,17 +101,17 @@ export function BasicScene() {
         </Canvas>
 
         { !!sceneInfo && <LeftPanel 
-                          sceneInfo = {sceneInfo} 
+                          sceneInfo = { sceneInfo } 
                           sceneTitle = { "Untitled" }
                           />
         }
 
         <ToolPanel
-         isObjectButtonPressed = {isObjectButtonPressed}  
-         setIsObjectButtonPressed={setIsObjectButtonPressed}
-         objectTypePressed = {objectTypePressed}
+         isObjectButtonPressed = { isObjectButtonPressed }  
+         setIsObjectButtonPressed={ setIsObjectButtonPressed }
+         objectTypePressed = { objectTypePressed }
          setObjectTypePressed = { setObjectTypePressed}
-         onAddCube = { addCubeToScene }
+         addObjectToScene = { addObjectToScene }
         />
 
         <CameraSwitch
@@ -103,6 +123,20 @@ export function BasicScene() {
   )
 }
 
+/*
+function GetSceneInfo({objectsAdded, fetchedObjects, setFetchedObjects, setSceneInfo}){
+    const { scene } = useThree();
+
+    useEffect(() => {
+        setSceneInfo(scene.children);
+        if (!fetchedObjects) {
+            setFetchedObjects(true);
+        }
+    }, [objectsAdded]);
+}
+*/
+
+//*
 function GetSceneInfo({cubeCount, fetchedObjects, setFetchedObjects, setSceneInfo}){
   const { scene } = useThree();
 
@@ -117,7 +151,7 @@ function GetSceneInfo({cubeCount, fetchedObjects, setFetchedObjects, setSceneInf
 
   return null;
 }
-
+//*/
 
 
 

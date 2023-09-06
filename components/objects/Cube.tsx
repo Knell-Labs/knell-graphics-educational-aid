@@ -7,6 +7,7 @@ type CreateCubeProps = {
 } & ThreeElements['mesh'];
 
 export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProps) {
+  const position = props.position; 
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
@@ -17,8 +18,9 @@ export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProp
   return (
     <mesh
       {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
+      position = {position}
+      ref = {ref}
+      scale = {clicked ? 1.5 : 1}
 
       onClick       = {(event) => click(!clicked)}
       onPointerOver = {(event) => hover(true)}

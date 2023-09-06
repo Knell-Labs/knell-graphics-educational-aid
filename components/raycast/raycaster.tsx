@@ -3,40 +3,45 @@ import { useThree, useFrame } from '@react-three/fiber';
 
 interface props {
   isObjectButtonPressed: boolean;
+  addObjectToScene: (type: string, props?: any) => void;  // For adding objects
 }
 
-export function RayCaster({isObjectButtonPressed}: props){
+export function RayCaster({isObjectButtonPressed, addObjectToScene}: props){
   const world = useThree()
-
   const mouseCords = new THREE.Vector2()
+  const raycaster = new THREE.Raycaster()
+
+  document.addEventListener('click', (event) => {
+    const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
+    if (isObjectButtonPressed && intersect.length > 0) {
+      // Add a cube to the scene at the intersection point
+      addObjectToScene('cube', { position: intersect[0].point });
+    }
+  });
+
   useFrame(({ gl, scene, camera }) => {
       if(isObjectButtonPressed){
         const sizes = {
           width: window.innerWidth,
           height: window.innerHeight
-        }
+        };
 
         document.addEventListener('mousemove', (event) => {
           mouseCords.x = event.clientX / sizes.width * 2 - 1
           mouseCords.y = - (event.clientY / sizes.height) * 2 + 1
         });
 
-        const raycaster = new THREE.Raycaster()
-
         raycaster.setFromCamera(mouseCords, camera)
-
         let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")
-
         const intersect = raycaster.intersectObject(objectFound)
 
         if(intersect.length > 0){
           ActiveToolOverLay("cube", intersect[0].point.x, intersect[0].point.z, scene)
         }
-
       }
 
       gl.render(scene, camera)
-      
+
       if(isObjectButtonPressed){
         DestroyActiveToolOverlay("cube", scene)
       }
