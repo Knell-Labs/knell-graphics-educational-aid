@@ -51,8 +51,8 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
         Scene Info
       </div>
 
-      <div className="w-full flex-grow px-7 pt-1 pb-6">
-        <div className="bg-graySubFill h-full rounded-lg">
+      <div className="w-full flex-grow max-h-5/6 px-7 pt-1 pb-6 overflow-auto">
+        <div className="bg-graySubFill h-5/6 rounded-lg overflow-auto">
           <ul className="flex flex-col">
           {generateListItems(sceneInfo)}
           </ul>
