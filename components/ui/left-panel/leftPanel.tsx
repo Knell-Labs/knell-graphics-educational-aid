@@ -15,7 +15,8 @@ const threeJsGeometryMapping: StringDictionary = {
 
 const threeJsFileMapping: StringDictionary = {
     "Box": "box.svg",
-    "AmbientLight": "AmbientLight.svg" 
+    "AmbientLight": "AmbientLight.svg" ,
+    "Group": "Group.svg"
 }
 
 export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
@@ -51,8 +52,8 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
         Scene Info
       </div>
 
-      <div className="w-full flex-grow px-7 pt-1 pb-6">
-        <div className="bg-graySubFill h-full rounded-lg">
+      <div className="w-full flex-grow max-h-5/6 px-7 pt-1 pb-6 overflow-auto">
+        <div className="bg-graySubFill h-5/6 rounded-lg overflow-auto">
           <ul className="flex flex-col">
           {generateListItems(sceneInfo)}
           </ul>
@@ -84,19 +85,44 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 
   return filteredObjects.map(object => {
     let displayType;
+    let children;
     
     if (object.isLight) {
       displayType = object.type;
+    } else if (object.isGroup){
+        displayType = "Group"
+        children = object.children
     } else {
-      displayType = threeJsGeometryMapping[object.geometry.type] || object.type;
+      displayType = threeJsGeometryMapping[object.geometry.type];
     }
 
-    console.log(displayType)
     return (
-      <li key={object.uuid} className="flex items-center space-x-1" onClick={ () => console.log(object.uuid)}>
-        <img src="line-object.svg" className="w-6 h-6"  width="20" />
-        <img src={threeJsFileMapping[displayType]} className="w-10 h-6"   />
-        {displayType}
+      <li key={object.uuid} className={` 
+                                        ${displayType !== "Group" ? "flex-col" : ""}`
+                                        } 
+
+
+      onClick={ () => console.log(object.uuid)}>
+        
+        { displayType !== "Group" 
+            ? 
+              <div className = "flex items-center space-x-1">
+                <img src="line-object.svg" className="w-6 h-6"  width="20" />
+                <img src={threeJsFileMapping[displayType]} className="w-10 h-6"/>
+                    {displayType}
+              </div>
+            : 
+              <div>
+                <div className = "flex items-center space-x-1">
+                  <img src="line-object.svg" className="w-6 h-6"  width="20" />
+                      {displayType}
+                  <img src={"group.svg"} className="w-4 h-4 ms-auto"/>
+                </div>
+                <ul className="flex flex-col pl-6 grow-0">
+                {generateListItems( children )}
+                </ul>
+              </div>
+        }
       </li>
     );
   });
