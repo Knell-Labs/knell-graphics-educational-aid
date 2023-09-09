@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Collapsible from 'react-collapsible';
 
 interface LeftPanelProps {
   sceneInfo: Array<any>;
@@ -16,7 +15,8 @@ const threeJsGeometryMapping: StringDictionary = {
 
 const threeJsFileMapping: StringDictionary = {
     "Box": "box.svg",
-    "AmbientLight": "AmbientLight.svg" 
+    "AmbientLight": "AmbientLight.svg" ,
+    "Group": "Group.svg"
 }
 
 interface props {
@@ -152,11 +152,15 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 
   return filteredObjects.map(object => {
     let displayType;
+    let children;
     
     if (object.isLight) {
       displayType = object.type;
+    } else if (object.isGroup){
+        displayType = "Group"
+        children = object.children
     } else {
-      displayType = threeJsGeometryMapping[object.geometry.type] || object.type;
+      displayType = threeJsGeometryMapping[object.geometry.type];
     }
 
     // console.log(displayType)
