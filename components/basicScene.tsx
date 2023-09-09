@@ -14,13 +14,13 @@ export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
-  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([2,2,2])
+  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([5,5,5])
 
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
 
   useEffect(() => {
-    console.log(`orthographic set to : ${isOrthographic}`);
+    // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
 
   return (
