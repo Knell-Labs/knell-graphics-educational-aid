@@ -38,8 +38,8 @@ export function CameraSwitch(orthographicSwitch: props) {
       <div style={{
         position: 'fixed', // Use fixed position to overlay on the 3D canvas
         bottom: '30px',
-        width: '400px',
-        height: '50px',
+        width: '300px',
+        height: '30px',
         textAlign: 'center',
         left: '50%',
         transform: 'translateX(-50%)',
