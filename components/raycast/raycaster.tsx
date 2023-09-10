@@ -1,19 +1,31 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface props {
   isObjectButtonPressed: boolean;
   setCoordinates: Dispatch<SetStateAction<number[]>>;
+  isOrthographic: boolean
 }
 
-export function RayCaster({isObjectButtonPressed, setCoordinates}: props){
+
+
+export function RayCaster({isObjectButtonPressed, setCoordinates, isOrthographic}: props){
   const world = useThree()
+
+  let getCameraCords: boolean = false;
+
+  useEffect(() => {
+    getCameraCords = true 
+  }, [isOrthographic])
 
   const mouseCords = new THREE.Vector2()
   useFrame(({ gl, scene, camera }) => {
 
-      setCoordinates([camera.position.x, camera.position.y, camera.position.z])
+      if(getCameraCords){
+        setCoordinates([camera.position.x, camera.position.y, camera.position.z])
+        getCameraCords = false;
+      }
 
       if(isObjectButtonPressed){
         const sizes = {

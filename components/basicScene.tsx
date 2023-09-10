@@ -47,6 +47,7 @@ export function BasicScene() {
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
           setCoordinates = {setCameraCoordinates}
+          isOrthographic = {isOrthographic}
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
