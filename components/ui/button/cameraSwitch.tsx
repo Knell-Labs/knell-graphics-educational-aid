@@ -1,20 +1,36 @@
 import { Dispatch, SetStateAction } from "react";
 import React from 'react';
+import SwitchSelector from "react-switch-selector";
 
+const toggleOptions = [
+  {
+    label: "Perspective",
+    value: "perspective",
+    selectedBackgroundColor: "gray"
+  },
+  {
+    label: "Orthographic",
+    value: "orthographic",
+    selectedBackgroundColor: "gray"
+  }
+];
 
 interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
+  isObjectButtonPressed: boolean;
 }
 
 export function CameraSwitch(orthographicSwitch: props) {
-  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
+  const { isOrthographic, setIsOrthographic, isObjectButtonPressed } = orthographicSwitch;
 
   const toggleOrthographic = () => {
     setIsOrthographic(!isOrthographic);
   };
 
-  const GradientDirection = isOrthographic ? "to right, blue 46%, red 50%" : "to left, blue 54%, white 46%";
+  const GradientDirection = isOrthographic ? 
+      "to right, white 0%, white 49%, gray 49%, gray 100%" : 
+      "to left, white 0%, white 53%, gray 53%, gray 100%";
 
   return (
     <>
@@ -22,22 +38,24 @@ export function CameraSwitch(orthographicSwitch: props) {
       
       <div style={{
         position: 'fixed', // Use fixed position to overlay on the 3D canvas
-        bottom: 10,
-        width: '100%',
-        textAlign: 'center'
+        bottom: '30px',
+        width: '300px',
+        height: '30px',
+        textAlign: 'center',
+        left: '50%',
+        transform: 'translateX(-50%)',
       }}>
-        <button
-          onClick={ toggleOrthographic }
-          style={{
-            background: `linear-gradient(${GradientDirection})`,
-            userSelect: 'none',
-            cursor: 'auto',
-            borderRadius: '10px',
-            padding: '0 10px',
-            color: 'rgb(0, 0, 0)'
-          }}>
-            Perspective Orthographic
-        </button>
+        
+        <SwitchSelector
+          disabled = {isObjectButtonPressed}
+          onChange = { toggleOrthographic }
+          options = {toggleOptions}
+          initialSelectedIndex = {toggleOptions.findIndex(({ value }) => value == "perspective")}
+          backgroundColor = {"white"}
+          selectionIndicatorMargin = {0}
+          fontSize = {20}
+        />
+
       </div>
     </>
   );
