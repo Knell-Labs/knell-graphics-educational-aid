@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
-import { useEffect } from 'react';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface props {
