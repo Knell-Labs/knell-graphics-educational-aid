@@ -10,8 +10,8 @@ export function CustomCameraControls(){
 function orbitContorlsCall(){
     return (
         <>
-            <OrbitControls enableDamping = { false } 
-             position={[ 0, 5, 0]}
+            <OrbitControls 
+             enableDamping = { false } 
              makeDefault
             />
         </>

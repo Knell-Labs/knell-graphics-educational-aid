@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
 import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface props {
   isObjectButtonPressed: boolean;
+  setCoordinates: Dispatch<SetStateAction<number[]>>;
   addObjectToScene: (type: string, props?: any) => void;  // For adding objects
 }
 
-export function RayCaster({isObjectButtonPressed, addObjectToScene}: props){
+export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene}: props){
   const world = useThree()
   const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
@@ -39,6 +41,10 @@ export function RayCaster({isObjectButtonPressed, addObjectToScene}: props){
   }, [isObjectButtonPressed, addObjectToScene, raycaster, world.scene]);
 
   useFrame(({ gl, scene, camera }) => {
+    if(!isObjectButtonPressed){
+      setCoordinates([camera.position.x, camera.position.y, camera.position.z])
+    }
+
     if(isObjectButtonPressed){
       raycaster.setFromCamera(mouseCords, camera)
       let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")

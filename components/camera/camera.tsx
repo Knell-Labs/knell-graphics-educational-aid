@@ -5,34 +5,48 @@ import { PerspectiveCamera, OrthographicCamera } from '@react-three/drei'
 interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
+  cameraCoordinates: number[];
 }
 
-function orthographicCameraExport(){
+// NOTE: you can only chane the "distance" in Perspective mode
+
+function orthographicCameraExport(cords: number[]){
+  
+  const distance = Math.pow( ( (cords[0] ** 2) + (cords[1] ** 2) + (cords[2] ** 2) ), 1/2 );
+  
+  // NOTE: this equation was obtained based on test case (wild guess) + Excel
+  // The math shall corrected anytime be for better performance
+  // Without fixing the number of decimals, the result will change slightly every time the math is perfomed
+  const zoomDistance = Number((1098.6 * Math.pow(distance,-1.087)).toFixed(5));  
+  console.log(zoomDistance);
+  
   return (
     <OrthographicCamera
       makeDefault
-      zoom={10}
-      top={100}
-      bottom={-100}
-      left={100}
-      right={-100}
+      zoom={zoomDistance}
       near={1}
       far={2000}
-      position={[0, 0, 1]}
+      position = { [ cords[0], cords[1], cords[2],]}
     />
   )
 }
 
-function perspectiveCameraExport(){
+function perspectiveCameraExport(cords: number[]){
   return (
-    <PerspectiveCamera/>
+    <PerspectiveCamera
+      makeDefault
+      near={1}
+      far={2000}
+      position = { [ cords[0], cords[1], cords[2],]}
+    />
   )
 }
 
 export function SwitchBetweenCameras(orthographicSwitch: props) {
-  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
+  const { isOrthographic, setIsOrthographic, cameraCoordinates } = orthographicSwitch;
 
+  // console.log(cameraCoordinates)
   return (
-    isOrthographic ? perspectiveCameraExport() : orthographicCameraExport() 
+    isOrthographic ? perspectiveCameraExport(cameraCoordinates) : orthographicCameraExport(cameraCoordinates) 
   );
 }

@@ -15,6 +15,7 @@ export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
+  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([5,5,5])
 
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
@@ -22,7 +23,7 @@ export function BasicScene() {
   const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log(`orthographic set to : ${isOrthographic}`);
+    // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
 
   const addObjectToScene = (type: string, props: any = {}) => {
@@ -44,8 +45,9 @@ export function BasicScene() {
         <CustomCameraControls/>
 
         <SwitchBetweenCameras
-          isOrthographic    = { isOrthographic }
-          setIsOrthographic = { setIsOrthographic }
+          isOrthographic={isOrthographic}
+          setIsOrthographic={setIsOrthographic}
+          cameraCoordinates={cameraCoordinates}
         />
 
         {objectsAdded.map((object, idx) => {
@@ -63,6 +65,7 @@ export function BasicScene() {
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
           addObjectToScene = { addObjectToScene }
+          setCoordinates = {setCameraCoordinates}
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
@@ -100,8 +103,9 @@ export function BasicScene() {
         />
 
         <CameraSwitch
-          isOrthographic    = { isOrthographic }
-          setIsOrthographic = { setIsOrthographic }
+          isOrthographic={isOrthographic}
+          setIsOrthographic={setIsOrthographic}
+          isObjectButtonPressed={isObjectButtonPressed}
         />
     </>
   )

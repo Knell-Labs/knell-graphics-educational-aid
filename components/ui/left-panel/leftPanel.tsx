@@ -33,8 +33,8 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
     <div className="fixed flex flex-col top-10 bottom-10 left-3 w-64 bg-grayFill rounded-lg items-center">
       <div className="flex justify-between w-full items-center pt-3 px-5"> 
         {sceneTitle} 
-        <button className="bg-graySubFill ml-2 hover:bg-blue-500 "> 
-          <img src="tab.svg" width="20" alt="icon" />
+        <button className="ml-2 hover:bg-blue-500 "> 
+          <img src="expandPanel.svg" width="20" alt="icon" />
         </button>
       </div>
       
