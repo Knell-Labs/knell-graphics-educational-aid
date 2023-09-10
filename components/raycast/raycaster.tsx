@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
+import { useEffect } from 'react';
 
 interface props {
   isObjectButtonPressed: boolean;
@@ -11,41 +12,49 @@ export function RayCaster({isObjectButtonPressed, addObjectToScene}: props){
   const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
 
-  document.addEventListener('click', (event) => {
-    const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
-    if (isObjectButtonPressed && intersect.length > 0) {
-      // Add a cube to the scene at the intersection point
-      addObjectToScene('cube', { position: intersect[0].point });
-    }
-  });
+  useEffect(() => {
+    const handleClick = (event) => {
+      const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
+      if (isObjectButtonPressed && intersect.length > 0) {
+        addObjectToScene('cube', { position: intersect[0].point });
+      }
+    };
+
+    const handleMouseMove = (event) => {
+      const sizes = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      mouseCords.x = event.clientX / sizes.width * 2 - 1
+      mouseCords.y = - (event.clientY / sizes.height) * 2 + 1
+    };
+
+    document.addEventListener('click', handleClick);
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [isObjectButtonPressed, addObjectToScene, raycaster, world.scene]);
 
   useFrame(({ gl, scene, camera }) => {
-      if(isObjectButtonPressed){
-        const sizes = {
-          width: window.innerWidth,
-          height: window.innerHeight
-        };
+    if(isObjectButtonPressed){
+      raycaster.setFromCamera(mouseCords, camera)
+      let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")
+      const intersect = raycaster.intersectObject(objectFound)
 
-        document.addEventListener('mousemove', (event) => {
-          mouseCords.x = event.clientX / sizes.width * 2 - 1
-          mouseCords.y = - (event.clientY / sizes.height) * 2 + 1
-        });
-
-        raycaster.setFromCamera(mouseCords, camera)
-        let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")
-        const intersect = raycaster.intersectObject(objectFound)
-
-        if(intersect.length > 0){
-          ActiveToolOverLay("cube", intersect[0].point.x, intersect[0].point.z, scene)
-        }
+      if(intersect.length > 0){
+        ActiveToolOverLay("cube", intersect[0].point.x, intersect[0].point.z, scene)
       }
+    }
 
-      gl.render(scene, camera)
+    gl.render(scene, camera)
 
-      if(isObjectButtonPressed){
-        DestroyActiveToolOverlay("cube", scene)
-      }
-    }, 1)
+    if(isObjectButtonPressed){
+      DestroyActiveToolOverlay("cube", scene)
+    }
+  }, 1);
 
   return null;
 }

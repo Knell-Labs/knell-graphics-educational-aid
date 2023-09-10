@@ -87,8 +87,13 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
     
     if (object.isLight) {
       displayType = object.type;
-    } else {
+    } else if (object.type === 'Group' && object.children[0]?.geometry) {
+      // If the object is a group and has children with geometry, get the geometry type from the first child
+      displayType = threeJsGeometryMapping[object.children[0].geometry.type];
+    } else if (object.geometry) {
       displayType = threeJsGeometryMapping[object.geometry.type] || object.type;
+    } else {
+      displayType = object.type;
     }
 
     console.log(displayType)

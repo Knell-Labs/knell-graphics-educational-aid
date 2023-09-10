@@ -8,7 +8,7 @@ interface props {
   setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
   objectTypePressed: string
   setObjectTypePressed: Dispatch<SetStateAction<string>>;
-  onAddCube: () => void; // Define a prop for the callback
+  addObjectToScene: (type: string, props?: any) => void; 
 }
 
 
@@ -17,11 +17,15 @@ export function ToolPanel(objectButtonPress: props){
           setIsObjectButtonPressed, 
           objectTypePressed, 
           setObjectTypePressed, 
-          onAddCube } = objectButtonPress;
+          addObjectToScene } = objectButtonPress;
 
   const toggleButtonPressed = (objectType: string) => {
     setIsObjectButtonPressed(!isObjectButtonPressed);
     setObjectTypePressed(objectType)
+  };
+
+  const handleBoxButtonClick = () => {
+    toggleButtonPressed("cube");
   };
 
   const currObjectTypePressed = (objectType: string) => {
@@ -56,7 +60,7 @@ export function ToolPanel(objectButtonPress: props){
       </button>
 
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {toggleButtonPressed}>
+        onClick = {handleBoxButtonClick}>
         <img src="box.svg" width="20" />
       </button>
 
