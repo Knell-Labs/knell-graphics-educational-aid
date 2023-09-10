@@ -1,6 +1,8 @@
 import { ThreeElements } from '@react-three/fiber';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+import { useCursor  } from '@react-three/drei'
+import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
 
 type CreateCubeProps = {
   color?: string;
@@ -8,32 +10,40 @@ type CreateCubeProps = {
 } & ThreeElements['mesh'];
 
 export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProps) {
-  const position = props.position; 
+  const [currentPosition, setCurrentPosition] = useState(props.position)
   const cubeRef = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
-  const [clicked, click] = useState(false);
-
-  // If color prop is provided, use it; otherwise, use existing logic             //depthTest: true  = not-transparent
-  const meshColor = color ? color : (hovered ? 'hotpink' : 'orange');             //depthTest: false = transparent
+  const [transformActive, setTransformActive] = useState(false);
+  const meshColor = color ? color : (transformActive ? 'orange' : 'white'); 
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial( { color: 0x000000, depthTest: true, opacity: 0.5, transparent: true } ), []);
-  const scaleValue = clicked ? 1.5 : 1;
 
+  useCursor(hovered)
+
+  useEffect(() => {
+    if (cubeRef.current) {
+      setCurrentPosition(cubeRef.current.position);
+    }
+  }, [cubeRef.current?.position]);
+  
   return (
-    <group position = { position }>
+    <group>
       <mesh
+        {...props}
+        position = { currentPosition }
         ref = { cubeRef }
         
-        scale         = { [scaleValue, scaleValue, scaleValue] }
-        onClick       = { (event) => click(!clicked) }
-        onPointerOver = { (event) => hover(true) }
-        onPointerOut  = { (event) => hover(false) }>
-
+        onClick         = { (event) => (event.stopPropagation(),setTransformActive(true)) }
+        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
+        onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
+        onPointerOut    = { (event) => hover(false) }
+      >
         <boxGeometry args = { size } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
+      {transformActive && <TransformCustomControls mesh = { cubeRef }/>}
 
-      <lineSegments scale = { [scaleValue, scaleValue, scaleValue] } material = { lineMaterial }>
-        <edgesGeometry attach="geometry" args = { [new THREE.BoxGeometry(...size)] } />
+      <lineSegments position = { currentPosition } material = { lineMaterial }>
+        <edgesGeometry attach = "geometry" args = { [new THREE.BoxGeometry(...size)] } />
       </lineSegments>
     </group>
   )
