@@ -18,10 +18,11 @@ const toggleOptions = [
 interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
+  isObjectButtonPressed: boolean;
 }
 
 export function CameraSwitch(orthographicSwitch: props) {
-  const { isOrthographic, setIsOrthographic } = orthographicSwitch;
+  const { isOrthographic, setIsOrthographic, isObjectButtonPressed } = orthographicSwitch;
 
   const toggleOrthographic = () => {
     setIsOrthographic(!isOrthographic);
@@ -46,6 +47,7 @@ export function CameraSwitch(orthographicSwitch: props) {
       }}>
         
         <SwitchSelector
+          disabled = {isObjectButtonPressed}
           onChange = { toggleOrthographic }
           options = {toggleOptions}
           initialSelectedIndex = {toggleOptions.findIndex(({ value }) => value == "perspective")}
