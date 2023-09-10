@@ -45,9 +45,9 @@ export function BasicScene() {
         <CustomCameraControls/>
 
         <SwitchBetweenCameras
-          isOrthographic={isOrthographic}
-          setIsOrthographic={setIsOrthographic}
-          cameraCoordinates={cameraCoordinates}
+          isOrthographic    = { isOrthographic }
+          setIsOrthographic = { setIsOrthographic }
+          cameraCoordinates = { cameraCoordinates }
         />
 
         {objectsAdded.map((object, idx) => {
@@ -64,8 +64,8 @@ export function BasicScene() {
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
-          addObjectToScene = { addObjectToScene }
-          setCoordinates = {setCameraCoordinates}
+          addObjectToScene      = { addObjectToScene }
+          setCoordinates        = { setCameraCoordinates }
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
@@ -103,9 +103,9 @@ export function BasicScene() {
         />
 
         <CameraSwitch
-          isOrthographic={isOrthographic}
-          setIsOrthographic={setIsOrthographic}
-          isObjectButtonPressed={isObjectButtonPressed}
+          isOrthographic        = { isOrthographic }
+          setIsOrthographic     = { setIsOrthographic }
+          isObjectButtonPressed = { isObjectButtonPressed }
         />
     </>
   )
