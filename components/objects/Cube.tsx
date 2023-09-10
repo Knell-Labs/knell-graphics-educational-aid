@@ -1,5 +1,5 @@
-import { ThreeElements } from '@react-three/fiber';
-import { useRef, useState, useMemo, useEffect } from 'react';
+import { ThreeElements, useFrame  } from '@react-three/fiber';
+import { useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { useCursor  } from '@react-three/drei'
 import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
@@ -10,8 +10,9 @@ type CreateCubeProps = {
 } & ThreeElements['mesh'];
 
 export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProps) {
-  const [currentPosition, setCurrentPosition] = useState(props.position)
   const cubeRef = useRef<THREE.Mesh>(null!);
+  const outlineRef = useRef<THREE.LineSegments>(null!);
+
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
   const meshColor = color ? color : (transformActive ? 'orange' : 'white'); 
@@ -19,17 +20,16 @@ export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProp
 
   useCursor(hovered)
 
-  useEffect(() => {
-    if (cubeRef.current) {
-      setCurrentPosition(cubeRef.current.position);
+  useFrame(() => {
+    if (cubeRef.current && outlineRef.current) {
+      outlineRef.current.position.copy(cubeRef.current.position);
     }
-  }, [cubeRef.current?.position]);
+  });
   
   return (
     <group>
       <mesh
         {...props}
-        position = { currentPosition }
         ref = { cubeRef }
         
         onClick         = { (event) => (event.stopPropagation(),setTransformActive(true)) }
@@ -40,9 +40,10 @@ export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProp
         <boxGeometry args = { size } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
+
       {transformActive && <TransformCustomControls mesh = { cubeRef }/>}
 
-      <lineSegments position = { currentPosition } material = { lineMaterial }>
+      <lineSegments ref = { outlineRef } material = { lineMaterial }>
         <edgesGeometry attach = "geometry" args = { [new THREE.BoxGeometry(...size)] } />
       </lineSegments>
     </group>
