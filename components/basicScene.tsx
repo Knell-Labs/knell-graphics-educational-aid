@@ -7,6 +7,7 @@ import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
+import { CreateCube } from './objects/Cube';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
 
@@ -19,49 +20,67 @@ export function BasicScene() {
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
 
+  const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
+
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
 
+  const addObjectToScene = (type: string, props: any = {}) => {
+    setObjectsAdded(prevObjects => [...prevObjects, { type, props }]);
+  };
+
   return (
     <>
       <Canvas >
-        <ambientLight intensity={0.5} position = {[4,4,4]}/>
+        <ambientLight intensity = {0.5} position = { [4,4,4] }/>
 
         <GetSceneInfo
-            fetchedObjects={ fetchedObjects }
-            setFetchedObjects={ setFetchedObjects }
-            setSceneInfo={setSceneInfo}
+            objectsAdded      = { objectsAdded }
+            fetchedObjects    = { fetchedObjects }
+            setFetchedObjects = { setFetchedObjects }
+            setSceneInfo      = { setSceneInfo }
         />
 
         <CustomCameraControls/>
 
         <SwitchBetweenCameras
-          isOrthographic={isOrthographic}
-          setIsOrthographic={setIsOrthographic}
-          cameraCoordinates={cameraCoordinates}
+          isOrthographic    = { isOrthographic }
+          setIsOrthographic = { setIsOrthographic }
+          cameraCoordinates = { cameraCoordinates }
         />
+
+        {objectsAdded.map((object, idx) => {
+            switch (object.type) {
+                case 'cube':
+                    return <CreateCube key = { idx } { ...object.props } />;
+                // Add more cases for other shapes
+                default:
+                    return null;
+            }
+        })}
 
         <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
-          setCoordinates = {setCameraCoordinates}
+          addObjectToScene      = { addObjectToScene }
+          setCoordinates        = { setCameraCoordinates }
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
 
         <gridHelper
           name = "init-grid"
-          args={[20, 20, '#ffffff']}
-          position={[0, -0.01, 0]}
+          args = { [20, 20, '#ffffff'] }
+          position = { [0, -0.01, 0] }
         />
 
         <Plane 
           name = "grid-plane-hidden-helper"
-          rotation={[-Math.PI / 2, 0, 0]} 
-          args={[20, 20]} 
-          position={[0, -0.01, 0]} 
+          rotation = { [-Math.PI / 2, 0, 0] } 
+          args = { [20, 20] } 
+          position = { [0, -0.01, 0] } 
           visible = { false }
         />
 
@@ -70,34 +89,37 @@ export function BasicScene() {
         </Canvas>
 
         { !!sceneInfo && <LeftPanel 
-                          sceneInfo = {sceneInfo} 
+                          sceneInfo = { sceneInfo } 
                           sceneTitle = { "Untitled" }
                           />
         }
 
         <ToolPanel
-         isObjectButtonPressed = {isObjectButtonPressed}  
-         setIsObjectButtonPressed={setIsObjectButtonPressed}
-         objectTypePressed = {objectTypePressed}
-         setObjectTypePressed = { setObjectTypePressed}
-
+         isObjectButtonPressed    = { isObjectButtonPressed }  
+         setIsObjectButtonPressed = { setIsObjectButtonPressed }
+         objectTypePressed        = { objectTypePressed }
+         setObjectTypePressed     = { setObjectTypePressed }
+         addObjectToScene         = { addObjectToScene }
         />
 
         <CameraSwitch
-          isOrthographic={isOrthographic}
-          setIsOrthographic={setIsOrthographic}
-          isObjectButtonPressed={isObjectButtonPressed}
+          isOrthographic        = { isOrthographic }
+          setIsOrthographic     = { setIsOrthographic }
+          isObjectButtonPressed = { isObjectButtonPressed }
         />
     </>
   )
 }
 
+function GetSceneInfo({ objectsAdded, fetchedObjects, setFetchedObjects, setSceneInfo }){
+  const { scene } = useThree();
 
-function GetSceneInfo({fetchedObjects, setFetchedObjects, setSceneInfo}){
-    if(!fetchedObjects){
-      setSceneInfo( useThree().scene.children )
-      setFetchedObjects(true)
-    }
+  useEffect(() => {
+      setSceneInfo(scene.children);
+      if (!fetchedObjects) { 
+        setFetchedObjects(true);
+      }
+  }, [objectsAdded]);
 
-    return null;
+  return null;
 }
