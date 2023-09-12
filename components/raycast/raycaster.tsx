@@ -17,7 +17,9 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
     const handleClick = (event) => {
       const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
       if (isObjectButtonPressed && intersect.length > 0) {
-        addObjectToScene('cube', { position: intersect[0].point });
+        let pointIntersect = intersect[0].point ;
+        pointIntersect.setY( pointIntersect.y + .5 )
+        addObjectToScene('cube', { position: pointIntersect });
       }
     };
 
