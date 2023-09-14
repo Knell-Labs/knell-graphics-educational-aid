@@ -90,7 +90,11 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 
     if (object.isLight) {
       displayType = object.type;
-    } else if (object.isGroup){
+    } 
+    else if(object.isTransformControls == true){
+        console.log("we are here")
+    } 
+    else if (object.isGroup){
         if(object.children.length == 2 
             && 
               (
@@ -109,14 +113,38 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
             //console.log(object.children[1].type == "LineSegments")
             displayType = threeJsGeometryMapping[object.children[0].geometry.type];
         }
+        else if(object.children.length == 4){
+            //displayType = threeJsGeometryMapping[object.geometry.type];
+            let tempDisplayType;// = threeJsGeometryMapping[object.geometry.type]; 
+            let foundTransformControls;
+            //object.isTransformControls
+            
+            object.children.map(child => {
+              if(child.isTransformControls == true){
+                foundTransformControls = true
+              }
+              if(child.type == "Mesh"){
+                tempDisplayType = child.geometry.type
+              }
+            })
+            if(foundTransformControls){
+                displayType = threeJsGeometryMapping[tempDisplayType];
+            }
+
+        }
         else{
-          console.log("this is triggered")
+          //console.log("this is triggered")
+          //console.log("=============================")
+          //console.log(object)
+          //console.log("=============================")
           displayType = "Group"
           children = object.children
+          console.log(object)
+          console.log( object.children)
+          console.log( object.children.length)
         }
-
-
-    } else {
+    } 
+    else {
       displayType = threeJsGeometryMapping[object.geometry.type];
     }
 
