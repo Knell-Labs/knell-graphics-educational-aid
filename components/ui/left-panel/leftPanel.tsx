@@ -116,7 +116,7 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
         }
 
 
-    } else {
+    } else if (object.geometry) {
       displayType = threeJsGeometryMapping[object.geometry.type];
     }
 
