@@ -91,58 +91,30 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
     if (object.isLight) {
       displayType = object.type;
     } 
-    else if(object.isTransformControls == true){
-        console.log("we are here")
-    } 
     else if (object.isGroup){
-        if(object.children.length == 2 
-            && 
-              (
-                ( object.children[0].type == "Mesh" 
-                    &&
-                  object.children[1].type == "LineSegments"
-                )
-                ||
-                ( object.children[1].type == "Mesh" 
-                    &&
-                  object.children[0].type == "LineSegments"
-                )
-              )
-            ){
-            //console.log(object.children[0])
-            //console.log(object.children[1].type == "LineSegments")
-            displayType = threeJsGeometryMapping[object.children[0].geometry.type];
-        }
-        else if(object.children.length == 4){
-            //displayType = threeJsGeometryMapping[object.geometry.type];
-            let tempDisplayType;// = threeJsGeometryMapping[object.geometry.type]; 
-            let foundTransformControls;
-            //object.isTransformControls
-            
-            object.children.map(child => {
-              if(child.isTransformControls == true){
-                foundTransformControls = true
-              }
-              if(child.type == "Mesh"){
-                tempDisplayType = child.geometry.type
-              }
-            })
-            if(foundTransformControls){
-                displayType = threeJsGeometryMapping[tempDisplayType];
+        let indexChildFound;
+        let groupType;
+        for(let childIndex = 0; childIndex < object.children.length; childIndex++){
+            if(object.children[childIndex].type == "Mesh"){
+                indexChildFound = childIndex
             }
-
+            else if(object.children[childIndex].type == "LineSegments"){
+                groupType = "LineSegments" 
+            }
         }
-        else{
-          //console.log("this is triggered")
-          //console.log("=============================")
-          //console.log(object)
-          //console.log("=============================")
+        
+        switch(groupType){
+            case "LineSegments":
+                displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
+                break;
+            default:
+                break;
+        }
+        if(groupType == undefined){
           displayType = "Group"
           children = object.children
-          console.log(object)
-          console.log( object.children)
-          console.log( object.children.length)
         }
+
     } 
     else {
       displayType = threeJsGeometryMapping[object.geometry.type];
