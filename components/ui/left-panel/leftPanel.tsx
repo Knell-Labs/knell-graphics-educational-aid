@@ -90,33 +90,33 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 
     if (object.isLight) {
       displayType = object.type;
-    } else if (object.isGroup){
-        if(object.children.length == 2 
-            && 
-              (
-                ( object.children[0].type == "Mesh" 
-                    &&
-                  object.children[1].type == "LineSegments"
-                )
-                ||
-                ( object.children[1].type == "Mesh" 
-                    &&
-                  object.children[0].type == "LineSegments"
-                )
-              )
-            ){
-            //console.log(object.children[0])
-            //console.log(object.children[1].type == "LineSegments")
-            displayType = threeJsGeometryMapping[object.children[0].geometry.type];
+    } 
+    else if (object.isGroup){
+        let indexChildFound;
+        let groupType;
+        for(let childIndex = 0; childIndex < object.children.length; childIndex++){
+            if(object.children[childIndex].type == "Mesh"){
+                indexChildFound = childIndex
+            }
+            else if(object.children[childIndex].type == "LineSegments"){
+                groupType = "LineSegments" 
+            }
         }
-        else{
-          console.log("this is triggered")
+        
+        switch(groupType){
+            case "LineSegments":
+                displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
+                break;
+            default:
+                break;
+        }
+        if(groupType == undefined){
           displayType = "Group"
           children = object.children
         }
 
-
-    } else {
+    } 
+    else {
       displayType = threeJsGeometryMapping[object.geometry.type];
     }
 
