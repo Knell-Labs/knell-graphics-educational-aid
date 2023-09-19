@@ -61,40 +61,6 @@ export function BasicScene() {
         })}
 
         <TestBox/>
-        <group>
-          <ambientLight/>
-          <TestBox/>
-          <group>
-            <ambientLight/>
-            <TestBox/>
-            <TestBox/>
-            <group>
-              <ambientLight/>
-              <TestBox/>
-              <TestBox/>
-              <TestBox/>
-              <TestBox/>
-              <group>
-                <ambientLight/>
-                <ambientLight/>
-                <TestBox/>
-                <group>
-                  <ambientLight/>
-                  <ambientLight/>
-                  <TestBox/>
-                  <group>
-                    <ambientLight/>
-                    <TestBox/>
-                    <TestBox/>
-                    <TestBox/>
-                    <TestBox/>
-                  </group>
-                </group>
-              </group>
-            </group>
-          </group>
-        </group>
-        
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
