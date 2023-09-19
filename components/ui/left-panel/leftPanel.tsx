@@ -39,6 +39,29 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
     imageSrc = "collapsePanel.svg"
   }
 
+  // rgba allows Transparency
+  const scrollbarStyles = `
+    ::-webkit-scrollbar {
+      width: 20px; 
+      height: 20px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #1a1a1a ;
+      border-radius: 16px;
+      border: 4px solid #3a3b3a; 
+    }
+
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+      background-color: #3a3b3a;
+    }
+
+    ::-webkit-scrollbar-button {
+      display:none;
+    }
+  `;
+
   return (
     <>
     <div className="fixed flex flex-row top-10 bottom-10 left-3 w-72 rounded-lg items-center">
@@ -77,6 +100,7 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
               <ul className="flex flex-col">
                 {generateListItems(sceneInfo)}
               </ul>
+              <style>{scrollbarStyles}</style>
             </div>
           </div>
 
@@ -89,7 +113,13 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
 
         </div>
 
-      ) : null }  
+      ) : (
+        <div className="hidden">   
+          <ul className="flex flex-col">
+            {generateListItems(sceneInfo)}
+          </ul>
+        </div>
+      ) }  
 
       {/* Collapse-Tab Button */}
       <div className="flex justify-end items-center w-8 h-full">
@@ -124,6 +154,8 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
       &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
+
+  const [isGroupButtonPressed, setGroupButtonPressed] = useState<boolean>(true);
 
   return filteredObjects.map(object => {
     let displayType;
@@ -172,21 +204,61 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
         
         { displayType !== "Group" 
             ? 
-              <div className = "flex items-center space-x-1">
-                <img src="line-object.svg" className="w-6 h-6"  width="20" />
-                <img src={threeJsFileMapping[displayType]} className="w-10 h-6"/>
-                    {displayType}
+              // NON-GROUP
+              <div className = "flex items-center">
+                <div className="flex items-center w-5 h-5 m-1">
+                  <img src="line-object.svg"/>
+                </div>
+                <div className="ml-1 w-6 h-6">
+                  <img src={threeJsFileMapping[displayType]} className="w-6 h-6"/>
+                </div>
+                <div className="ml-2">
+                  {displayType}
+                  </div>
               </div>
             : 
+              // GROUP
               <div>
-                <div className = "flex items-center space-x-1">
-                  <img src="line-object.svg" className="w-6 h-6"  width="20" />
+                <div className = "flex items-center space-x-1 mt-1">
+                  
+                  <div className="flex w-4 h-4 items-center">
+                    <button 
+                      className="w-full h-full"
+                      onClick={ () =>
+                        setGroupButtonPressed(!isGroupButtonPressed)
+                      }
+                    >
+                      { isGroupButtonPressed ? (
+                        <img src="expandGroup.svg"/>
+                      ) : (
+                        <img src="collapseGroup.svg"/>
+                      )}
+                    </button>
+                  </div>
+                  {/* IF THERE IS LONGER/SHORTER TEXT, allignment of line-Object seems fine. WHY?? */}
+                  <div className="flex items-center">
+                    <img src="group.svg" className="w-4 h-4 mr-2"/>
                       {displayType}
-                  <img src={"group.svg"} className="w-4 h-4 ms-auto"/>
+                  </div>
                 </div>
-                <ul className="flex flex-col pl-6 grow-0">
-                {generateListItems( children )}
-                </ul>
+
+                {/* Items of Group */}
+                { isGroupButtonPressed ? (
+                  <div className="flex ml-6 items-center">
+                    <ul className="flex flex-col grow-0">
+                    {generateListItems( children )}
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="hidden">
+                    <ul className="flex flex-col grow-0">
+                    {generateListItems( children )}
+                    </ul>
+                  </div>
+                  
+                )}
+                
+                
               </div>
         }
       </li>
