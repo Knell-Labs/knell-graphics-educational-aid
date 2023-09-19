@@ -10,7 +10,8 @@ type StringDictionary = {
 };
 
 const threeJsGeometryMapping: StringDictionary = {
-    "BoxGeometry": "Box"
+    "BoxGeometry" : "Box",
+    "SphereGeometry" : "Sphere"
 }
 
 const threeJsFileMapping: StringDictionary = {

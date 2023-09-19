@@ -6,9 +6,10 @@ interface props {
   isObjectButtonPressed: boolean;
   setCoordinates: Dispatch<SetStateAction<number[]>>;
   addObjectToScene: (type: string, props?: any) => void;  // For adding objects
+  objectTypePressed: string;
 }
 
-export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene}: props){
+export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene, objectTypePressed}: props){
   const world = useThree()
   const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
@@ -18,8 +19,18 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
       const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
       if (isObjectButtonPressed && intersect.length > 0) {
         let pointIntersect = intersect[0].point ;
-        pointIntersect.setY( pointIntersect.y + .5 )
-        addObjectToScene('cube', { position: pointIntersect });
+        switch (objectTypePressed) {
+          case 'cube':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('cube', { position: pointIntersect });
+            break;
+          case 'sphere':
+            pointIntersect.setY(pointIntersect.y + 1); // Adjust the height for the sphere
+            addObjectToScene('sphere', { position: pointIntersect });
+            break;
+          default:
+            console.log("Unknown object type");
+        }
       }
     };
 
@@ -87,6 +98,16 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
       break;
     }
 
+    case "sphere": {
+
+      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const sphere = new THREE.Mesh(geometry, material);
+      sphere.name = "temp sphere";
+      sphere.position.set(pointX, 0.5, pointZ);
+      scene.add(sphere);
+      break;
+    }
     default: {
       console.log("Could not overlay current tool")
       break;
@@ -106,6 +127,15 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
         // you'd also want to dispose of the geometry and material to ensure that you're freeing up the memory.
         existingPlane.geometry.dispose();
         existingPlane.material.dispose();
+      }
+      break;
+    }
+    case "sphere": {
+      const existingSphere = scene.getObjectByName("temp sphere");
+      if (existingSphere) {
+        scene.remove(existingSphere);
+        existingSphere.geometry.dispose();
+        existingSphere.material.dispose();
       }
       break;
     }
