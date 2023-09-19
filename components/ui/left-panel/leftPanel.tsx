@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface LeftPanelProps {
   sceneInfo: Array<any>;
@@ -14,7 +14,7 @@ const threeJsGeometryMapping: StringDictionary = {
 }
 
 const threeJsFileMapping: StringDictionary = {
-    "Box": "box.svg",
+    "Box": "boxUnpressed.svg",
     "AmbientLight": "AmbientLight.svg" ,
     "Group": "Group.svg"
 }
@@ -29,44 +29,86 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
     return null;
   }
 
+  const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
+
+  let imageSrc;
+  if(!isCollapsed){
+    imageSrc = "openPanel.svg"
+  }
+  else{
+    imageSrc = "collapsePanel.svg"
+  }
+
   return (
-    <div className="fixed flex flex-col top-10 bottom-10 left-3 w-64 bg-grayFill rounded-lg items-center">
-      <div className="flex justify-between w-full items-center pt-3 px-5"> 
-        {sceneTitle} 
-        <button className="ml-2 hover:bg-blue-500 "> 
-          <img src="expandPanel.svg" width="20" alt="icon" />
+    <>
+    <div className="fixed flex flex-row top-10 bottom-10 left-3 w-72 rounded-lg items-center">
+
+      { isCollapsed ? (
+
+        <div className="flex flex-col top-10 bottom-10 left-3 p-6 w-64 h-full bg-grayFill rounded-lg items-center">   
+            
+          {/* Section 1: Panel Header */}
+          <div className="flex justify-between w-full items-center"> 
+            {sceneTitle} 
+
+            <button className="ml-2 hover:bg-blue-500 "> 
+              <img src="expandPanel.svg" width="20" alt="icon" />
+            </button>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="flex w-full items-center pt-3 pb-1 "> 
+            <input 
+              type="text" 
+              placeholder="search" 
+              className="w-full bg-graySubFill p-2 rounded text-white" // padding and rounded corners for styling
+            />
+          </div>
+
+          <LineSeparator/>
+
+          {/* Section 2: Scene Info */}
+          <div className="flex justify-between w-full"> 
+            Scene Info
+          </div>
+
+          <div className="w-full h-full bg-graySubFill flex-grow max-h-5/6 p-3 mt-3 rounded-lg overflow-auto">
+            <div className="w-full bg-graySubFill rounded-lg">
+              <ul className="flex flex-col">
+                {generateListItems(sceneInfo)}
+              </ul>
+            </div>
+          </div>
+
+          <LineSeparator/>
+          
+          {/* Section 3: Import Text-Button */}
+          <button className="bg-graySubFill hover:bg-blue-500 w-full h-12 items-center rounded-lg"> 
+            Import
+          </button>
+
+        </div>
+
+      ) : null }  
+
+      {/* Collapse-Tab Button */}
+      <div className="flex justify-end items-center w-8 h-full">
+        <button 
+          className="bg-graySubFill hover:bg-blue-500 h-full"  
+          onClick={ () => {
+            setIsCollapsed(!isCollapsed);
+          }}>
+          <img 
+            src={imageSrc} 
+            width="40" 
+            alt="icon" 
+          />
         </button>
       </div>
-      
-      <div className="flex items-center pt-3 pb-3"> 
-        <input 
-          type="text" 
-          placeholder="search" 
-          className="bg-graySubFill p-1 rounded text-white" // padding and rounded corners for styling
-        />
-      </div>
 
-      <LineSeparator/>
+    </div>   
 
-      <div className="flex justify-between w-full items-center pt-2 px-5"> 
-        Scene Info
-      </div>
-
-      <div className="w-full flex-grow max-h-5/6 px-7 pt-1 pb-6 overflow-auto">
-        <div className="bg-graySubFill h-5/6 rounded-lg overflow-auto">
-          <ul className="flex flex-col">
-          {generateListItems(sceneInfo)}
-          </ul>
-        </div>
-      </div>
-
-      <LineSeparator/>
-
-      <button className="flex items-center pb-6 px-5 pt-2"> 
-        Import
-      </button>
-
-    </div>
+    </>
   );
 };
 
@@ -155,6 +197,6 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
 
 function LineSeparator(){
   return(
-    <div className = "bg-gray-500 w-11/12 h-1 rounded-lg"/>
+    <div className = "bg-gray-500 w-11/12 h-1 my-3 rounded-lg"/>
   )
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {RayCaster} from '../../raycast/raycaster' 
 import { Dispatch, SetStateAction } from "react";
 
@@ -24,8 +24,19 @@ export function ToolPanel(objectButtonPress: props){
     setObjectTypePressed(objectType)
   };
 
+  const [isBoxButtonPressed, setBoxButtonPressed] = useState<Boolean>(true);
+
+  let boxImageSrc;
+  if(!isBoxButtonPressed){
+    boxImageSrc = "boxPressed.svg"
+  }
+  else{
+    boxImageSrc = "boxUnpressed.svg"
+  }
+
   const handleBoxButtonClick = () => {
     toggleButtonPressed("cube");
+    setBoxButtonPressed(!isBoxButtonPressed)
   };
 
   const currObjectTypePressed = (objectType: string) => {
@@ -55,14 +66,23 @@ export function ToolPanel(objectButtonPress: props){
 
       <LineSeparator/>
 
+      
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
-        <img src="CursorSelect.svg" width="20" />
+        <img src="CursorSelect.svg" width="25" />
       </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {handleBoxButtonClick}>
-        <img src="box.svg" width="20" />
-      </button>
+      { isBoxButtonPressed ? (
+        <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+          onClick = {handleBoxButtonClick}>
+          <img src="boxUnpressed.svg" width="25" />
+        </button> )
+      : (
+      <button className="flex items-center hover:bg-blue-500 bg-white rounded p-1 h-100"
+          onClick = {handleBoxButtonClick}>
+          <img src="boxPressed.svg" width="25" />
+        </button>
+      )}
+      
 
     </div>
   )
