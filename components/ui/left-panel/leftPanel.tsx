@@ -16,6 +16,7 @@ const threeJsGeometryMapping: StringDictionary = {
 
 const threeJsFileMapping: StringDictionary = {
     "Box": "box.svg",
+    "Sphere": "sphere.svg",
     "AmbientLight": "AmbientLight.svg" ,
     "Group": "Group.svg"
 }

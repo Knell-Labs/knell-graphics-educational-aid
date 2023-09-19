@@ -9,7 +9,7 @@ type CreateSphereProps = {
   radius?: number;
 } & ThreeElements['mesh'];
 
-export function CreateSphere({ color, radius = 1, ...props }: CreateSphereProps) {
+export function CreateSphere({ color, radius = 0.7, ...props }: CreateSphereProps) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -36,14 +36,14 @@ export function CreateSphere({ color, radius = 1, ...props }: CreateSphereProps)
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
-        <sphereGeometry args = { [radius, 32, 32] } />
+        <sphereGeometry args = { [radius, 24, 24] } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
 
       {transformActive && <TransformCustomControls mesh = { sphereRef } />}
 
       <lineSegments ref={outlineRef} material = { lineMaterial }>
-        <edgesGeometry attach="geometry" args = { [new THREE.SphereGeometry(radius, 32, 32)] } />
+        <edgesGeometry attach="geometry" args = { [new THREE.SphereGeometry(radius, 24, 24)] } />
       </lineSegments>
     </group>
   )

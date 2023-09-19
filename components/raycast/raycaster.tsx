@@ -25,7 +25,7 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
             addObjectToScene('cube', { position: pointIntersect });
             break;
           case 'sphere':
-            pointIntersect.setY(pointIntersect.y + 1); // Adjust the height for the sphere
+            pointIntersect.setY(pointIntersect.y + 0.7);
             addObjectToScene('sphere', { position: pointIntersect });
             break;
           default:
@@ -63,14 +63,14 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
       const intersect = raycaster.intersectObject(objectFound)
 
       if(intersect.length > 0){
-        ActiveToolOverLay("cube", intersect[0].point.x, intersect[0].point.z, scene)
+        ActiveToolOverLay(objectTypePressed, intersect[0].point.x, intersect[0].point.z, scene)
       }
     }
 
     gl.render(scene, camera)
 
     if(isObjectButtonPressed){
-      DestroyActiveToolOverlay("cube", scene)
+      DestroyActiveToolOverlay(objectTypePressed, scene)
     }
   }, 1);
 
@@ -100,14 +100,16 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
 
     case "sphere": {
 
-      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-      const sphere = new THREE.Mesh(geometry, material);
-      sphere.name = "temp sphere";
-      sphere.position.set(pointX, 0.5, pointZ);
-      scene.add(sphere);
+      const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
+      const circle = new THREE.Mesh(geometry, material);
+      circle.name = "temp circle";
+      circle.rotation.x = Math.PI / 2;
+      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(circle);
       break;
-    }
+  }
+  
     default: {
       console.log("Could not overlay current tool")
       break;
@@ -117,6 +119,7 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
 
 function DestroyActiveToolOverlay(currTool: string, scene: Object){
   switch (currTool){
+
     case "cube":{
       var existingPlane = scene.getObjectByName("temp plane");
       // If it exists, remove it from the scene
@@ -130,15 +133,17 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       }
       break;
     }
+
     case "sphere": {
-      const existingSphere = scene.getObjectByName("temp sphere");
-      if (existingSphere) {
-        scene.remove(existingSphere);
-        existingSphere.geometry.dispose();
-        existingSphere.material.dispose();
-      }
-      break;
+    const existingCircle = scene.getObjectByName("temp circle");
+    if (existingCircle) {
+        scene.remove(existingCircle);
+        existingCircle.geometry.dispose();
+        existingCircle.material.dispose();
     }
+    break;
+  }
+
     default: {
       console.log(currTool)
       console.log("Could not delete active tool")

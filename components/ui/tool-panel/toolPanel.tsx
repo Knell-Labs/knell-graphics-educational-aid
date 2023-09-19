@@ -70,7 +70,7 @@ export function ToolPanel(objectButtonPress: props){
 
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
         onClick = {handleSphereButtonClick}>
-        <img src="box.svg" width="20" />
+        <img src="sphere.svg" width="20" />
       </button>
 
     </div>
