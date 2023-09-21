@@ -53,7 +53,10 @@ export function BasicScene() {
         {objectsAdded.map((object, idx) => {
             switch (object.type) {
                 case 'cube':
-                    return <CreateCube key = { idx } { ...object.props } />;
+                    return <CreateCube 
+                             isObjectButtonPressed = { isObjectButtonPressed }
+                             key = { idx } { ...object.props }
+                            />;
                 // Add more cases for other shapes
                 default:
                     return null;
