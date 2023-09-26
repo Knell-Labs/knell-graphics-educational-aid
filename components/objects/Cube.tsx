@@ -24,6 +24,8 @@ export function CreateCube({ isObjectButtonPressed, color, size = [1, 1, 1], ...
   useFrame(() => {
     if (cubeRef.current && outlineRef.current) {
       outlineRef.current.position.copy(cubeRef.current.position);
+      outlineRef.current.rotation.copy(cubeRef.current.rotation);
+      outlineRef.current.scale.copy(cubeRef.current.scale);
     }
   });
   
