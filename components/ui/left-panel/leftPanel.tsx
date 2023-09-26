@@ -15,8 +15,9 @@ const threeJsGeometryMapping: StringDictionary = {
 
 const threeJsFileMapping: StringDictionary = {
     "Box": "box.svg",
-    "AmbientLight": "AmbientLight.svg" ,
-    "Group": "Group.svg"
+    "AmbientLight": "AmbientLight.svg",
+    "Group": "Group.svg",
+    "DirectionalLight" : "DirectionalLight.svg"
 }
 
 export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
@@ -80,6 +81,8 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
       && 
     !object.name.includes('helper')
       &&
+    !object.type.includes('Helper')
+      &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
 
@@ -88,7 +91,7 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
     let children;
     
 
-    if (object.isLight) {
+    if (object.isLight || object.isDirectionalLight) {
       displayType = object.type;
     } 
     else if (object.isGroup){
