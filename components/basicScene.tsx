@@ -17,6 +17,8 @@ export function BasicScene() {
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
   const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([5,5,5])
 
+  const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);   
+
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
 
@@ -27,7 +29,7 @@ export function BasicScene() {
   }, [isOrthographic]);
 
   const addObjectToScene = (type: string, props: any = {}) => {
-    setObjectsAdded(prevObjects => [...prevObjects, { type, props }]);
+    setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects ]);
   };
 
   return (
@@ -61,6 +63,18 @@ export function BasicScene() {
         })}
 
         <TestBox/>
+        <group>
+          <TestBox/>
+        </group>
+        <group>
+          <TestBox/>
+        </group>
+        <group>
+          <TestBox/>
+        </group>
+        <group>
+          <TestBox/>
+        </group>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -91,6 +105,9 @@ export function BasicScene() {
         { !!sceneInfo && <LeftPanel 
                           sceneInfo = { sceneInfo } 
                           sceneTitle = { "Untitled" }
+                          openGroupIDs = {openGroupIDs}
+                          handleOpenGroup = {
+                            (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
                           />
         }
 

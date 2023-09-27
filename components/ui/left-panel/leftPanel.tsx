@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 interface LeftPanelProps {
   sceneInfo: Array<any>;
   sceneTitle: string;
+  openGroupIDs: string[];
+  handleOpenGroup: (group_id: string) => void;
 }
 
 type StringDictionary = {
@@ -19,10 +21,10 @@ const threeJsFileMapping: StringDictionary = {
     "Group": "Group.svg"
 }
 
-export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
-
+export function LeftPanel(props: LeftPanelProps ) {
+  const { sceneInfo, sceneTitle, openGroupIDs, handleOpenGroup } = props;
   useEffect( () => {
-    console.log(sceneInfo)
+    // console.log(sceneInfo)
   }, [])
 
   if (!sceneInfo) {
@@ -74,8 +76,8 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
           <div className="flex justify-between w-full items-center"> 
             {sceneTitle} 
 
-            <button className="ml-2 hover:bg-blue-500 "> 
-              <img src="expandPanel.svg" width="20" alt="icon" />
+            <button className="p-1 rounded w-8 h-8 hover:bg-blue-500 "> 
+              <img src="expandMenu.svg" alt="icon" />
             </button>
           </div>
           
@@ -91,14 +93,18 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
           <LineSeparator/>
 
           {/* Section 2: Scene Info */}
-          <div className="flex justify-between w-full"> 
+          <div className="flex justify-between items-center w-full"> 
             Scene Info
+
+            <button className="p-1 rounded w-7 h-7 hover:bg-blue-500 "> 
+              <img src="groupAdd.svg" alt="icon" />
+            </button>
           </div>
 
-          <div className="w-full h-full bg-graySubFill flex-grow max-h-5/6 p-3 mt-3 rounded-lg overflow-auto">
+          <div className="w-full h-full bg-graySubFill flex-grow max-h-5/6 p-3 mt-2 rounded-lg overflow-auto">
             <div className="w-full bg-graySubFill rounded-lg">
               <ul className="flex flex-col">
-                {generateListItems(sceneInfo)}
+                {generateListItems(props)}
               </ul>
               <style>{scrollbarStyles}</style>
             </div>
@@ -116,7 +122,7 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
       ) : (
         <div className="hidden">   
           <ul className="flex flex-col">
-            {generateListItems(sceneInfo)}
+            {generateListItems(props)}
           </ul>
         </div>
       ) }  
@@ -142,9 +148,11 @@ export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
   );
 };
 
+function generateListItems(props: LeftPanelProps): JSX.Element[] {
 
-function generateListItems(scene: Array<any>): JSX.Element[] {
+  const {sceneInfo:scene, openGroupIDs, handleOpenGroup} = props;
   // Step 1: Filter out objects with blank names
+  
   const filteredObjects = scene.filter(object => 
     !object.name.includes('init') 
       && 
@@ -154,19 +162,19 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
       &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
-
-  const [isGroupButtonPressed, setGroupButtonPressed] = useState<boolean>(true);
-
-  return filteredObjects.map(object => {
+  
+  return filteredObjects.map((object, idx) => {
+    
     let displayType;
     let children;
     
+    const group_id = object.uuid.toString();
 
     if (object.isLight) {
       displayType = object.type;
     } 
     else if (object.isGroup){
-        let indexChildFound;
+        let indexChildFound: number = -1;
         let groupType;
         for(let childIndex = 0; childIndex < object.children.length; childIndex++){
             if(object.children[childIndex].type == "Mesh"){
@@ -199,8 +207,8 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
                                         ${displayType !== "Group" ? "flex-col" : ""}`
                                         } 
 
-
-      onClick={ () => console.log(object.uuid)}>
+      // onClick={ () => console.log(object.uuid)}
+      >
         
         { displayType !== "Group" 
             ? 
@@ -219,45 +227,35 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
             : 
               // GROUP
               <div>
-                <div className = "flex items-center space-x-1 mt-1">
+                <div className = "flex items-top space-x-1 mt-1">
                   
-                  <div className="flex w-4 h-4 items-center">
+                  {/* Collapse/Expand Group Button */}
+                  <div>
                     <button 
-                      className="w-full h-full"
-                      onClick={ () =>
-                        setGroupButtonPressed(!isGroupButtonPressed)
-                      }
+                      className="w-5 h-5"
+                      onClick={() => handleOpenGroup(group_id)}
                     >
-                      { isGroupButtonPressed ? (
+                      { openGroupIDs.includes(group_id) ? (
                         <img src="expandGroup.svg"/>
                       ) : (
                         <img src="collapseGroup.svg"/>
                       )}
                     </button>
                   </div>
-                  {/* IF THERE IS LONGER/SHORTER TEXT, allignment of line-Object seems fine. WHY?? */}
-                  <div className="flex items-center">
-                    <img src="group.svg" className="w-4 h-4 mr-2"/>
-                      {displayType}
+
+                  {/* Group Folder Icon */}
+                  <div className="flex items-top">
+                    <img src="groupFolder.svg" className="w-5 h-5 mr-2"/>
+                      {displayType} {(object.uuid.toString()).substring(0,7)}
                   </div>
                 </div>
 
                 {/* Items of Group */}
-                { isGroupButtonPressed ? (
-                  <div className="flex ml-6 items-center">
-                    <ul className="flex flex-col grow-0">
-                    {generateListItems( children )}
-                    </ul>
-                  </div>
-                ) : (
-                  <div className="hidden">
-                    <ul className="flex flex-col grow-0">
-                    {generateListItems( children )}
-                    </ul>
-                  </div>
-                  
-                )}
-                
+                <div className={openGroupIDs.includes(group_id) ? "flex ml-7 items-center" : "hidden"}>
+                  <ul className="flex flex-col grow-0">
+                  {generateListItems( { ... props, sceneInfo:children} )}
+                  </ul>
+                </div>
                 
               </div>
         }
