@@ -111,6 +111,7 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
         
         switch(groupType){
             case "LineSegments":
+                //console.log(object)
                 displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
                 break;
             default:
