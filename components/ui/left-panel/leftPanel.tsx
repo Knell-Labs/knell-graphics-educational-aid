@@ -66,7 +66,7 @@ export function LeftPanel(props: LeftPanelProps ) {
 
   return (
     <>
-    <div className="fixed flex flex-row top-10 bottom-10 left-3 w-72 rounded-lg items-center">
+    <div className="fixed flex flex-row top-10 bottom-10 left-3 rounded-lg items-center">
 
       { isCollapsed ? (
 
@@ -120,11 +120,7 @@ export function LeftPanel(props: LeftPanelProps ) {
         </div>
 
       ) : (
-        <div className="hidden">   
-          <ul className="flex flex-col">
-            {generateListItems(props)}
-          </ul>
-        </div>
+        null
       ) }  
 
       {/* Collapse-Tab Button */}
