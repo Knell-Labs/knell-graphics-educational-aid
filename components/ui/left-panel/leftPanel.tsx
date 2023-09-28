@@ -104,6 +104,9 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
             else if(object.children[childIndex].type == "LineSegments"){
                 groupType = "LineSegments" 
             }
+            else if(object.children[childIndex].isTransformControls){
+                groupType = "LineSegments" 
+            }
         }
         
         switch(groupType){
