@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
 import { CameraSwitch } from "./ui/button/cameraSwitch"
+import { Help } from "./ui/button/help"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
@@ -66,18 +67,6 @@ export function BasicScene() {
         })}
 
         <TestBox/>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -113,6 +102,8 @@ export function BasicScene() {
                             (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
                           />
         }
+
+        <Help/>
 
         <ToolPanel
          isObjectButtonPressed    = { isObjectButtonPressed }  
