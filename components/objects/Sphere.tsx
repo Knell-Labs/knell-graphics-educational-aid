@@ -5,11 +5,12 @@ import { useCursor } from '@react-three/drei';
 import { TransformCustomControls } from "../../components/controls/objectControls/TransformCustomControls";
 
 type CreateSphereProps = {
+  isObjectButtonPressed: boolean;
   color?: string;
   radius?: number;
 } & ThreeElements['mesh'];
 
-export function CreateSphere({ color, radius = 0.7, ...props }: CreateSphereProps) {
+export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, ...props }: CreateSphereProps) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -30,8 +31,13 @@ export function CreateSphere({ color, radius = 0.7, ...props }: CreateSphereProp
     <group>
       <mesh
         {...props}
-        ref={sphereRef}
-        onClick         = { (event) => (event.stopPropagation(), setTransformActive(true)) }
+        ref={ sphereRef }
+
+        onClick= { (event) => {
+            if(!isObjectButtonPressed){
+                (event.stopPropagation(), setTransformActive(true))
+            }
+        }}
         onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
