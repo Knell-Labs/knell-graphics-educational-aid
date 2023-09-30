@@ -5,11 +5,12 @@ import { useCursor  } from '@react-three/drei'
 import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
 
 type CreateCubeProps = {
+  isObjectButtonPressed: boolean;
   color?: string;
   size?: [number, number, number];
 } & ThreeElements['mesh'];
 
-export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProps) {
+export function CreateCube({ isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreateCubeProps) {
   const cubeRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -32,7 +33,11 @@ export function CreateCube({ color, size = [1, 1, 1], ...props }: CreateCubeProp
         {...props}
         ref = { cubeRef }
         
-        onClick         = { (event) => (event.stopPropagation(),setTransformActive(true)) }
+        onClick= { (event) => {
+            if(!isObjectButtonPressed){
+                (event.stopPropagation(), setTransformActive(true))
+            }
+        }}
         onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
