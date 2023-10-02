@@ -10,6 +10,7 @@ import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
+import { STLImporter } from "./ui/button/importSTL";
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
@@ -51,6 +52,8 @@ export function BasicScene() {
           setIsOrthographic = { setIsOrthographic }
           cameraCoordinates = { cameraCoordinates }
         />
+
+        {/*<STLImporter addObjectToScene={addObjectToScene} />*/}
 
         {objectsAdded.map((object, idx) => {
             switch (object.type) {

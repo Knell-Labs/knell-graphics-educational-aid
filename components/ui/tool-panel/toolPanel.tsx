@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {RayCaster} from '../../raycast/raycaster' 
 import { Dispatch, SetStateAction } from "react";
-
 
 interface props {
   isObjectButtonPressed: boolean;
@@ -10,7 +9,6 @@ interface props {
   setObjectTypePressed: Dispatch<SetStateAction<string>>;
   addObjectToScene: (type: string, props?: any) => void; 
 }
-
 
 export function ToolPanel(objectButtonPress: props){
   const { isObjectButtonPressed, 
@@ -26,6 +24,8 @@ export function ToolPanel(objectButtonPress: props){
 
   const [isBoxButtonPressed, setBoxButtonPressed] = useState<Boolean>(true);
 
+  const fileInputRef = useRef(null);
+
   let boxImageSrc;
   if(!isBoxButtonPressed){
     boxImageSrc = "boxPressed.svg"
@@ -38,10 +38,23 @@ export function ToolPanel(objectButtonPress: props){
     toggleButtonPressed("cube");
     setBoxButtonPressed(!isBoxButtonPressed)
   };
+  
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Handle the STL file here
+      console.log("Selected file:", file.name);
+      // TODO: Load the STL file into the scene
+    }
+  };
 
   const currObjectTypePressed = (objectType: string) => {
     setObjectTypePressed(objectType)
   }
+
+  const handleLoadButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div style={{
@@ -56,7 +69,6 @@ export function ToolPanel(objectButtonPress: props){
       display: 'flex',
       alignItems: 'center',
       gap: '5px'
-
     }}>
 
       <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
@@ -64,31 +76,40 @@ export function ToolPanel(objectButtonPress: props){
          Save
       </button>
 
+      <button className="bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
+       onClick={handleLoadButtonClick}>
+         Load
+      </button>
+
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        accept=".stl" 
+        onChange={handleFileChange} 
+      />
+
       <LineSeparator/>
 
-      
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="25" />
       </button>
 
       { isBoxButtonPressed ? (
         <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
+          onClick = { () => toggleButtonPressed("cube") }>
           <img src="boxUnpressed.svg" width="25" />
         </button> )
       : (
       <button className="flex items-center hover:bg-blue-500 bg-white rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
+          onClick = { () => toggleButtonPressed("cube") }>
           <img src="boxPressed.svg" width="25" />
         </button>
       )}
-      
 
     </div>
   )
-
 }
-
 
 function LineSeparator(){
   return (
