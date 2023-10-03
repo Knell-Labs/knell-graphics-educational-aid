@@ -66,7 +66,6 @@ export function BasicScene() {
             }
         })}
 
-        <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -94,6 +93,11 @@ export function BasicScene() {
 
         </Canvas>
 
+        { !!sceneInfo && <LeftPanel 
+                          sceneInfo = { sceneInfo } 
+                          sceneTitle = { "Untitled" }
+                          />
+        }
 
         <ToolPanel
          isObjectButtonPressed    = { isObjectButtonPressed }  

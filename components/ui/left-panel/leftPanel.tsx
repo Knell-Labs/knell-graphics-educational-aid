@@ -20,6 +20,11 @@ const threeJsFileMapping: StringDictionary = {
     "DirectionalLight" : "DirectionalLight.svg"
 }
 
+const groupMapping: StringDictionary = {
+    "DirLightGroup":   "DirectionalLight"
+}
+
+
 export function LeftPanel({ sceneInfo, sceneTitle }: LeftPanelProps ) {
 
   useEffect( () => {
@@ -94,6 +99,9 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
     if (object.isLight || object.isDirectionalLight) {
       displayType = object.type;
     } 
+    else if(object.isGroup && object.type != "Group"){
+        displayType =  groupMapping[object.type]
+    }
     else if (object.isGroup){
         let indexChildFound;
         let groupType;
@@ -119,6 +127,7 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
         }
         if(groupType == undefined){
           displayType = "Group"
+          console.log(object)
           children = object.children
         }
 

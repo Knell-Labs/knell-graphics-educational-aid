@@ -23,6 +23,7 @@ export function  DirectLightFunc(){
   const planeRef = useRef<THREE.Mesh>(null);
   const lightHelperRef = useRef<THREE.DirectionalLightHelper | null>(null);
   const [transformActive, setTransformActive] = useState<boolean>(false);
+  const groupRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
     if (dirLight.current) {
@@ -35,6 +36,9 @@ export function  DirectLightFunc(){
 
 
   useFrame(() => {
+    if(groupRef.current){
+        groupRef.current.type = "DirLightGroup"
+    }
 
     if(lightHelperRef.current && planeRef.current) {
         planeRef.current.matrixWorld = lightHelperRef.current.lightPlane.matrixWorld;
@@ -42,7 +46,7 @@ export function  DirectLightFunc(){
   });
 
   return (
-    <>
+    <group ref = {groupRef}>
       <Plane
         visible = {false}
         ref={planeRef}
@@ -66,6 +70,6 @@ export function  DirectLightFunc(){
         position={[5,5,5]}
         ref={dirLight} 
       />
-    </>
+    </group>
   );
 }
