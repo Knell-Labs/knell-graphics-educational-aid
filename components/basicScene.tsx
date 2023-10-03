@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
 import { CameraSwitch } from "./ui/button/cameraSwitch"
+import { Help } from "./ui/button/help"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
@@ -18,6 +19,8 @@ export function BasicScene() {
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
   const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([5,5,5])
 
+  const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);   
+
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
 
@@ -28,7 +31,7 @@ export function BasicScene() {
   }, [isOrthographic]);
 
   const addObjectToScene = (type: string, props: any = {}) => {
-    setObjectsAdded(prevObjects => [...prevObjects, { type, props }]);
+    setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects ]);
   };
 
   return (
@@ -96,8 +99,13 @@ export function BasicScene() {
         { !!sceneInfo && <LeftPanel 
                           sceneInfo = { sceneInfo } 
                           sceneTitle = { "Untitled" }
+                          openGroupIDs = {openGroupIDs}
+                          handleOpenGroup = {
+                            (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
                           />
         }
+
+        <Help/>
 
         <ToolPanel
          isObjectButtonPressed    = { isObjectButtonPressed }  

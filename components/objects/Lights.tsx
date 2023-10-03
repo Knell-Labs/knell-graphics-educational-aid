@@ -3,6 +3,12 @@ import { useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import { Plane } from '@react-three/drei';
 import { TransformCustomControls }  from "../../components/controls/objectControls/TransformCustomControls"
+import { useCursor  } from '@react-three/drei'
+
+
+type lightProps = {
+  isObjectButtonPressed: boolean;
+}
 
 export function AmbientLightFunc(){
 
@@ -18,12 +24,15 @@ export function AmbientLightFunc(){
 }
 
 
-export function  DirectLightFunc(){
+export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
+  const [hovered, hover] = useState(false);
   const dirLight = useRef<THREE.DirectionalLight>(null);
   const planeRef = useRef<THREE.Mesh>(null);
   const lightHelperRef = useRef<THREE.DirectionalLightHelper | null>(null);
   const [transformActive, setTransformActive] = useState<boolean>(false);
   const groupRef = useRef<THREE.Group>(null);
+
+  useCursor(hovered)
 
   useEffect(() => {
     if (dirLight.current) {
@@ -50,12 +59,21 @@ export function  DirectLightFunc(){
       <Plane
         visible = {false}
         ref={planeRef}
-        onClick= {() =>{
-            setTransformActive(true) 
+
+
+
+
+        onClick= { (event) => {
+            if(!isObjectButtonPressed){
+                (event.stopPropagation(), setTransformActive(true))
+            }
         }}
-        onPointerMissed = { () => {
-            setTransformActive(false) 
-        }}
+        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
+        onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
+        onPointerOut    = { (event) => hover(false) }
+
+
+
 
       />
 
