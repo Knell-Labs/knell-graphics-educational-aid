@@ -21,7 +21,8 @@ const threeJsFileMapping: StringDictionary = {
 }
 
 const groupMapping: StringDictionary = {
-    "DirLightGroup":   "DirectionalLight"
+    "DirLightGroup":   "DirectionalLight",
+    "CubeGroup": "Box"
 }
 
 
@@ -96,7 +97,7 @@ function generateListItems(scene: Array<any>): JSX.Element[] {
     let children;
     
 
-    if (object.isLight || object.isDirectionalLight) {
+    if (object.isLight) {
       displayType = object.type;
     } 
     else if(object.isGroup && object.type != "Group"){
