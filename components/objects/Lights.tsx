@@ -80,9 +80,6 @@ export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
       {transformActive && <TransformCustomControls mesh = { dirLight }/>}
 
       <directionalLight 
-        onClick={()=>{
-            console.log("here")
-        }}
         color={"#FFFFFF"}
         intensity={1}
         position={[5,5,5]}

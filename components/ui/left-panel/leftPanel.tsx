@@ -197,7 +197,6 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
         
         switch(groupType){
             case "LineSegments":
-                //console.log(object)
                 displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
                 break;
             default:
@@ -205,7 +204,6 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
         }
         if(groupType == undefined){
           displayType = "Group"
-          console.log(object)
           children = object.children
         }
 
