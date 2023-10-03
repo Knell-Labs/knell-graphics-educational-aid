@@ -5,6 +5,23 @@ export function Help(){
     const [isHovered, setHovered] = useState<boolean>(false);
     const [isClicked, setClicked] = useState<boolean>(false);
 
+    const text = `Click on the object, then
+    press Key to use feature`
+
+    const textNote = `NOTE: the zooming feature only 
+    works in Perspective mode.
+    The change will be discarded if you 
+    zoom in Orthographic mode then 
+    switch to Perspective mode.`
+
+    let ctrlButton;
+    if(navigator.userAgent.indexOf("Mac") != -1){
+        ctrlButton = "control";
+    }
+    else {
+        ctrlButton = "CTRL";
+    }
+
     const keyBgStyle = "flex flex-row mt-2";
 
     const keyLineStyle = `self-center text-center text-sm font-bold text-gray-300
@@ -32,8 +49,8 @@ export function Help(){
                 <div className="flex-grow bg-grayFill text-gray-300
                                 px-4 py-2 pb-3 mt-3 w-wrap h-wrap rounded-lg">
                     
-                    <div className="font-bold italic">
-                        Press key to use feature
+                    <div className="font-bold italic whitespace-pre-line mb-3">
+                        {text}
                     </div>
                     
                     <div className={keyBgStyle}>
@@ -48,12 +65,32 @@ export function Help(){
                         <div className={keyLineStyle}> R </div> Rotate Object
                     </div>
 
-                    <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> CTRL </div> Change Camera Position
+
+
+                    <div className="font-bold italic whitespace-pre-line mt-5 mb-3">
+                        Or press Key and use Mouse
                     </div>
 
                     <div className={keyBgStyle}>
-                        &nbsp; (&nbsp; <div className={keyLineStyle}> control </div> in macOS&nbsp;)
+                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <img src="leftMouse.svg" width={23}/>
+                        &nbsp;Rotate Camera
+                    </div>
+
+                    <div className={keyBgStyle}>
+                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <img src="rightMouse.svg" width={23}/>
+                        &nbsp;Pan Camera
+                    </div>
+
+                    <div className={keyBgStyle}>
+                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <img src="scrollWheelMouse.svg" width={25}/>
+                        &nbsp;Zoom In/Out
+                    </div>
+
+                    <div className="text-xs text-gray-400  mt-5 whitespace-pre-line">
+                        {textNote}
                     </div>
 
                 </div>    
