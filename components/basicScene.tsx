@@ -11,6 +11,7 @@ import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
+import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
@@ -36,7 +37,9 @@ export function BasicScene() {
   return (
     <>
       <Canvas >
-        <ambientLight intensity = {0.5} position = { [4,4,4] }/>
+
+        <AmbientLightFunc/>
+        <DirectLightFunc/>
 
         <GetSceneInfo
             objectsAdded      = { objectsAdded }
@@ -66,7 +69,6 @@ export function BasicScene() {
             }
         })}
 
-        <TestBox/>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
