@@ -17,18 +17,24 @@ export function CreateCube({ isObjectButtonPressed, color, size = [1, 1, 1], ...
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
   const meshColor = color ? color : (transformActive ? 'orange' : 'white'); 
+  const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial( { color: 0x000000, depthTest: true, opacity: 0.5, transparent: true } ), []);
 
   useCursor(hovered)
 
   useFrame(() => {
+    if (groupRef.current){
+        groupRef.current.type = "CubeGroup"
+    }
     if (cubeRef.current && outlineRef.current) {
       outlineRef.current.position.copy(cubeRef.current.position);
+      outlineRef.current.rotation.copy(cubeRef.current.rotation);
+      outlineRef.current.scale.copy(cubeRef.current.scale);
     }
   });
   
   return (
-    <group>
+    <group ref = { groupRef }>
       <mesh
         {...props}
         ref = { cubeRef }

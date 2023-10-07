@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
 import { CameraSwitch } from "./ui/button/cameraSwitch"
+import { Help } from "./ui/button/help"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
@@ -11,6 +12,7 @@ import { CreateCube } from './objects/Cube';
 import { CreateSphere } from './objects/Sphere';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
+import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
@@ -36,7 +38,9 @@ export function BasicScene() {
   return (
     <>
       <Canvas >
-        <ambientLight intensity = {0.5} position = { [4,4,4] }/>
+
+        <AmbientLightFunc/>
+        <DirectLightFunc/>
 
         <GetSceneInfo
             objectsAdded      = { objectsAdded }
@@ -71,19 +75,6 @@ export function BasicScene() {
             }
         })}
 
-        <TestBox/>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
-        <group>
-          <TestBox/>
-        </group>
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -120,6 +111,8 @@ export function BasicScene() {
                             (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
                           />
         }
+
+        <Help/>
 
         <ToolPanel
          isObjectButtonPressed    = { isObjectButtonPressed }  

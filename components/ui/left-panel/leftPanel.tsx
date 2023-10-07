@@ -20,7 +20,13 @@ const threeJsFileMapping: StringDictionary = {
     "Box": "boxUnpressed.svg",
     "Sphere": "sphere.svg",
     "AmbientLight": "AmbientLight.svg" ,
-    "Group": "Group.svg"
+    "Group": "Group.svg",
+    "DirectionalLight" : "DirectionalLight.svg"
+}
+
+const groupMapping: StringDictionary = {
+    "DirLightGroup":   "DirectionalLight",
+    "CubeGroup": "Box"
 }
 
 export function LeftPanel(props: LeftPanelProps ) {
@@ -158,6 +164,8 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
       && 
     !object.name.includes('helper')
       &&
+    !object.type.includes('Helper')
+      &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
   
@@ -171,6 +179,9 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
     if (object.isLight) {
       displayType = object.type;
     } 
+    else if(object.isGroup && object.type != "Group"){
+        displayType =  groupMapping[object.type]
+    }
     else if (object.isGroup){
         let indexChildFound: number = -1;
         let groupType;
@@ -179,6 +190,9 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
                 indexChildFound = childIndex
             }
             else if(object.children[childIndex].type == "LineSegments"){
+                groupType = "LineSegments" 
+            }
+            else if(object.children[childIndex].isTransformControls){
                 groupType = "LineSegments" 
             }
         }
