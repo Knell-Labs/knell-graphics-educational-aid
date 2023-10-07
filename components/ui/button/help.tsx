@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export function Help(){
 
@@ -14,13 +14,16 @@ export function Help(){
     zoom in Orthographic mode then 
     switch to Perspective mode.`
 
-    let ctrlButton;
-    if(navigator.userAgent.indexOf("Mac") != -1){
-        ctrlButton = "control";
-    }
-    else {
-        ctrlButton = "CTRL";
-    }
+    const [ctrlButton, setCtrlButton] = useState('');
+
+    useEffect(() => {
+        if(window.navigator.userAgent.indexOf("Mac") != -1){
+            setCtrlButton("control");
+        }
+        else {
+            setCtrlButton("CTRL");
+        }
+    }, []);
 
     const keyBgStyle = "flex flex-row mt-2";
 

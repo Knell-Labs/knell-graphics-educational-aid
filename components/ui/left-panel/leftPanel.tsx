@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 interface LeftPanelProps {
   sceneInfo: Array<any>;
@@ -38,6 +38,8 @@ export function LeftPanel(props: LeftPanelProps ) {
   }
 
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
+
+  handleEditableContent(".editableTitle", 50);
 
   let imageSrc;
   if(!isCollapsed){
@@ -80,8 +82,13 @@ export function LeftPanel(props: LeftPanelProps ) {
             
           {/* Section 1: Panel Header */}
           <div className="flex justify-between w-full items-center"> 
-            {sceneTitle} 
-
+            <div className="editableTitle max-w-[80%]" 
+              contentEditable="true" 
+              suppressContentEditableWarning={true} 
+              spellCheck="false">
+              {sceneTitle} 
+            </div>
+            
             <button className="p-1 rounded w-8 h-8 hover:bg-blue-500 "> 
               <img src="expandMenu.svg" alt="icon" />
             </button>
@@ -166,9 +173,11 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
       &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
-  
+
+  handleEditableContent(".editableObjectName", 20);
+      
   return filteredObjects.map((object, idx) => {
-    
+        
     let displayType;
     let children;
     
@@ -230,9 +239,16 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
                 <div className="ml-1 w-6 h-6">
                   <img src={threeJsFileMapping[displayType]} className="w-6 h-6"/>
                 </div>
-                <div className="ml-2">
+                <div 
+                  className="editableObjectName ml-2"
+                  contentEditable="true" 
+                  suppressContentEditableWarning={true}
+                  spellCheck="false"
+                  >
                   {displayType}
-                  </div>
+                  {/* {objectName} */}
+                  
+                </div>
               </div>
             : 
               // GROUP
@@ -254,9 +270,15 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
                   </div>
 
                   {/* Group Folder Icon */}
-                  <div className="flex items-top">
+                  <div className="flex items-top"
+                  >
                     <img src="groupFolder.svg" className="w-5 h-5 mr-2"/>
-                      {displayType} {(object.uuid.toString()).substring(0,7)}
+                    <div             
+                      className="editableObjectName"        
+                      contentEditable="true" 
+                      suppressContentEditableWarning={true}>
+                        {displayType} {(object.uuid.toString()).substring(0,7)}
+                      </div>
                   </div>
                 </div>
 
@@ -279,4 +301,24 @@ function LineSeparator(){
   return(
     <div className = "bg-gray-500 w-11/12 h-1 my-3 rounded-lg"/>
   )
+}
+
+function handleEditableContent(queryName: string, maxLength: number){
+  // const maxLength = 20;
+  const elements = document.querySelectorAll(queryName);
+  const handleObjectName = (event: any, div: HTMLDivElement) => {
+    if(div !== undefined){
+      if(event.keyCode === 13 || (event.keyCode !== 8 && div!.textContent!.length >= maxLength)){
+        event.preventDefault();
+      }
+      else {
+        // console.log(id!.textContent!.length);
+      }
+    }
+  }
+  elements.forEach((div) => {
+    div.addEventListener('keydown', (event) => {
+      handleObjectName(event, div as HTMLDivElement);
+    });
+  });
 }
