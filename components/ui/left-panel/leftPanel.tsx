@@ -26,7 +26,8 @@ const threeJsFileMapping: StringDictionary = {
 
 const groupMapping: StringDictionary = {
     "DirLightGroup":   "DirectionalLight",
-    "CubeGroup": "Box"
+    "CubeGroup": "Box",
+    "SphereGroup": "Sphere"
 }
 
 export function LeftPanel(props: LeftPanelProps ) {

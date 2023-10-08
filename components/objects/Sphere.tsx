@@ -17,21 +17,25 @@ export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, ...pr
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
   const meshColor = color ? color : (transformActive ? 'orange' : 'white');
+  const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial({ color: 0x000000, depthTest: true, opacity: 0.5, transparent: true }), []);
 
   useCursor(hovered);
 
   useFrame(() => {
+    if (groupRef.current){
+      groupRef.current.type = "SphereGroup"
+    }
     if (sphereRef.current && outlineRef.current) {
       outlineRef.current.position.copy(sphereRef.current.position);
     }
   });
 
   return (
-    <group>
+    <group ref = { groupRef }>
       <mesh
         {...props}
-        ref={ sphereRef }
+        ref = { sphereRef }
 
         onClick= { (event) => {
             if(!isObjectButtonPressed){
