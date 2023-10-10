@@ -11,6 +11,7 @@ import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { CreateSphere } from './objects/Sphere';
 import { RayCaster } from './raycast/raycaster';
+import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
@@ -18,7 +19,7 @@ export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
-  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([5,5,5])
+  const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([15,15,15])
 
   const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);   
 
@@ -41,6 +42,8 @@ export function BasicScene() {
 
         <AmbientLightFunc/>
         <DirectLightFunc/>
+
+
 
         <GetSceneInfo
             objectsAdded      = { objectsAdded }
@@ -76,6 +79,7 @@ export function BasicScene() {
         })}
 
 
+        <CadPlanes/>
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
           addObjectToScene      = { addObjectToScene }
