@@ -6,9 +6,10 @@ interface props {
   isObjectButtonPressed: boolean;
   setCoordinates: Dispatch<SetStateAction<number[]>>;
   addObjectToScene: (type: string, props?: any) => void;  // For adding objects
+  objectTypePressed: string;
 }
 
-export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene}: props){
+export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene, objectTypePressed}: props){
   const world = useThree()
   const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
@@ -18,8 +19,18 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
       const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
       if (isObjectButtonPressed && intersect.length > 0) {
         let pointIntersect = intersect[0].point ;
-        pointIntersect.setY( pointIntersect.y + .5 )
-        addObjectToScene('cube', { position: pointIntersect });
+        switch (objectTypePressed) {
+          case 'cube':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('cube', { position: pointIntersect });
+            break;
+          case 'sphere':
+            pointIntersect.setY(pointIntersect.y + 0.7);
+            addObjectToScene('sphere', { position: pointIntersect });
+            break;
+          default:
+            console.log("Unknown object type");
+        }
       }
     };
 
@@ -52,14 +63,14 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
       const intersect = raycaster.intersectObject(objectFound)
 
       if(intersect.length > 0){
-        ActiveToolOverLay("cube", intersect[0].point.x, intersect[0].point.z, scene)
+        ActiveToolOverLay(objectTypePressed, intersect[0].point.x, intersect[0].point.z, scene)
       }
     }
 
     gl.render(scene, camera)
 
     if(isObjectButtonPressed){
-      DestroyActiveToolOverlay("cube", scene)
+      DestroyActiveToolOverlay(objectTypePressed, scene)
     }
   }, 1);
 
@@ -87,6 +98,18 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
       break;
     }
 
+    case "sphere": {
+
+      const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
+      const circle = new THREE.Mesh(geometry, material);
+      circle.name = "temp circle";
+      circle.rotation.x = Math.PI / 2;
+      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(circle);
+      break;
+  }
+  
     default: {
       console.log("Could not overlay current tool")
       break;
@@ -96,6 +119,7 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
 
 function DestroyActiveToolOverlay(currTool: string, scene: Object){
   switch (currTool){
+
     case "cube":{
       var existingPlane = scene.getObjectByName("temp plane");
       // If it exists, remove it from the scene
@@ -109,6 +133,17 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       }
       break;
     }
+
+    case "sphere": {
+    const existingCircle = scene.getObjectByName("temp circle");
+    if (existingCircle) {
+        scene.remove(existingCircle);
+        existingCircle.geometry.dispose();
+        existingCircle.material.dispose();
+    }
+    break;
+  }
+
     default: {
       console.log(currTool)
       console.log("Could not delete active tool")

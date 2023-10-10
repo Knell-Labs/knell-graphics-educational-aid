@@ -24,7 +24,7 @@ export function CreateCube({ isObjectButtonPressed, color, size = [1, 1, 1], ...
 
   useFrame(() => {
     if (groupRef.current){
-        groupRef.current.type = "CubeGroup"
+      groupRef.current.type = "CubeGroup"
     }
     if (cubeRef.current && outlineRef.current) {
       outlineRef.current.position.copy(cubeRef.current.position);
