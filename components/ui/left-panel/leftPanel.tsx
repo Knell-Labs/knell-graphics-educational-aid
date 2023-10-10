@@ -12,19 +12,22 @@ type StringDictionary = {
 };
 
 const threeJsGeometryMapping: StringDictionary = {
-    "BoxGeometry": "Box"
+    "BoxGeometry" : "Box",
+    "SphereGeometry" : "Sphere"
 }
 
 const threeJsFileMapping: StringDictionary = {
     "Box": "boxUnpressed.svg",
-    "AmbientLight": "AmbientLight.svg",
+    "Sphere": "sphere.svg",
+    "AmbientLight": "AmbientLight.svg" ,
     "Group": "Group.svg",
     "DirectionalLight" : "DirectionalLight.svg"
 }
 
 const groupMapping: StringDictionary = {
     "DirLightGroup":   "DirectionalLight",
-    "CubeGroup": "Box"
+    "CubeGroup": "Box",
+    "SphereGroup": "Sphere"
 }
 
 export function LeftPanel(props: LeftPanelProps ) {

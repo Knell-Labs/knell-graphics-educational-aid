@@ -5,7 +5,6 @@ import { Plane } from '@react-three/drei';
 import { TransformCustomControls }  from "../../components/controls/objectControls/TransformCustomControls"
 import { useCursor  } from '@react-three/drei'
 
-
 type lightProps = {
   isObjectButtonPressed: boolean;
 }
@@ -22,7 +21,6 @@ export function AmbientLightFunc(){
     />
  )
 }
-
 
 export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
   const [hovered, hover] = useState(false);
@@ -43,7 +41,6 @@ export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
     
   }, []);
 
-
   useFrame(() => {
     if(groupRef.current){
         groupRef.current.type = "DirLightGroup"
@@ -58,7 +55,7 @@ export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
     <group ref = {groupRef}>
       <Plane
         visible = {false}
-        ref={planeRef}
+        ref = {planeRef}
 
 
 

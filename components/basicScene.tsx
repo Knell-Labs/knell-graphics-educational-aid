@@ -9,6 +9,7 @@ import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
+import { CreateSphere } from './objects/Sphere';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
@@ -63,6 +64,11 @@ export function BasicScene() {
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
+                case 'sphere':
+                    return <CreateSphere
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
                 // Add more cases for other shapes
                 default:
                     return null;
@@ -74,6 +80,7 @@ export function BasicScene() {
           isObjectButtonPressed = { isObjectButtonPressed }
           addObjectToScene      = { addObjectToScene }
           setCoordinates        = { setCameraCoordinates }
+          objectTypePressed     = { objectTypePressed }
         />
 
         <color args={ [ '#343a45' ] } attach="background" />

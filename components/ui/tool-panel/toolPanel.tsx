@@ -39,6 +39,10 @@ export function ToolPanel(objectButtonPress: props){
     setBoxButtonPressed(!isBoxButtonPressed)
   };
 
+  const handleSphereButtonClick = () => {
+    toggleButtonPressed("sphere");
+  };
+
   const currObjectTypePressed = (objectType: string) => {
     setObjectTypePressed(objectType)
   }
@@ -83,6 +87,11 @@ export function ToolPanel(objectButtonPress: props){
         </button>
       )}
       
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = {handleSphereButtonClick}>
+        <img src="sphere.svg" width="20" />
+      </button>
 
     </div>
   )
