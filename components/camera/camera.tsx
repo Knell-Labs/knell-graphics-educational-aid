@@ -6,6 +6,7 @@ interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
   cameraCoordinates: number[];
+  cameraRef: React.RefObject<THREE.PerspectiveCamera>;
 }
 
 // NOTE: you can only chane the "distance" in Perspective mode
@@ -31,9 +32,10 @@ function orthographicCameraExport(cords: number[]){
   )
 }
 
-function perspectiveCameraExport(cords: number[]){
+function perspectiveCameraExport(cords: number[], ref: React.RefObject<THREE.PerspectiveCamera>){
   return (
     <PerspectiveCamera
+      ref = { ref }
       makeDefault
       near={1}
       far={2000}
@@ -43,10 +45,10 @@ function perspectiveCameraExport(cords: number[]){
 }
 
 export function SwitchBetweenCameras(orthographicSwitch: props) {
-  const { isOrthographic, setIsOrthographic, cameraCoordinates } = orthographicSwitch;
+  const { isOrthographic, setIsOrthographic, cameraCoordinates, cameraRef } = orthographicSwitch;
 
   // console.log(cameraCoordinates)
   return (
-    isOrthographic ? perspectiveCameraExport(cameraCoordinates) : orthographicCameraExport(cameraCoordinates) 
+    isOrthographic ? perspectiveCameraExport(cameraCoordinates, cameraRef) : orthographicCameraExport(cameraCoordinates) 
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Canvas, useThree } from '@react-three/fiber'
 import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
@@ -27,6 +27,7 @@ export function BasicScene() {
   const [sceneInfo, setSceneInfo] = useState(null)
 
   const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
+  const perspectiveCameraRef = useRef<THREE.PerspectiveCamera>(null);
 
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
@@ -58,6 +59,7 @@ export function BasicScene() {
           isOrthographic    = { isOrthographic }
           setIsOrthographic = { setIsOrthographic }
           cameraCoordinates = { cameraCoordinates }
+          cameraRef = { perspectiveCameraRef }
         />
 
         {objectsAdded.map((object, idx) => {
@@ -79,7 +81,9 @@ export function BasicScene() {
         })}
 
 
-        <CadPlanes/>
+        <CadPlanes
+            persCameraRef={ perspectiveCameraRef }
+        />
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
           addObjectToScene      = { addObjectToScene }
