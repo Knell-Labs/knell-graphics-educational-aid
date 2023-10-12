@@ -3,7 +3,7 @@ import { Plane } from '@react-three/drei';
 import { useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import { Dispatch, SetStateAction } from "react";
-import { TwoDimPlaneRotation } from "../basicScene";
+import { TwoDimPlaneRotation, CameraDirection } from "../basicScene";
 
 //const [planeOrientation, setPlaneOrientation] = useState<planeRotation>([-Math.PI/2, 0, 0])
 //const [girdOrientation, setGirdOrientation] = useState<planeRotation>([0, 0, 0])
@@ -14,6 +14,7 @@ interface props {
   setPlaneOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
   girdOrientation: TwoDimPlaneRotation;
   setGirdOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
+  setCurrCameraPos: Dispatch<SetStateAction<CameraDirection>>;
 }
 
 
@@ -22,7 +23,8 @@ export function CadPlanes(props: props){
           planeOrientation,
           setPlaneOrientation,
           girdOrientation,
-          setGirdOrientation
+          setGirdOrientation,
+          setCurrCameraPos
   } = props;
     
 
@@ -44,10 +46,12 @@ export function CadPlanes(props: props){
             persCameraRef.current.position.set( 0, 25 ,0 ); 
             setPlaneOrientation( [-Math.PI/2, 0, 0] );
             setGirdOrientation( [0, 0, 0] );
+            setCurrCameraPos(CameraDirection.redTop)
         }else{
             persCameraRef.current.position.set( 0, -25 ,0 ); 
             setPlaneOrientation( [Math.PI/2, 0, 0] );
             setGirdOrientation( [0, 0, 0] );
+            setCurrCameraPos(CameraDirection.redBottom)
         }
     }
   }
@@ -69,10 +73,12 @@ export function CadPlanes(props: props){
             persCameraRef.current.position.set(0, 0, 25); 
             setPlaneOrientation( [0, 0, 0] );
             setGirdOrientation( [Math.PI / 2, 0, 0] );
+            setCurrCameraPos(CameraDirection.greenFront)
         }else{
             persCameraRef.current.position.set(0, 0, -25); 
             setPlaneOrientation( [-Math.PI, 0, 0] );
             setGirdOrientation( [Math.PI / 2, 0, 0] );
+            setCurrCameraPos(CameraDirection.greenBack)
         }
 
     }
@@ -85,7 +91,7 @@ export function CadPlanes(props: props){
         let vector = new THREE.Vector3( 0, 0, -1 );
         vector.applyQuaternion(persCameraRef.current.quaternion);
 
-        //If our camera is facing the "front" of the green Plane
+        //If our camera is facing the "front" of the blue Plane
         //which as a normal vector of [1,0,0] the the sign of the 
         //dot product with the normal vector of the camera 
         //result will always be negative. So we move the camra to 
@@ -95,10 +101,12 @@ export function CadPlanes(props: props){
             persCameraRef.current.position.set( 25, 0, 0); 
             setPlaneOrientation( [0, Math.PI / 2, 0] );
             setGirdOrientation( [0, 0, Math.PI / 2] );
+            setCurrCameraPos(CameraDirection.blueFront)
         }else{
             persCameraRef.current.position.set( -25, 0, 0); 
             setPlaneOrientation( [0, -Math.PI / 2, 0] );
             setGirdOrientation( [0, 0, -Math.PI / 2] );
+            setCurrCameraPos(CameraDirection.blueBack)
         }
 
     }

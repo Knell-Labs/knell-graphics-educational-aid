@@ -17,12 +17,12 @@ import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
 export enum CameraDirection {
     freeDrive, 
-    xTop,    // Normal vector (0, 1, 0)
-    xBottom, // Normal vector (0, -1, 0)
-    yFront,  // Normal vector (0, 0, 1)
-    yBack,   // Normal vector (0, 0, -1)
-    zFront,  // Normal vector (1, 0, 0)
-    zBack,   // Normal vector (-1, 0, 0)
+    redTop,    // Normal vector (0, 1, 0)
+    redBottom, // Normal vector (0, -1, 0)
+    greenFront,  // Normal vector (0, 0, 1)
+    greenBack,   // Normal vector (0, 0, -1)
+    blueFront,  // Normal vector (1, 0, 0)
+    blueBack,   // Normal vector (-1, 0, 0)
 }
 export type TwoDimPlaneRotation = [ number, number, number ];
 
@@ -42,7 +42,7 @@ export function BasicScene() {
 
   const [isSketchButtonPressed, setIsSketchButtonPressed] = useState<boolean>(false);
 
-  const [currCameraPos, setCurrCameraPos ] =  useState<CameraDirection>(CameraDirection.freeDrive);
+  const [currCameraPos, setCurrCameraPos] =  useState<CameraDirection>(CameraDirection.freeDrive);
 
 
   const [planeOrientation, setPlaneOrientation] = useState<TwoDimPlaneRotation>([-Math.PI/2, 0, 0])
@@ -106,6 +106,7 @@ export function BasicScene() {
             setPlaneOrientation = { setPlaneOrientation }
             girdOrientation = { girdOrientation }
             setGirdOrientation = { setGirdOrientation }
+            setCurrCameraPos = { setCurrCameraPos }
           />
         }
 
@@ -114,6 +115,7 @@ export function BasicScene() {
           addObjectToScene      = { addObjectToScene }
           setCoordinates        = { setCameraCoordinates }
           objectTypePressed     = { objectTypePressed }
+          currCameraPos         = {  currCameraPos }
         />
 
         <color args={ [ '#343a45' ] } attach="background" />
