@@ -15,7 +15,7 @@ import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
-enum CameraDirection {
+export enum CameraDirection {
     freeDrive, 
     xTop,    // Normal vector (0, 1, 0)
     xBottom, // Normal vector (0, -1, 0)
@@ -24,8 +24,7 @@ enum CameraDirection {
     zFront,  // Normal vector (1, 0, 0)
     zBack,   // Normal vector (-1, 0, 0)
 }
-
-type planeRotation = [ number, number, number ];
+export type TwoDimPlaneRotation = [ number, number, number ];
 
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
@@ -45,7 +44,9 @@ export function BasicScene() {
 
   const [currCameraPos, setCurrCameraPos ] =  useState<CameraDirection>(CameraDirection.freeDrive);
 
-  const [planeOrientation, setPlaneOrientation] = useState<planeRotation>([-Math.PI/2, 0, 0])
+
+  const [planeOrientation, setPlaneOrientation] = useState<TwoDimPlaneRotation>([-Math.PI/2, 0, 0])
+  const [girdOrientation, setGirdOrientation] = useState<TwoDimPlaneRotation>([0, 0, 0])
 
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
@@ -101,6 +102,10 @@ export function BasicScene() {
         { 
           isSketchButtonPressed &&  <CadPlanes
             persCameraRef={ perspectiveCameraRef }
+            planeOrientation = { planeOrientation }
+            setPlaneOrientation = { setPlaneOrientation }
+            girdOrientation = { girdOrientation }
+            setGirdOrientation = { setGirdOrientation }
           />
         }
 
@@ -117,6 +122,12 @@ export function BasicScene() {
           name = "init-grid"
           args = { [20, 20, '#ffffff'] }
           position = { [0, -0.01, 0] }
+          rotation={ [
+                       girdOrientation[0],
+                       girdOrientation[1],
+                       girdOrientation[2]
+                     ]
+         }
         />
 
         <Plane 
@@ -125,11 +136,13 @@ export function BasicScene() {
                         planeOrientation[0],
                         planeOrientation[1],
                         planeOrientation[2]
-                        ]
+                       ]
           } 
           args = { [20, 20] } 
           position = { [0, -0.01, 0] } 
           visible = { false }
+
+
         />
 
         <AxesHelper width = {6} length = {2} />

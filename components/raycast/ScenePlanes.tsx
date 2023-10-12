@@ -2,15 +2,28 @@ import React from "react";
 import { Plane } from '@react-three/drei';
 import { useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
+import { Dispatch, SetStateAction } from "react";
+import { TwoDimPlaneRotation } from "../basicScene";
 
+//const [planeOrientation, setPlaneOrientation] = useState<planeRotation>([-Math.PI/2, 0, 0])
+//const [girdOrientation, setGirdOrientation] = useState<planeRotation>([0, 0, 0])
 
 interface props {
   persCameraRef: React.RefObject<THREE.PerspectiveCamera>;
+  planeOrientation: TwoDimPlaneRotation;
+  setPlaneOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
+  girdOrientation: TwoDimPlaneRotation;
+  setGirdOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
 }
 
 
 export function CadPlanes(props: props){
-  const { persCameraRef } = props;
+  const { persCameraRef,
+          planeOrientation,
+          setPlaneOrientation,
+          girdOrientation,
+          setGirdOrientation
+  } = props;
     
 
 
@@ -29,8 +42,12 @@ export function CadPlanes(props: props){
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 1, 0) ) <  0 ){
             persCameraRef.current.position.set( 0, 25 ,0 ); 
+            setPlaneOrientation( [-Math.PI/2, 0, 0] );
+            setGirdOrientation( [0, 0, 0] );
         }else{
             persCameraRef.current.position.set( 0, -25 ,0 ); 
+            setPlaneOrientation( [Math.PI/2, 0, 0] );
+            setGirdOrientation( [0, 0, 0] );
         }
     }
   }
@@ -50,8 +67,12 @@ export function CadPlanes(props: props){
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 0, 1) ) <  0 ){
             persCameraRef.current.position.set(0, 0, 25); 
+            setPlaneOrientation( [0, 0, 0] );
+            setGirdOrientation( [Math.PI / 2, 0, 0] );
         }else{
             persCameraRef.current.position.set(0, 0, -25); 
+            setPlaneOrientation( [-Math.PI, 0, 0] );
+            setGirdOrientation( [Math.PI / 2, 0, 0] );
         }
 
     }
@@ -72,8 +93,12 @@ export function CadPlanes(props: props){
         //The "back"
         if(vector.dot(new THREE.Vector3(1, 0, 0)) <  0){
             persCameraRef.current.position.set( 25, 0, 0); 
+            setPlaneOrientation( [0, Math.PI / 2, 0] );
+            setGirdOrientation( [0, 0, Math.PI / 2] );
         }else{
             persCameraRef.current.position.set( -25, 0, 0); 
+            setPlaneOrientation( [0, -Math.PI / 2, 0] );
+            setGirdOrientation( [0, 0, -Math.PI / 2] );
         }
 
     }
