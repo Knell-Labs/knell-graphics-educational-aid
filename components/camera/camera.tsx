@@ -19,7 +19,6 @@ function orthographicCameraExport(cords: number[]){
   // The math shall corrected anytime be for better performance
   // Without fixing the number of decimals, the result will change slightly every time the math is perfomed
   const zoomDistance = Number((1098.6 * Math.pow(distance,-1.087)).toFixed(5));  
-  console.log(zoomDistance);
   
   return (
     <OrthographicCamera
@@ -47,7 +46,6 @@ function perspectiveCameraExport(cords: number[], ref: React.RefObject<THREE.Per
 export function SwitchBetweenCameras(orthographicSwitch: props) {
   const { isOrthographic, setIsOrthographic, cameraCoordinates, cameraRef } = orthographicSwitch;
 
-  // console.log(cameraCoordinates)
   return (
     isOrthographic ? perspectiveCameraExport(cameraCoordinates, cameraRef) : orthographicCameraExport(cameraCoordinates) 
   );

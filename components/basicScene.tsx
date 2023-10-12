@@ -15,6 +15,18 @@ import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
+enum CameraDirection {
+    freeDrive, 
+    xTop,    // Normal vector (0, 1, 0)
+    xBottom, // Normal vector (0, -1, 0)
+    yFront,  // Normal vector (0, 0, 1)
+    yBack,   // Normal vector (0, 0, -1)
+    zFront,  // Normal vector (1, 0, 0)
+    zBack,   // Normal vector (-1, 0, 0)
+}
+
+type planeRotation = [ number, number, number ];
+
 export function BasicScene() {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
@@ -28,6 +40,12 @@ export function BasicScene() {
 
   const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
   const perspectiveCameraRef = useRef<THREE.PerspectiveCamera>(null);
+
+  const [isSketchButtonPressed, setIsSketchButtonPressed] = useState<boolean>(false);
+
+  const [currCameraPos, setCurrCameraPos ] =  useState<CameraDirection>(CameraDirection.freeDrive);
+
+  const [planeOrientation, setPlaneOrientation] = useState<planeRotation>([-Math.PI/2, 0, 0])
 
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
@@ -80,10 +98,12 @@ export function BasicScene() {
             }
         })}
 
-
-        <CadPlanes
+        { 
+          isSketchButtonPressed &&  <CadPlanes
             persCameraRef={ perspectiveCameraRef }
-        />
+          />
+        }
+
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
           addObjectToScene      = { addObjectToScene }
@@ -101,7 +121,12 @@ export function BasicScene() {
 
         <Plane 
           name = "grid-plane-hidden-helper"
-          rotation = { [-Math.PI / 2, 0, 0] } 
+          rotation = { [
+                        planeOrientation[0],
+                        planeOrientation[1],
+                        planeOrientation[2]
+                        ]
+          } 
           args = { [20, 20] } 
           position = { [0, -0.01, 0] } 
           visible = { false }
@@ -128,6 +153,8 @@ export function BasicScene() {
          objectTypePressed        = { objectTypePressed }
          setObjectTypePressed     = { setObjectTypePressed }
          addObjectToScene         = { addObjectToScene }
+         isSketchButtonPressed    = { isSketchButtonPressed }
+         setIsSketchButtonPressed = { setIsSketchButtonPressed }
         />
 
         <CameraSwitch
