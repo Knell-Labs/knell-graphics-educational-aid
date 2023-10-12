@@ -68,6 +68,12 @@ export function ToolPanel(objectButtonPress: props){
          Save
       </button>
 
+      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
+       onClick = { () => console.log("sketch")}>
+        Sketch 
+      </button>
+
+
       <LineSeparator/>
 
       

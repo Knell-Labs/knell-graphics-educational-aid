@@ -28,9 +28,9 @@ export function CadPlanes(props: props){
         //the front of that plane. Other wise move carma to face 
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 1, 0) ) <  0 ){
-            console.log("Front red");
+            persCameraRef.current.position.set( 0, 25 ,0 ); 
         }else{
-            console.log("Back red");
+            persCameraRef.current.position.set( 0, -25 ,0 ); 
         }
     }
   }
@@ -49,9 +49,9 @@ export function CadPlanes(props: props){
         //the front of that plane. Other wise move carma to face 
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 0, 1) ) <  0 ){
-            console.log("Front green");
+            persCameraRef.current.position.set(0, 0, 25); 
         }else{
-            console.log("Back green");
+            persCameraRef.current.position.set(0, 0, -25); 
         }
 
     }
@@ -70,10 +70,10 @@ export function CadPlanes(props: props){
         //result will always be negative. So we move the camra to 
         //the front of that plane. Other wise move carma to face 
         //The "back"
-        if( vector.dot( new THREE.Vector3( 1, 0, 0) ) <  0 ){
-            console.log("Front Blue");
+        if(vector.dot(new THREE.Vector3(1, 0, 0)) <  0){
+            persCameraRef.current.position.set( 25, 0, 0); 
         }else{
-            console.log("Back Blue");
+            persCameraRef.current.position.set( -25, 0, 0); 
         }
 
     }
