@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {RayCaster} from '../../raycast/raycaster' 
 import { Dispatch, SetStateAction } from "react";
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import * as THREE from 'three';
 
 interface props {
   isObjectButtonPressed: boolean;
@@ -42,11 +44,19 @@ export function ToolPanel(objectButtonPress: props){
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Handle the STL file here
-      console.log("Selected file:", file.name);
-      // TODO: Load the STL file into the scene
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onload = (event) => {
+            const contents = event.target?.result;
+            if (contents) {
+                const loader = new STLLoader();
+                const geometry = loader.parse(contents as ArrayBuffer);
+                addObjectToScene('stlObject', { mesh: new THREE.Mesh(geometry, new THREE.MeshNormalMaterial()) });
+            }
+        };
     }
   };
+
 
   const handleSphereButtonClick = () => {
     toggleButtonPressed("sphere");

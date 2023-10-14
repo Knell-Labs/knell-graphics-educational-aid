@@ -22,8 +22,16 @@ const STLImporter: React.FC<STLImporterProps> = ({ addObjectToScene }) => {
     const loadSTL = (buffer: Uint8Array) => {
         const loader = new STLLoader();
         const geometry = loader.parse(buffer);
+        
+        // Center the geometry
+        geometry.center();
+    
         const material = new THREE.MeshStandardMaterial();
         const mesh = new THREE.Mesh(geometry, material);
+        
+        // Set the mesh's position to the origin
+        mesh.position.set(0, 0, 0);
+    
         // Add the loaded STL object to the main scene
         addObjectToScene('stlObject', { mesh });
     };

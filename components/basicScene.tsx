@@ -13,6 +13,7 @@ import { CreateSphere } from './objects/Sphere';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
 import { STLImporter } from "./ui/button/importSTL";
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
 export function BasicScene() {
@@ -72,6 +73,11 @@ export function BasicScene() {
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
+                case 'stlObject':
+                    return (<primitive 
+                            object = { object.props.mesh }
+                            key = { idx }
+                            />);
                 // Add more cases for other shapes
                 default:
                     return null;
