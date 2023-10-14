@@ -23,12 +23,22 @@ const STLImporter: React.FC<STLImporterProps> = ({ addObjectToScene }) => {
         const loader = new STLLoader();
         const geometry = loader.parse(buffer);
         
-        // Center the geometry
-        geometry.center();
+        // Compute the bounding box of the geometry
+        const boundingBox = new THREE.Box3().setFromObject(new THREE.Mesh(geometry));
+        
+        // Compute the center of the bounding box
+        const center = new THREE.Vector3();
+        boundingBox.getCenter(center);
+        
+        // Translate the geometry to move its center to the origin
+        geometry.translate(-center.x, -center.y, -center.z);
     
         const material = new THREE.MeshStandardMaterial();
         const mesh = new THREE.Mesh(geometry, material);
         
+        // Explicitly set the scale
+        mesh.scale.set(0.1, 0.1, 0.1);
+    
         // Set the mesh's position to the origin
         mesh.position.set(0, 0, 0);
     

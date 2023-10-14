@@ -35,11 +35,6 @@ export function ToolPanel(objectButtonPress: props){
   else{
     boxImageSrc = "boxUnpressed.svg"
   }
-
-  const handleBoxButtonClick = () => {
-    toggleButtonPressed("cube");
-    setBoxButtonPressed(!isBoxButtonPressed)
-  };
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -56,15 +51,6 @@ export function ToolPanel(objectButtonPress: props){
         };
     }
   };
-
-
-  const handleSphereButtonClick = () => {
-    toggleButtonPressed("sphere");
-  };
-
-  const currObjectTypePressed = (objectType: string) => {
-    setObjectTypePressed(objectType)
-  }
 
   const handleLoadButtonClick = () => {
     fileInputRef.current?.click();
@@ -91,7 +77,7 @@ export function ToolPanel(objectButtonPress: props){
       </button>
 
       <button className="bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
-       onClick={handleLoadButtonClick}>
+       onClick = { handleLoadButtonClick }>
          Load
       </button>
 
@@ -122,7 +108,7 @@ export function ToolPanel(objectButtonPress: props){
       )}
 
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {handleSphereButtonClick}>
+        onClick = { () => toggleButtonPressed("sphere") }>
         <img src="sphere.svg" width="20" />
       </button>
 
