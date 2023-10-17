@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 
 interface LeftPanelProps {
   sceneInfo: Array<any>;
@@ -39,16 +39,21 @@ export function LeftPanel(props: LeftPanelProps ) {
 
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
 
-  handleEditableContent(".editableTitle", 50);
+  const [isSearching, setIsSearching] = useState<Boolean>(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
 
-  let imageSrc;
-  if(!isCollapsed){
-    imageSrc = "openPanel.svg"
-  }
-  else{
-    imageSrc = "collapsePanel.svg"
-  }
+  const handleSearch = (event: Event) => {
+    const key = (event.target as HTMLInputElement).value;
+    setSearchKey(key);
 
+    if(key == ""){
+      setIsSearching(false);
+    }
+    else{
+      setIsSearching(true);
+    }
+  }
   // rgba allows Transparency
   const scrollbarStyles = `
     ::-webkit-scrollbar {
@@ -74,51 +79,55 @@ export function LeftPanel(props: LeftPanelProps ) {
 
   return (
     <>
-    <div className="fixed flex flex-row top-10 bottom-10 left-3 rounded-lg items-center">
+    <div className="fixed flex flex-row top-5 bottom-5 left-3 rounded-lg items-center">
 
       { isCollapsed ? (
 
-        <div className="flex flex-col top-10 bottom-10 left-3 p-6 w-64 h-full bg-grayFill rounded-lg items-center">   
+        <div className="flex flex-col top-10 bottom-10 left-3 p-4 w-56 h-full bg-grayFill rounded-l-lg items-center">   
             
           {/* Section 1: Panel Header */}
-          <div className="flex justify-between w-full items-center"> 
-            <div className="editableTitle max-w-[80%]" 
-              contentEditable="true" 
-              suppressContentEditableWarning={true} 
-              spellCheck="false">
+          <div className="flex justify-between w-full"> 
+            <div 
+              id = "editableTitle"
+              className=" max-w-[80%] mr-2 break-all" 
+              spellCheck="false"
+              onClick={() => handleEditableContent("editableTitle", 60)}
+              >
               {sceneTitle} 
             </div>
             
-            <button className="p-1 rounded w-8 h-8 hover:bg-blue-500 "> 
+            <button className="p-1 rounded w-7 h-7 hover:bg-blueHover "> 
               <img src="expandMenu.svg" alt="icon" />
             </button>
           </div>
           
-          {/* Search Bar */}
-          <div className="flex w-full items-center pt-3 pb-1 "> 
-            <input 
-              type="text" 
-              placeholder="search" 
-              className="w-full bg-graySubFill p-2 rounded text-white" // padding and rounded corners for styling
-            />
-          </div>
 
           <LineSeparator/>
 
           {/* Section 2: Scene Info */}
-          <div className="flex justify-between items-center w-full"> 
+          <div className="flex text-sm text-gray-300 justify-between items-center w-full"> 
             Scene Info
 
-            <button className="p-1 rounded w-7 h-7 hover:bg-blue-500 "> 
-              <img src="groupAdd.svg" alt="icon" />
-            </button>
           </div>
 
-          <div className="w-full h-full bg-graySubFill flex-grow max-h-5/6 p-3 mt-2 rounded-lg overflow-auto">
-            <div className="w-full bg-graySubFill rounded-lg">
+          {/* Search Bar */}
+          <div className="flex w-full items-center my-2"> 
+            <input id="searchBox"
+              className="w-full bg-graySubFill p-1.5 rounded text-sm text-white" // padding and rounded corners for styling
+              type="text" 
+              placeholder="search" 
+              value={searchKey}
+              onChange={handleSearch}
+            />
+          </div>
+
+          <div className="w-full h-full flex-grow max-h-5/6 p-1 rounded-lg overflow-auto">
+            <div className="w-full rounded-lg">
+              
               <ul className="flex flex-col">
-                {generateListItems(props)}
+                {generateListItems(props, searchKey)}
               </ul>
+
               <style>{scrollbarStyles}</style>
             </div>
           </div>
@@ -126,7 +135,7 @@ export function LeftPanel(props: LeftPanelProps ) {
           <LineSeparator/>
           
           {/* Section 3: Import Text-Button */}
-          <button className="bg-graySubFill hover:bg-blue-500 w-full h-12 items-center rounded-lg"> 
+          <button className="bg-graySubFill hover:bg-blueHover py-1 w-full h-12 items-center rounded-lg"> 
             Import
           </button>
 
@@ -139,15 +148,15 @@ export function LeftPanel(props: LeftPanelProps ) {
       {/* Collapse-Tab Button */}
       <div className="flex justify-end items-center w-8 h-full">
         <button 
-          className="bg-graySubFill hover:bg-blue-500 h-full"  
+          className="bg-graySubFill rounded-r-lg  hover:bg-blueHover h-full"  
           onClick={ () => {
             setIsCollapsed(!isCollapsed);
           }}>
+          
           <img 
-            src={imageSrc} 
-            width="40" 
-            alt="icon" 
-          />
+            src={isCollapsed ? "collapsePanel.svg" : "openPanel.svg"} 
+            width="40" alt="icon" />
+
         </button>
       </div>
 
@@ -157,7 +166,7 @@ export function LeftPanel(props: LeftPanelProps ) {
   );
 };
 
-function generateListItems(props: LeftPanelProps): JSX.Element[] {
+function generateListItems(props: LeftPanelProps, searchKey: string): JSX.Element[] {
 
   const {sceneInfo:scene, openGroupIDs, handleOpenGroup} = props;
   // Step 1: Filter out objects with blank names
@@ -173,152 +182,276 @@ function generateListItems(props: LeftPanelProps): JSX.Element[] {
       &&
     !(object.type.includes('Group') && object.children.length === 0 )
   );
-
-  handleEditableContent(".editableObjectName", 20);
-      
+  
   return filteredObjects.map((object, idx) => {
-        
+    
     let displayType;
     let children;
     
     const group_id = object.uuid.toString();
-
+    
     if (object.isLight) {
       displayType = object.type;
     } 
     else if(object.isGroup && object.type != "Group"){
-        displayType =  groupMapping[object.type]
+      displayType =  groupMapping[object.type]
     }
     else if (object.isGroup){
-        let indexChildFound: number = -1;
-        let groupType;
-        for(let childIndex = 0; childIndex < object.children.length; childIndex++){
-            if(object.children[childIndex].type == "Mesh"){
-                indexChildFound = childIndex
-            }
-            else if(object.children[childIndex].type == "LineSegments"){
-                groupType = "LineSegments" 
-            }
-            else if(object.children[childIndex].isTransformControls){
-                groupType = "LineSegments" 
-            }
+      let indexChildFound: number = -1;
+      let groupType;
+      for(let childIndex = 0; childIndex < object.children.length; childIndex++){
+        if(object.children[childIndex].type == "Mesh"){
+          indexChildFound = childIndex
         }
-        
-        switch(groupType){
-            case "LineSegments":
-                displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
-                break;
-            default:
-                break;
+        else if(object.children[childIndex].type == "LineSegments"){
+          groupType = "LineSegments" 
         }
-        if(groupType == undefined){
-          displayType = "Group"
-          children = object.children
+        else if(object.children[childIndex].isTransformControls){
+          groupType = "LineSegments" 
         }
-
+      }
+      
+      switch(groupType){
+        case "LineSegments":
+          displayType = threeJsGeometryMapping[object.children[indexChildFound].geometry.type];
+          break;
+          default:
+            break;
+      }
+      
+      if(groupType == undefined){
+        displayType = "Group"
+        children = object.children
+      } 
     } 
     else {
       displayType = threeJsGeometryMapping[object.geometry.type];
     }
+    
+    let objName = displayType;
 
     return (
-      <li key={object.uuid} className={` 
-                                        ${displayType !== "Group" ? "flex-col" : ""}`
-                                        } 
-
-      // onClick={ () => console.log(object.uuid)}
+      <li key={object.uuid} 
+        className={` ${displayType !== "Group" ? "flex-col" : ""}`} 
       >
+
+      {  
+
+      // || ( searchKey !== "" && (displayType.toLowerCase()).includes(searchKey.toLowerCase()) ) )
+
+      // -----------------------------------------------------------------------------------
+      // 1. NO search - NON-GROUP
+      ( searchKey === "" && displayType !== "Group" )
+      ? 
+        <div className = "flex items-center">
+
+          <div className="flex shrink-0 items-center w-4 h-7 mr-2">
+            <img src="line-object.svg"/>
+          </div>
+          <div className="shrink-0 w-4 h-4 mr-2 ">
+            <img src={threeJsFileMapping[displayType]}/>
+          </div>
+
+          <div 
+            id = {object.uuid}
+            className="whitespace-nowrap text-sm text-gray-400 hover:text-white" 
+            spellCheck="false"
+
+            onClick={() => {
+              let text = handleEditableContent(object.uuid, 20);
+              if(text !== undefined && text !== null){
+                object.name = text;
+              }
+              console.log(object.name + " is on CLICK"); // DEBUG
+            }}
+
+            onBlur={() => {
+              console.log(object.name + " is on BLUR");  // DEBUG
+            }}
+          >
+            {objName}
+          </div>
+        </div>       
         
-        { displayType !== "Group" 
-            ? 
-              // NON-GROUP
+        : 
+        // -----------------------------------------------------------------------------------
+        // 2. NO search - GROUP
+        ( searchKey === "" && displayType === "Group" ) 
+        ?
+        <div>
+            <div className = "flex py-1">
+              
+              {/* Collapse/Expand Group Button */}
               <div className = "flex items-center">
-                <div className="flex items-center w-5 h-5 m-1">
-                  <img src="line-object.svg"/>
-                </div>
-                <div className="ml-1 w-6 h-6">
-                  <img src={threeJsFileMapping[displayType]} className="w-6 h-6"/>
-                </div>
-                <div 
-                  className="editableObjectName ml-2"
-                  contentEditable="true" 
-                  suppressContentEditableWarning={true}
+                <button 
+                  className="w-4 h-4"
+                  onClick={() => handleOpenGroup(group_id)}
+                >
+              
+                <img src={ openGroupIDs.includes(group_id) ? "expandGroup.svg" : "collapseGroup.svg"}/>
+                  
+                </button>
+              </div>
+
+              {/* Group Folder Icon */}
+              <div className="flex items-center">
+                <img src="groupFolder.svg" className="w-3.5 h-3.5 mx-2"/>
+                <div             
+                  className="editableObjectName
+                             whitespace-nowrap text-sm text-gray-400 hover:text-white"    
                   spellCheck="false"
-                  >
-                  {displayType}
-                  {/* {objectName} */}
-                  
+                >
+                  {objName} {(object.uuid.toString()).substring(0,7)}
                 </div>
               </div>
-            : 
-              // GROUP
-              <div>
-                <div className = "flex items-top space-x-1 mt-1">
-                  
-                  {/* Collapse/Expand Group Button */}
-                  <div>
-                    <button 
-                      className="w-5 h-5"
-                      onClick={() => handleOpenGroup(group_id)}
-                    >
-                      { openGroupIDs.includes(group_id) ? (
-                        <img src="expandGroup.svg"/>
-                      ) : (
-                        <img src="collapseGroup.svg"/>
-                      )}
-                    </button>
-                  </div>
+            </div>
 
-                  {/* Group Folder Icon */}
-                  <div className="flex items-top"
-                  >
-                    <img src="groupFolder.svg" className="w-5 h-5 mr-2"/>
-                    <div             
-                      className="editableObjectName"        
-                      contentEditable="true" 
-                      suppressContentEditableWarning={true}>
-                        {displayType} {(object.uuid.toString()).substring(0,7)}
-                      </div>
-                  </div>
-                </div>
+            {/* Items of Group */}
+            <div className={openGroupIDs.includes(group_id) ? "flex ml-6 items-center" : "hidden"}>
+              <ul className="flex flex-col grow-0">
+              {generateListItems( { ... props, sceneInfo:children}, searchKey )}
+              </ul>
+            </div>
+            
+        </div>
+        
+        // : 
+        // // -----------------------------------------------------------------------------------
+        // // 3. SEARCH - FOUND - NON-GROUP
+        // ( searchKey !== "" && displayType !== "Group" && (displayType.toLowerCase()).includes(searchKey.toLowerCase()) )
+        // ? 
+        // <div className = "flex items-center">
 
-                {/* Items of Group */}
-                <div className={openGroupIDs.includes(group_id) ? "flex ml-7 items-center" : "hidden"}>
-                  <ul className="flex flex-col grow-0">
-                  {generateListItems( { ... props, sceneInfo:children} )}
-                  </ul>
-                </div>
+        //   <div className="flex shrink-0 items-center w-4 h-7 mr-2">
+        //     <img src="line-object.svg"/>
+        //   </div>
+        //   <div className="shrink-0 w-4 h-4 mr-2 ">
+        //     <img src={threeJsFileMapping[displayType]}/>
+        //   </div>
+
+        //   <div 
+        //     className="editableObjectName
+        //               whitespace-nowrap text-sm text-gray-400 hover:text-white" 
+        //     spellCheck="false"
+        //   >
+        //     {objectName}
+        //   </div>
+        // </div>       
+
+        // :
+        // // -----------------------------------------------------------------------------------
+        // // 4. SEARCH - FOUND - GROUP
+        // ( searchKey !== "" && displayType === "Group" && (displayType.toLowerCase()).includes(searchKey.toLowerCase())) 
+        // ?
+        // <div>
+            
+        //   <div className = "flex py-1">
+            
+        //     {/* Collapse/Expand Group Button */}
+        //     <div className = "flex items-center">
+        //       <button 
+        //         className="w-4 h-4"
+        //         onClick={() => handleOpenGroup(group_id)}
+        //         >
+            
+        //       <img src={ openGroupIDs.includes(group_id) ? "expandGroup.svg" : "collapseGroup.svg"}/>
                 
-              </div>
-        }
-      </li>
-    );
-  });
+        //       </button>
+        //     </div>
+
+        //     {/* Group Folder Icon */}
+        //     <div className="flex items-center">
+        //       <img src="groupFolder.svg" className="w-3.5 h-3.5 mx-2"/>
+        //       <div             
+        //         className="editableObjectName
+        //                     whitespace-nowrap text-sm text-gray-400 hover:text-white"    
+        //         spellCheck="false"
+        //       >
+        //         {objectName} {(object.uuid.toString()).substring(0,7)}
+        //       </div>
+        //     </div>
+        //   </div>
+
+        //   {/* Items of Group */}
+        //   <div className={openGroupIDs.includes(group_id) ? "flex ml-6 items-center" : "hidden"}>
+        //     <ul className="flex flex-col grow-0">
+        //     {generateListItems( { ... props, sceneInfo:children}, searchKey )}
+        //     </ul>
+        //   </div>
+          
+        // </div>
+      
+        : null
+  
+      }
+      
+    </li>
+  );
+  
+  
+});
 }
 
 
+// ------------------------------------------------------------------
 function LineSeparator(){
   return(
-    <div className = "bg-gray-500 w-11/12 h-1 my-3 rounded-lg"/>
-  )
+    <div className = "bg-gray-500 w-full h-1 my-3 rounded-lg"/>
+    )
 }
 
+// ------------------------------------------------------------------
+  
 function handleEditableContent(queryName: string, maxLength: number){
-  // const maxLength = 20;
-  const elements = document.querySelectorAll(queryName);
-  const handleObjectName = (event: any, div: HTMLDivElement) => {
+  const activateEdit = ( div: HTMLDivElement) => {
+    div.contentEditable = "true";
+  }
+  const inactivateEdit = ( div: HTMLDivElement) => {
+    div.contentEditable = "false";
+    
+  }
+  const limitTextLength = (event: any, div: HTMLDivElement) => {
     if(div !== undefined){
       if(event.keyCode === 13 || (event.keyCode !== 8 && div!.textContent!.length >= maxLength)){
         event.preventDefault();
       }
-      else {
-        // console.log(id!.textContent!.length);
-      }
     }
   }
-  elements.forEach((div) => {
-    div.addEventListener('keydown', (event) => {
-      handleObjectName(event, div as HTMLDivElement);
+
+  // TODO: Only go thru the selected div, not all
+  // This code is going thru ALL!!
+  // const elements = document.querySelectorAll(queryName);
+  const div = document.getElementById(queryName);
+  // elements.forEach((div) => {
+    
+    // "Double Click" makes the text editable
+    // Need to "Triple Click" to actually edit the text
+    div?.addEventListener('dblclick', () => {
+      activateEdit(div as HTMLDivElement);
     });
-  });
+    
+    // Check for maximum of character
+    div?.addEventListener('keydown', (event) => {
+      limitTextLength(event, div as HTMLDivElement);
+    });
+    
+    // Inactivate Editable Text when not on focus
+    div?.addEventListener('blur', () => {
+      inactivateEdit(div as HTMLDivElement);
+    });
+    
+    // if(div.textContent !== null && div.textContent !== ""){
+      
+    //   console.log(">>" + div.textContent + "<<");
+    return(div?.textContent);
+    // } 
+
+  // });
+
+  // if(text !== ""){
+  // }
+  // return text;
+  
+  // text = "testing";
+
 }

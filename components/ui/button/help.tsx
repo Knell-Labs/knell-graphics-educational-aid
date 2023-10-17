@@ -25,9 +25,9 @@ export function Help(){
         }
     }, []);
 
-    const keyBgStyle = "flex flex-row mt-2";
+    const keyBgStyle = "flex flex-row items-center mt-2";
 
-    const keyLineStyle = `self-center text-center text-sm font-bold text-gray-300
+    const keyLineStyle = `self-center text-center font-bold text-gray-300
                         w-wrap h-wrap mr-2 px-1.5 border-2 border-gray-300 rounded`;
 
     return (
@@ -49,7 +49,7 @@ export function Help(){
 
 
             { isClicked ? (
-                <div className="flex-grow bg-grayFill text-gray-300
+                <div className="flex-grow bg-grayFill text-gray-300 text-sm
                                 px-4 py-2 pb-3 mt-3 w-wrap h-wrap rounded-lg">
                     
                     <div className="font-bold italic whitespace-pre-line mb-3">
