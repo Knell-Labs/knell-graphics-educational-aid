@@ -27,7 +27,8 @@ export enum CameraDirection {
 export type TwoDimPlaneRotation = [ number, number, number ];
 
 export function BasicScene() {
-  const [isOrthographic, setIsOrthographic] = useState<boolean>(true);
+  const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
+
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
   const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([15,15,15])
@@ -38,7 +39,9 @@ export function BasicScene() {
   const [sceneInfo, setSceneInfo] = useState(null)
 
   const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
+
   const perspectiveCameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const orthographicCameraRef = useRef<THREE.OrthographicCamera>(null);
 
   const [isSketchButtonPressed, setIsSketchButtonPressed] = useState<boolean>(false);
 
@@ -78,7 +81,9 @@ export function BasicScene() {
           isOrthographic    = { isOrthographic }
           setIsOrthographic = { setIsOrthographic }
           cameraCoordinates = { cameraCoordinates }
-          cameraRef = { perspectiveCameraRef }
+          persCameraRef = { perspectiveCameraRef }
+          orthoCameraRef = { orthographicCameraRef }
+
         />
 
         {objectsAdded.map((object, idx) => {
@@ -101,6 +106,8 @@ export function BasicScene() {
 
         { 
           isSketchButtonPressed &&  <CadPlanes
+            isOrthographic =  {isOrthographic}
+            orthoCameraRef = {orthographicCameraRef}
             persCameraRef={ perspectiveCameraRef }
             planeOrientation = { planeOrientation }
             setPlaneOrientation = { setPlaneOrientation }

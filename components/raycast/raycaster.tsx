@@ -63,12 +63,12 @@ export function RayCaster({
 
           case CameraDirection.greenFront:
             pointIntersect.setZ(pointIntersect.z + distance);
-            addObjectToScene('sphere', { position: pointIntersect });
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
 
           case CameraDirection.greenBack:
             pointIntersect.setZ(pointIntersect.z + distance);
-            addObjectToScene('sphere', { position: pointIntersect });
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
 
           default:

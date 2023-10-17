@@ -9,6 +9,8 @@ import { TwoDimPlaneRotation, CameraDirection } from "../basicScene";
 //const [girdOrientation, setGirdOrientation] = useState<planeRotation>([0, 0, 0])
 
 interface props {
+  isOrthographic: boolean;
+  orthoCameraRef: React.RefObject<THREE.OrthographicCamera>;
   persCameraRef: React.RefObject<THREE.PerspectiveCamera>;
   planeOrientation: TwoDimPlaneRotation;
   setPlaneOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
@@ -19,7 +21,10 @@ interface props {
 
 
 export function CadPlanes(props: props){
-  const { persCameraRef,
+  const { 
+          isOrthographic,
+          orthoCameraRef,
+          persCameraRef,
           planeOrientation,
           setPlaneOrientation,
           girdOrientation,
@@ -48,6 +53,7 @@ export function CadPlanes(props: props){
             setGirdOrientation( [0, 0, 0] );
             setCurrCameraPos(CameraDirection.redTop)
         }else{
+            persCameraRef.current.position.set( 0, 25 ,0 ); 
             persCameraRef.current.position.set( 0, -25 ,0 ); 
             setPlaneOrientation( [Math.PI/2, 0, 0] );
             setGirdOrientation( [0, 0, 0] );
