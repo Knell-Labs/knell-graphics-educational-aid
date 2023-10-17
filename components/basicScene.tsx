@@ -10,6 +10,11 @@ import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { CreateSphere } from './objects/Sphere';
+import { CreateCylinder } from './objects/Cylinder';
+import { CreateCone } from './objects/Cone';
+import { CreateTetrahedron } from './objects/Tetrahedron';
+import { CreatePyramid } from './objects/Pyramid';
+import { CreateHemisphere } from './objects/Hemisphere';
 import { RayCaster } from './raycast/raycaster';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
@@ -66,6 +71,31 @@ export function BasicScene() {
                             />;
                 case 'sphere':
                     return <CreateSphere
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cylinder':
+                    return <CreateCylinder
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cone':
+                    return <CreateCone
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'tetrahedron':
+                    return <CreateTetrahedron
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'pyramid':
+                    return <CreatePyramid
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'hemisphere':
+                    return <CreateHemisphere
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
