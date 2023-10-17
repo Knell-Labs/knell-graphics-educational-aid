@@ -9,7 +9,6 @@ interface props {
   addObjectToScene: (type: string, props?: any) => void; 
 }
 
-
 export function ToolPanel(objectButtonPress: props){
   const { isObjectButtonPressed, 
           setIsObjectButtonPressed, 
@@ -64,7 +63,6 @@ export function ToolPanel(objectButtonPress: props){
       display: 'flex',
       alignItems: 'center',
       gap: '5px'
-
     }}>
 
       <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
@@ -73,7 +71,6 @@ export function ToolPanel(objectButtonPress: props){
       </button>
 
       <LineSeparator/>
-
       
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="25" />
@@ -81,27 +78,51 @@ export function ToolPanel(objectButtonPress: props){
 
       { isBoxButtonPressed ? (
         <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
+          onClick = { () => toggleButtonPressed("cube") }>
           <img src="boxUnpressed.svg" width="25" />
         </button> )
       : (
       <button className="flex items-center hover:bg-blue-500 bg-white rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
+          onClick = { () => toggleButtonPressed("cube") }>
           <img src="boxPressed.svg" width="25" />
         </button>
       )}
-      
 
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {handleSphereButtonClick}>
+        onClick = { () => toggleButtonPressed("sphere") }>
         <img src="sphere.svg" width="20" />
+      </button>
+
+
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = { () => toggleButtonPressed("cylinder") }>
+        <img src="cylinder.svg" width="20" />
+      </button>
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = { () => toggleButtonPressed("cone") }>
+        <img src="cone.svg" width="20" />
+      </button>
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = { () => toggleButtonPressed("tetrahedron") }>
+        <img src="tetrahedron.svg" width="20" />
+      </button>
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = { () => toggleButtonPressed("pyramid") }>
+        <img src="pyramid.svg" width="20" />
+      </button>
+
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+        onClick = { () => toggleButtonPressed("hemisphere") }>
+        <img src="hemisphere.svg" width="20" />
       </button>
 
     </div>
   )
-
 }
-
 
 function LineSeparator(){
   return (

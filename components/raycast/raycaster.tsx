@@ -28,6 +28,26 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
             pointIntersect.setY(pointIntersect.y + 0.7);
             addObjectToScene('sphere', { position: pointIntersect });
             break;
+          case 'cylinder':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('cylinder', { position: pointIntersect });
+            break;
+          case 'cone':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('cone', { position: pointIntersect });
+            break;
+          case 'tetrahedron':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('tetrahedron', { position: pointIntersect });
+            break;
+          case 'pyramid':
+            pointIntersect.setY(pointIntersect.y + 0.5);
+            addObjectToScene('pyramid', { position: pointIntersect });
+            break;
+          case 'hemisphere':
+            pointIntersect.setY(pointIntersect.y + 0.7);
+            addObjectToScene('hemisphere', { position: pointIntersect });
+            break;
           default:
             console.log("Unknown object type");
         }
@@ -100,9 +120,82 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
 
     case "sphere": {
       const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, 
+        side: THREE.DoubleSide 
+      });
       const circle = new THREE.Mesh(geometry, material);
       circle.name = "temp circle";
+      circle.rotation.x = Math.PI / 2;
+      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(circle);
+      break;
+    }
+
+    case "cylinder": {
+      const geometry = new THREE.CircleGeometry(0.5, 32); // Adjust the radius based on your cylinder's size
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, side: 
+        THREE.DoubleSide 
+      });
+      const circle = new THREE.Mesh(geometry, material);
+      circle.name = "temp cylinder";
+      circle.rotation.x = Math.PI / 2;
+      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(circle);
+      break;
+    }
+
+    case "cone": {
+      const geometry = new THREE.CircleGeometry(0.5, 32); // Using CircleGeometry for the cone overlay
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, 
+        side: THREE.DoubleSide 
+      });
+      const circle = new THREE.Mesh(geometry, material);
+      circle.name = "temp cone-circle";
+      circle.rotation.x = Math.PI / 2;
+      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(circle);
+      break;
+    }
+
+    case "tetrahedron": {
+      const geometry = new THREE.CircleGeometry(0.6, 3); // Using CircleGeometry with 3 segments to represent a triangle
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, 
+        side: THREE.DoubleSide 
+      });
+      const triangle = new THREE.Mesh(geometry, material);
+      triangle.name = "temp triangle";
+      triangle.rotation.x = Math.PI / 2;
+      triangle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(triangle);
+      break;
+    }
+
+    case "pyramid": {
+      const geometry = new THREE.CircleGeometry(0.5, 4); // Using CircleGeometry with 4 segments to represent pyramid base
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, 
+        side: THREE.DoubleSide 
+      });
+      const pyramidBase = new THREE.Mesh(geometry, material);
+      pyramidBase.name = "temp pyramidBase";
+      pyramidBase.rotation.x = Math.PI / 2;
+      pyramidBase.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      scene.add(pyramidBase);
+      break;
+    }
+
+    case "hemisphere": {
+      const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
+      const material = new THREE.MeshBasicMaterial({ 
+        color: 0x00ff00, 
+        side: THREE.DoubleSide 
+      });
+      const circle = new THREE.Mesh(geometry, material);
+      circle.name = "temp hemisphere";
       circle.rotation.x = Math.PI / 2;
       circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
       scene.add(circle);
@@ -134,14 +227,64 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
     }
 
     case "sphere": {
-    const existingCircle = scene.getObjectByName("temp circle");
-    if (existingCircle) {
+      const existingCircle = scene.getObjectByName("temp circle");
+      if (existingCircle) {
         scene.remove(existingCircle);
         existingCircle.geometry.dispose();
         existingCircle.material.dispose();
+      }
+      break;
     }
-    break;
-  }
+
+    case "cylinder": {
+      const existingCylinder = scene.getObjectByName("temp cylinder");
+      if (existingCylinder) {
+        scene.remove(existingCylinder);
+        existingCylinder.geometry.dispose();
+        existingCylinder.material.dispose();
+      }
+      break;
+    }
+
+    case "cone": {
+      const existingConeCircle = scene.getObjectByName("temp cone-circle");
+      if (existingConeCircle) {
+        scene.remove(existingConeCircle);
+        existingConeCircle.geometry.dispose();
+        existingConeCircle.material.dispose();
+      }
+      break;
+    }
+
+    case "tetrahedron": {
+      const existingTriangle = scene.getObjectByName("temp triangle");
+      if (existingTriangle) {
+        scene.remove(existingTriangle);
+        existingTriangle.geometry.dispose();
+        existingTriangle.material.dispose();
+      }
+      break;
+    }
+
+    case "pyramid": {
+      const existingPyramidBase = scene.getObjectByName("temp pyramidBase");
+      if (existingPyramidBase) {
+        scene.remove(existingPyramidBase);
+        existingPyramidBase.geometry.dispose();
+        existingPyramidBase.material.dispose();
+      }
+      break;
+    }
+
+    case "hemisphere": {
+      const existingHemisphere = scene.getObjectByName("temp hemisphere");
+      if (existingHemisphere) {
+        scene.remove(existingHemisphere);
+        existingHemisphere.geometry.dispose();
+        existingHemisphere.material.dispose();
+      }
+      break;
+    }
 
     default: {
       console.log(currTool)
