@@ -9,6 +9,7 @@ interface props {
   addObjectToScene: (type: string, props?: any) => void;  // For adding objects
   objectTypePressed: string;
   currCameraPos: CameraDirection; 
+
 }
 
 export function RayCaster({
@@ -28,15 +29,48 @@ export function RayCaster({
 
       if (isObjectButtonPressed && intersect.length > 0) {
         let pointIntersect = intersect[0].point ;
-        switch (objectTypePressed) {
-          case 'cube':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('cube', { position: pointIntersect });
+
+        //TODO: CHECK HERE WHICH PLANE WE INTERSECTED AND 
+        //ADD X, Y, Z OFFSET ACCORDENLY
+
+        const distance = displacementDistance(objectTypePressed)
+
+        switch (currCameraPos) {
+          case CameraDirection.freeDrive:
+            pointIntersect.setY(pointIntersect.y + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
-          case 'sphere':
-            pointIntersect.setY(pointIntersect.y + 0.7);
+
+          case CameraDirection.redTop:
+            pointIntersect.setY(pointIntersect.y + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.redBottom:
+            pointIntersect.setY(pointIntersect.y - distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.blueFront:
+            pointIntersect.setX(pointIntersect.x + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.blueBack:
+            pointIntersect.setX(pointIntersect.x - distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.greenFront:
+            pointIntersect.setZ(pointIntersect.z + distance);
             addObjectToScene('sphere', { position: pointIntersect });
             break;
+
+          case CameraDirection.greenBack:
+            pointIntersect.setZ(pointIntersect.z + distance);
+            addObjectToScene('sphere', { position: pointIntersect });
+            break;
+
           default:
             console.log("Unknown object type");
         }
@@ -127,7 +161,6 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
                                                                         pointY,
                                                                         pointZ)
 
-
       // Set the position of the plane
       plane.position.set(objectPlacePosition[0], objectPlacePosition[1], objectPlacePosition[2]); 
           
@@ -141,8 +174,32 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
       const circle = new THREE.Mesh(geometry, material);
       circle.name = "temp circle";
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+
+
+      if(currCameraPos === CameraDirection.freeDrive
+            ||
+        currCameraPos === CameraDirection.redTop
+            ||
+        currCameraPos === CameraDirection.redBottom
+        ){
+        circle.rotation.x = Math.PI / 2;
+      }
+      else if(
+        currCameraPos === CameraDirection.blueBack
+            ||
+        currCameraPos === CameraDirection.blueFront ) {
+        circle.rotation.y = Math.PI / 2;
+      }
+      
+      let objectPlacePosition: [number, number, number] = objectPlacingPosition(
+                                                                        currCameraPos,
+                                                                        pointX,
+                                                                        pointY,
+                                                                        pointZ)
+
+      // Set the position of the plane
+      circle.position.set(objectPlacePosition[0], objectPlacePosition[1], objectPlacePosition[2]); 
+
       scene.add(circle);
       break;
   }
@@ -227,8 +284,18 @@ function objectPlacingPosition( currCameraPos: CameraDirection,  pointX: number,
         }
     }
     
-
-
-
     return [1,1,1];
+}
+
+
+function displacementDistance( shapeName: string ): number{
+    switch (shapeName) {
+      case 'cube':
+        return 0.5;
+      case 'sphere':
+        return 0.7;
+      default:
+        console.log("Unknown object type");
+        return 0.0;
+    }
 }
