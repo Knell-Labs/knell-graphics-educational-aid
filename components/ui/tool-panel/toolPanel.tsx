@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {RayCaster} from '../../raycast/raycaster' 
 import { Dispatch, SetStateAction } from "react";
-
 
 interface props {
   isObjectButtonPressed: boolean;
@@ -24,7 +22,13 @@ export function ToolPanel(objectButtonPress: props){
     setObjectTypePressed(objectType)
   };
 
-  const [isBoxButtonPressed, setBoxButtonPressed] = useState<Boolean>(true);
+  const [isBoxButtonPressed, setBoxButtonPressed]                 = useState<Boolean>(true);
+  const [isSphereButtonPressed, setSphereButtonPressed]           = useState<Boolean>(true);
+  const [isCylinderButtonPressed, setCylinderButtonPressed]       = useState<Boolean>(true);
+  const [isConeButtonPressed, setConeButtonPressed]               = useState<Boolean>(true);
+  const [isTetrahedronButtonPressed, setTetrahedronButtonPressed] = useState<Boolean>(true);
+  const [isPyramidButtonPressed, setPyramidButtonPressed]         = useState<Boolean>(true);
+  const [isHemisphereButtonPressed, setHemisphereButtonPressed]   = useState<Boolean>(true);
 
   let boxImageSrc;
   if(!isBoxButtonPressed){

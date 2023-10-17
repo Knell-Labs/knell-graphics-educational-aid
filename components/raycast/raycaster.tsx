@@ -79,8 +79,8 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
 
 function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, scene: Object){
   switch (currTool){
+    
     case "cube": {
-
       var geometry = new THREE.PlaneGeometry(1, 1); // Width and height of the plane
       var material = new THREE.MeshBasicMaterial({
         color: 0x00ff00, // Green color
@@ -99,7 +99,6 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
     }
 
     case "sphere": {
-
       const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
       const circle = new THREE.Mesh(geometry, material);
@@ -108,7 +107,7 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
       circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
       scene.add(circle);
       break;
-  }
+    }
   
     default: {
       console.log("Could not overlay current tool")
