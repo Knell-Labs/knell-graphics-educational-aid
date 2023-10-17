@@ -12,14 +12,7 @@ type CreateConeProps = {
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateCone({ 
-  isObjectButtonPressed, 
-  color, 
-  radius = 1, 
-  height = 2, 
-  radialSegments = 32, 
-  ...props 
-}: CreateConeProps) {
+export function CreateCone({ isObjectButtonPressed, color, radius = 0.5, height = 1, radialSegments = 32, ...props }: CreateConeProps) {
   const coneRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 

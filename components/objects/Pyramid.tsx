@@ -38,6 +38,7 @@ export function CreatePyramid({ isObjectButtonPressed, color, size = [1, 1, 1], 
       <mesh
         {...props}
         ref = { pyramidRef }
+        rotation = { [0, Math.PI / 4, 0] }  // Adjust the Y rotation
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
             (event.stopPropagation(), setTransformActive(true))
@@ -48,14 +49,14 @@ export function CreatePyramid({ isObjectButtonPressed, color, size = [1, 1, 1], 
         onPointerOut    = { (event) => hover(false) }
       >
         {/* Create a cone with 4 radial segments to represent a 4-sided pyramid */}
-        <coneGeometry args = { [size[0] / 2, size[1], 4] } />
+        <coneGeometry args = { [size[0]/1.4, size[1], 4] } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
 
       {transformActive && <TransformCustomControls mesh = { pyramidRef } />}
 
       <lineSegments ref = { outlineRef } material = { lineMaterial }>
-        <edgesGeometry attach = "geometry" args = { [new THREE.ConeGeometry(size[0] / 2, size[1], 4)] } />
+        <edgesGeometry attach = "geometry" args = { [new THREE.ConeGeometry(size[0] / 1.4, size[1], 4)] } />
       </lineSegments>
     </group>
   )

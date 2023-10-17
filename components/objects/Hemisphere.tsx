@@ -8,9 +8,10 @@ type CreateHemisphereProps = {
   isObjectButtonPressed: boolean;
   color?: string;
   radius?: number;
+  radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateHemisphere({ isObjectButtonPressed, color, radius = 1, ...props }: CreateHemisphereProps) {
+export function CreateHemisphere({ isObjectButtonPressed, color, radius = 0.7, radialSegments = 32, ...props }: CreateHemisphereProps) {
   const hemisphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -49,14 +50,14 @@ export function CreateHemisphere({ isObjectButtonPressed, color, radius = 1, ...
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
-        <sphereGeometry args = { [radius, 32, 32, 0, Math.PI] } />
+        <sphereGeometry args = { [radius, radialSegments, radialSegments, 0, Math.PI] } />
         <meshStandardMaterial color = { meshColor } side = { THREE.FrontSide } /> {/* Ensure the material is not double-sided */}
       </mesh>
 
       {transformActive && <TransformCustomControls mesh = { hemisphereRef } />}
 
       <lineSegments ref = { outlineRef } material = { lineMaterial }>
-        <edgesGeometry attach = "geometry" args = { [new THREE.SphereGeometry(radius, 32, 32, 0, Math.PI)] } />
+        <edgesGeometry attach = "geometry" args = { [new THREE.SphereGeometry(radius, radialSegments, radialSegments, 0, Math.PI)] } />
       </lineSegments>
     </group>
   )

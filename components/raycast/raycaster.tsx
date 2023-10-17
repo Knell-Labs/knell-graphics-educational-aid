@@ -45,7 +45,7 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
             addObjectToScene('pyramid', { position: pointIntersect });
             break;
           case 'hemisphere':
-            pointIntersect.setY(pointIntersect.y + 0.7);
+            pointIntersect.setY(pointIntersect.y);
             addObjectToScene('hemisphere', { position: pointIntersect });
             break;
           default:
@@ -175,15 +175,15 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
     }
 
     case "pyramid": {
-      const geometry = new THREE.CircleGeometry(0.5, 4); // Using CircleGeometry with 4 segments to represent pyramid base
+      const geometry = new THREE.PlaneGeometry(1, 1);  // Using PlaneGeometry for a square base
       const material = new THREE.MeshBasicMaterial({ 
         color: 0x00ff00, 
         side: THREE.DoubleSide 
       });
       const pyramidBase = new THREE.Mesh(geometry, material);
       pyramidBase.name = "temp pyramidBase";
-      pyramidBase.rotation.x = Math.PI / 2;
-      pyramidBase.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+      pyramidBase.rotation.x = Math.PI / 2;  // Rotate to lie flat on the grid
+      pyramidBase.position.set(pointX, 0.01, pointZ);
       scene.add(pyramidBase);
       break;
     }

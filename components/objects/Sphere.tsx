@@ -8,9 +8,10 @@ type CreateSphereProps = {
   isObjectButtonPressed: boolean;
   color?: string;
   radius?: number;
+  radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, ...props }: CreateSphereProps) {
+export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, radialSegments = 32, ...props }: CreateSphereProps) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -46,14 +47,14 @@ export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, ...pr
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
-        <sphereGeometry args = { [radius, 24, 24] } />
+        <sphereGeometry args = { [radius, radialSegments, radialSegments] } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
 
       {transformActive && <TransformCustomControls mesh = { sphereRef } />}
 
-      <lineSegments ref={outlineRef} material = { lineMaterial }>
-        <edgesGeometry attach="geometry" args = { [new THREE.SphereGeometry(radius, 24, 24)] } />
+      <lineSegments ref = {outlineRef} material = { lineMaterial }>
+        <edgesGeometry attach = "geometry" args = { [new THREE.SphereGeometry(radius, radialSegments, radialSegments)] } />
       </lineSegments>
     </group>
   )

@@ -38,6 +38,7 @@ export function CreateTetrahedron({ isObjectButtonPressed, color, size = 1, ...p
       <mesh
         {...props}
         ref = { tetraRef }
+        rotation = { [Math.PI/4, 0, 0] } // Rotate the tetrahedron to sit flat on one of its faces
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
             (event.stopPropagation(), setTransformActive(true))
