@@ -38,6 +38,7 @@ export function CreateHemisphere({ isObjectButtonPressed, color, radius = 1, ...
       <mesh
         {...props}
         ref = { hemisphereRef }
+        rotation = { [-Math.PI / 2, 0, 0] }
 
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
@@ -49,7 +50,7 @@ export function CreateHemisphere({ isObjectButtonPressed, color, radius = 1, ...
         onPointerOut    = { (event) => hover(false) }
       >
         <sphereGeometry args = { [radius, 32, 32, 0, Math.PI] } />
-        <meshStandardMaterial color = { meshColor } />
+        <meshStandardMaterial color = { meshColor } side = { THREE.FrontSide } /> {/* Ensure the material is not double-sided */}
       </mesh>
 
       {transformActive && <TransformCustomControls mesh = { hemisphereRef } />}
