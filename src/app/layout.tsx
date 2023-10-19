@@ -1,5 +1,17 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
+import './globals.css';
+import { Inter } from 'next/font/google';
+
+import { cookies } from 'next/headers';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+
+import type { Database } from '../supabase/database.types';
+
+export const dynamic = 'force-dynamic'
+
+type User = Database['public']['Tables']['users']['Row'];
+
+const supabase = createServerComponentClient<Database>({ cookies })
+supabase.from('todos').select().then( d => JSON.stringify(d, null, 2) );
 
 const inter = Inter({ subsets: ['latin'] })
 

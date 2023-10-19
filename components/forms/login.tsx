@@ -1,5 +1,7 @@
 import { FormEventHandler, useReducer } from 'react';
 
+import { LoginFormType } from '@/types/auth';
+
 type State = {
   email:    string;
   password: string;
@@ -31,7 +33,7 @@ const reducer = ( state: State, actions: Action ) : State => {
     }
 }
 
-const LoginForm: React.FC = () => {
+const LoginForm = (props: { handleSubmit: (form:LoginFormType) => void }) => {
 
     const [ state, dispatch ] = useReducer(reducer, initialState );
 
@@ -42,7 +44,11 @@ const LoginForm: React.FC = () => {
 
         if (!state.errorMsg) {
             // handle login
-            console.log(state);
+            props.handleSubmit({
+                email   : state.email,
+                password: state.password,
+                username: ''
+            });
         }
     }
 
