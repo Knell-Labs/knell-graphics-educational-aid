@@ -35,11 +35,17 @@ export function CadPlanes(props: props){
 
 
   function computeCamraPosRedClick(){
-    if(persCameraRef.current){
+    if( ( !isOrthographic && persCameraRef.current) || ( isOrthographic && orthoCameraRef.current) ){
         
         //Gets the camra normal vector
         let vector = new THREE.Vector3( 0, 0, -1 );
-        vector.applyQuaternion(persCameraRef.current.quaternion);
+
+        if( !isOrthographic && persCameraRef.current){
+            vector.applyQuaternion(persCameraRef.current.quaternion);
+        }
+        else if(isOrthographic && orthoCameraRef.current){
+            vector.applyQuaternion(orthoCameraRef.current.quaternion);
+        }
 
         //If our camera is facing the "front" of the red Plane
         //which as a normal vector of [0,1,0] the the sign of the 
@@ -47,14 +53,26 @@ export function CadPlanes(props: props){
         //result will always be negative. So we move the camra to 
         //the front of that plane. Other wise move carma to face 
         //The "back"
+        //console.log(orthoCameraRef);
         if( vector.dot( new THREE.Vector3( 0, 1, 0) ) <  0 ){
+            if( !isOrthographic && persCameraRef.current){
             persCameraRef.current.position.set( 0, 25 ,0 ); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(0, 25,0);
+            }
             setPlaneOrientation( [-Math.PI/2, 0, 0] );
             setGirdOrientation( [0, 0, 0] );
             setCurrCameraPos(CameraDirection.redTop)
+
         }else{
-            persCameraRef.current.position.set( 0, 25 ,0 ); 
+
+            if( !isOrthographic && persCameraRef.current){
             persCameraRef.current.position.set( 0, -25 ,0 ); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(0, -25,0);
+            }
             setPlaneOrientation( [Math.PI/2, 0, 0] );
             setGirdOrientation( [0, 0, 0] );
             setCurrCameraPos(CameraDirection.redBottom)
@@ -63,11 +81,17 @@ export function CadPlanes(props: props){
   }
 
   function computeCamraPosGreenClick(){
-    if(persCameraRef.current){
+    if( ( !isOrthographic && persCameraRef.current) || ( isOrthographic && orthoCameraRef.current) ){
         
         //Gets the camra normal vector
         let vector = new THREE.Vector3( 0, 0, -1 );
-        vector.applyQuaternion(persCameraRef.current.quaternion);
+
+        if( !isOrthographic && persCameraRef.current){
+            vector.applyQuaternion(persCameraRef.current.quaternion);
+        }
+        else if(isOrthographic && orthoCameraRef.current){
+            vector.applyQuaternion(orthoCameraRef.current.quaternion);
+        }
 
         //If our camera is facing the "front" of the green Plane
         //which as a normal vector of [0,0,1] the the sign of the 
@@ -76,12 +100,24 @@ export function CadPlanes(props: props){
         //the front of that plane. Other wise move carma to face 
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 0, 1) ) <  0 ){
-            persCameraRef.current.position.set(0, 0, 25); 
+
+            if( !isOrthographic && persCameraRef.current){
+                persCameraRef.current.position.set(0, 0, 25); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(0, 0,25);
+            }
+
             setPlaneOrientation( [0, 0, 0] );
             setGirdOrientation( [Math.PI / 2, 0, 0] );
             setCurrCameraPos(CameraDirection.greenFront)
         }else{
-            persCameraRef.current.position.set(0, 0, -25); 
+            if( !isOrthographic && persCameraRef.current){
+                persCameraRef.current.position.set(0, 0, -25); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(0, 0,-25);
+            }
             setPlaneOrientation( [-Math.PI, 0, 0] );
             setGirdOrientation( [Math.PI / 2, 0, 0] );
             setCurrCameraPos(CameraDirection.greenBack)
@@ -91,11 +127,17 @@ export function CadPlanes(props: props){
   }
 
   function computeCamraPosBlueClick(){
-    if(persCameraRef.current){
+    if( ( !isOrthographic && persCameraRef.current) || ( isOrthographic && orthoCameraRef.current) ){
         
         //Gets the camra normal vector
         let vector = new THREE.Vector3( 0, 0, -1 );
-        vector.applyQuaternion(persCameraRef.current.quaternion);
+
+        if( !isOrthographic && persCameraRef.current){
+            vector.applyQuaternion(persCameraRef.current.quaternion);
+        }
+        else if(isOrthographic && orthoCameraRef.current){
+            vector.applyQuaternion(orthoCameraRef.current.quaternion);
+        }
 
         //If our camera is facing the "front" of the blue Plane
         //which as a normal vector of [1,0,0] the the sign of the 
@@ -104,12 +146,25 @@ export function CadPlanes(props: props){
         //the front of that plane. Other wise move carma to face 
         //The "back"
         if(vector.dot(new THREE.Vector3(1, 0, 0)) <  0){
-            persCameraRef.current.position.set( 25, 0, 0); 
+
+            if( !isOrthographic && persCameraRef.current){
+                persCameraRef.current.position.set(25, 0, 0); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(25, 0, 0);
+            }
+
             setPlaneOrientation( [0, Math.PI / 2, 0] );
             setGirdOrientation( [0, 0, Math.PI / 2] );
             setCurrCameraPos(CameraDirection.blueFront)
         }else{
-            persCameraRef.current.position.set( -25, 0, 0); 
+            if( !isOrthographic && persCameraRef.current){
+                persCameraRef.current.position.set(-25, 0, 0); 
+            }
+            else if(isOrthographic && orthoCameraRef.current){
+                orthoCameraRef.current?.position.set(-25, 0, 0);
+            }
+
             setPlaneOrientation( [0, -Math.PI / 2, 0] );
             setGirdOrientation( [0, 0, -Math.PI / 2] );
             setCurrCameraPos(CameraDirection.blueBack)
