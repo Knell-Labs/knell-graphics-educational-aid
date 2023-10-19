@@ -1,12 +1,12 @@
-export type UserType = {
+export type UserTypes = {
     email   : string;
     username: string;
     password: string;
 };
 
-export type LoginFormType = UserType;
+export type LoginFormTypes = UserTypes;
 
-export type SignUpFormType = UserType & {
+export type SignUpFormTypes = UserTypes & {
     email?: string;
     confirmPassword?: string;
 };

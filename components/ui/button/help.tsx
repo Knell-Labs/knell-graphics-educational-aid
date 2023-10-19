@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function Help(){
 
@@ -14,13 +14,13 @@ export function Help(){
     zoom in Orthographic mode then 
     switch to Perspective mode.`
 
-    let ctrlButton;
-    if(navigator.userAgent.indexOf("Mac") != -1){
-        ctrlButton = "control";
-    }
-    else {
-        ctrlButton = "CTRL";
-    }
+    const [ ctrlKeyText, setCtrlKeyText] = useState('CTRL');
+
+    useEffect(() => {
+        if (navigator && navigator.userAgent.toLowerCase().includes('mac')) {
+            setCtrlKeyText('Control ^')
+        }
+    }, [])
 
     const keyBgStyle = "flex flex-row mt-2";
 
@@ -70,21 +70,21 @@ export function Help(){
                     <div className="font-bold italic whitespace-pre-line mt-5 mb-3">
                         Or press Key and use Mouse
                     </div>
-
+                    
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="leftMouse.svg" width={23}/>
                         &nbsp;Rotate Camera
                     </div>
 
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="rightMouse.svg" width={23}/>
                         &nbsp;Pan Camera
                     </div>
 
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="scrollWheelMouse.svg" width={25}/>
                         &nbsp;Zoom In/Out
                     </div>

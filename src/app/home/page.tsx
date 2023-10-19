@@ -1,5 +1,4 @@
 "use client"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useState, useEffect } from 'react';
 
 import { BasicScene }  from "../../../components/basicScene";
@@ -9,27 +8,7 @@ import CreateUserForm from '../../../components/forms/createUser';
 import Modal from '../../../components/modal';
 import Welcome from './welcome';
 
-import { LoginFormType } from '../../types/auth'
-
 export default function Home() {
-
-  const supabase = createClientComponentClient()
-
-  const handleSignUp = (form:LoginFormType) => {
-    supabase.auth.signUp({
-      email:    form.email,
-      password: form.email
-    })
-  }
-  const handleSignIn = (form:LoginFormType) => {
-    supabase.auth.signInWithPassword({
-      email:    form.email,
-      password: form.email
-    })
-  }
-  const handleSignOut = () => {
-    supabase.auth.signOut()
-  }
   
   const [ modalBody, setModalBody ] = useState<React.ReactElement | null>(null);
   const [ showModal, setShowModal ] = useState<boolean>(false);
@@ -52,9 +31,7 @@ export default function Home() {
           setModalBody(
             <div className="flex">
               <Button size="small" onClick={setModalWelcome}>&#xab;</Button>
-              <LoginForm
-                handleSubmit={handleSignIn}
-              />
+              <LoginForm />
             </div>
           );
           break;

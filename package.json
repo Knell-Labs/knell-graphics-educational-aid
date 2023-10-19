@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-types": "npx supabase gen types typescript --project-id exckzbkyyoeyztlpqjsa > ./src/utils/types/dbTypes.ts"
+    "update-types": "./get_sb_types.sh"
   },
   "dependencies": {
     "@react-three/drei": "^9.80.6",
     "@react-three/fiber": "8.13.5",
-    "@supabase/auth-helpers-nextjs": "^0.7.3",
-    "@supabase/supabase-js": "^2.31.0",
+    "@supabase/auth-helpers-nextjs": "^0.8.1",
+    "@supabase/auth-ui-react": "^0.4.6",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.38.2",
     "@types/node": "20.3.3",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
