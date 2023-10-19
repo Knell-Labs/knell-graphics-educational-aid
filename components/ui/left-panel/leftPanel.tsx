@@ -1,8 +1,8 @@
 import React, { Component, useEffect, useState } from 'react';
 
 interface LeftPanelProps {
+  sceneMain: any;
   sceneInfo: Array<any>;
-  sceneTitle: string;
   openGroupIDs: string[];
   handleOpenGroup: (group_id: string) => void;
 }
@@ -28,7 +28,7 @@ const groupMapping: StringDictionary = {
 }
 
 export function LeftPanel(props: LeftPanelProps ) {
-  const { sceneInfo, sceneTitle, openGroupIDs, handleOpenGroup } = props;
+  const { sceneMain, sceneInfo, openGroupIDs, handleOpenGroup } = props;
   useEffect( () => {
     // console.log(sceneInfo)
   }, [])
@@ -44,7 +44,6 @@ export function LeftPanel(props: LeftPanelProps ) {
     const key = (event.target as HTMLInputElement).value;
     setSearchKey(key);
   }
-  let text = sceneTitle;
 
   // rgba allows Transparency
   const scrollbarStyles = `
@@ -84,9 +83,9 @@ export function LeftPanel(props: LeftPanelProps ) {
               className=" max-w-[80%] mr-2 break-all" 
               spellCheck="false"
               // TODO: retrieve object so that its name can be updated
-              onClick={() => {text = handleEditableContent(sceneTitle,"editableTitle", 60);}}  
+              onClick={() => {handleEditableContent(sceneMain,"editableTitle", 60);}}  
               >
-              {text} 
+              {sceneMain.name} 
             </div>
             
             <button className="p-1 rounded w-7 h-7 hover:bg-blueHover "> 
