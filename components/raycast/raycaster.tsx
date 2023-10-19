@@ -1,15 +1,24 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { CameraDirection } from "../basicScene";
 
 interface props {
   isObjectButtonPressed: boolean;
   setCoordinates: Dispatch<SetStateAction<number[]>>;
   addObjectToScene: (type: string, props?: any) => void;  // For adding objects
   objectTypePressed: string;
+  currCameraPos: CameraDirection; 
+
 }
 
-export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToScene, objectTypePressed}: props){
+export function RayCaster({
+        isObjectButtonPressed,
+        setCoordinates,
+        addObjectToScene,
+        objectTypePressed,
+        currCameraPos
+  }: props){
   const world = useThree()
   const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
@@ -17,17 +26,48 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
   useEffect(() => {
     const handleClick = (event) => {
       const intersect = raycaster.intersectObject(world.scene.getObjectByName("grid-plane-hidden-helper"));
+
       if (isObjectButtonPressed && intersect.length > 0) {
         let pointIntersect = intersect[0].point ;
-        switch (objectTypePressed) {
-          case 'cube':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('cube', { position: pointIntersect });
+
+        const distance = displacementDistance(objectTypePressed)
+
+        switch (currCameraPos) {
+          case CameraDirection.freeDrive:
+            pointIntersect.setY(pointIntersect.y + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
-          case 'sphere':
-            pointIntersect.setY(pointIntersect.y + 0.7);
-            addObjectToScene('sphere', { position: pointIntersect });
+
+          case CameraDirection.redTop:
+            pointIntersect.setY(pointIntersect.y + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
+
+          case CameraDirection.redBottom:
+            pointIntersect.setY(pointIntersect.y - distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.blueFront:
+            pointIntersect.setX(pointIntersect.x + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.blueBack:
+            pointIntersect.setX(pointIntersect.x - distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.greenFront:
+            pointIntersect.setZ(pointIntersect.z + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
+          case CameraDirection.greenBack:
+            pointIntersect.setZ(pointIntersect.z + distance);
+            addObjectToScene(objectTypePressed, { position: pointIntersect });
+            break;
+
           default:
             console.log("Unknown object type");
         }
@@ -63,7 +103,14 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
       const intersect = raycaster.intersectObject(objectFound)
 
       if(intersect.length > 0){
-        ActiveToolOverLay(objectTypePressed, intersect[0].point.x, intersect[0].point.z, scene)
+        ActiveToolOverLay(
+                          objectTypePressed,
+                          intersect[0].point.x,
+                          intersect[0].point.y,
+                          intersect[0].point.z,
+                          scene,
+                          currCameraPos,
+                          )
       }
     }
 
@@ -77,7 +124,7 @@ export function RayCaster({isObjectButtonPressed, setCoordinates, addObjectToSce
   return null;
 }
 
-function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, scene: Object){
+function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, pointZ: number, scene: Object, currCameraPos: CameraDirection ){
   switch (currTool){
     case "cube": {
 
@@ -89,10 +136,30 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
       var plane = new THREE.Mesh(geometry, material);
           
       plane.name = "temp plane"; // Set the name property of the plane
-      plane.rotation.x = Math.PI / 2;
-         
+
+      if(currCameraPos === CameraDirection.freeDrive
+            ||
+        currCameraPos === CameraDirection.redTop
+            ||
+        currCameraPos === CameraDirection.redBottom
+        ){
+        plane.rotation.x = Math.PI / 2;
+      }
+      else if(
+        currCameraPos === CameraDirection.blueBack
+            ||
+        currCameraPos === CameraDirection.blueFront ) {
+        plane.rotation.y = Math.PI / 2;
+      }
+      
+      let objectPlacePosition: [number, number, number] = objectPlacingPosition(
+                                                                        currCameraPos,
+                                                                        pointX,
+                                                                        pointY,
+                                                                        pointZ)
+
       // Set the position of the plane
-      plane.position.set(pointX, -.01, pointZ); 
+      plane.position.set(objectPlacePosition[0], objectPlacePosition[1], objectPlacePosition[2]); 
           
       scene.add(plane);
       break;
@@ -104,8 +171,32 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointZ: number, sce
       const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
       const circle = new THREE.Mesh(geometry, material);
       circle.name = "temp circle";
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
+
+
+      if(currCameraPos === CameraDirection.freeDrive
+            ||
+        currCameraPos === CameraDirection.redTop
+            ||
+        currCameraPos === CameraDirection.redBottom
+        ){
+        circle.rotation.x = Math.PI / 2;
+      }
+      else if(
+        currCameraPos === CameraDirection.blueBack
+            ||
+        currCameraPos === CameraDirection.blueFront ) {
+        circle.rotation.y = Math.PI / 2;
+      }
+      
+      let objectPlacePosition: [number, number, number] = objectPlacingPosition(
+                                                                        currCameraPos,
+                                                                        pointX,
+                                                                        pointY,
+                                                                        pointZ)
+
+      // Set the position of the plane
+      circle.position.set(objectPlacePosition[0], objectPlacePosition[1], objectPlacePosition[2]); 
+
       scene.add(circle);
       break;
   }
@@ -142,7 +233,7 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
         existingCircle.material.dispose();
     }
     break;
-  }
+   }
 
     default: {
       console.log(currTool)
@@ -150,4 +241,58 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       break;
     }
   }
+}
+
+
+
+function objectPlacingPosition( currCameraPos: CameraDirection,  pointX: number, pointY: number, pointZ: number): [number, number, number] {
+    switch (currCameraPos) {
+
+        case CameraDirection.freeDrive: {
+            return [pointX, -0.01, pointZ]
+        }
+
+        case CameraDirection.redTop: {
+            return [pointX, -0.01, pointZ]
+        }
+
+        case CameraDirection.redBottom: {
+            return [pointX, 0.01, pointZ]
+        }
+
+        case CameraDirection.greenFront: {
+            return [pointX, pointY, 0]
+        }
+
+        case CameraDirection.greenBack: {
+            return [pointX, pointY, 0]
+        }
+
+        case CameraDirection.blueFront: {
+            return [0, pointY, pointZ]
+        }
+
+        case CameraDirection.blueBack: {
+            return [0, pointY, pointZ]
+        }
+
+        default: {
+
+        }
+    }
+    
+    return [1,1,1];
+}
+
+
+function displacementDistance( shapeName: string ): number{
+    switch (shapeName) {
+      case 'cube':
+        return 0.5;
+      case 'sphere':
+        return 0.7;
+      default:
+        console.log("Unknown object type");
+        return 0.0;
+    }
 }
