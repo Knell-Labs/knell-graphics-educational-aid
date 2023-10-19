@@ -82,7 +82,6 @@ export function LeftPanel(props: LeftPanelProps ) {
               id = "editableTitle"
               className=" max-w-[80%] mr-2 break-all" 
               spellCheck="false"
-              // TODO: retrieve object so that its name can be updated
               onClick={() => {handleEditableContent(sceneMain,"editableTitle", 60);}}  
               >
               {sceneMain.name} 
