@@ -30,9 +30,6 @@ export function RayCaster({
       if (isObjectButtonPressed && intersect.length > 0) {
         let pointIntersect = intersect[0].point ;
 
-        //TODO: CHECK HERE WHICH PLANE WE INTERSECTED AND 
-        //ADD X, Y, Z OFFSET ACCORDENLY
-
         const distance = displacementDistance(objectTypePressed)
 
         switch (currCameraPos) {

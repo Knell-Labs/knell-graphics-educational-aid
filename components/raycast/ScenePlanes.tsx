@@ -5,8 +5,6 @@ import * as THREE from 'three';
 import { Dispatch, SetStateAction } from "react";
 import { TwoDimPlaneRotation, CameraDirection } from "../basicScene";
 
-//const [planeOrientation, setPlaneOrientation] = useState<planeRotation>([-Math.PI/2, 0, 0])
-//const [girdOrientation, setGirdOrientation] = useState<planeRotation>([0, 0, 0])
 
 interface props {
   isOrthographic: boolean;
@@ -37,7 +35,7 @@ export function CadPlanes(props: props){
   function computeCamraPosRedClick(){
     if( ( !isOrthographic && persCameraRef.current) || ( isOrthographic && orthoCameraRef.current) ){
         
-        //Gets the camra normal vector
+        //Gets the camera normal vector
         let vector = new THREE.Vector3( 0, 0, -1 );
 
         if( !isOrthographic && persCameraRef.current){
@@ -50,10 +48,9 @@ export function CadPlanes(props: props){
         //If our camera is facing the "front" of the red Plane
         //which as a normal vector of [0,1,0] the the sign of the 
         //dot product with the normal vector of the camera 
-        //result will always be negative. So we move the camra to 
-        //the front of that plane. Other wise move carma to face 
+        //result will always be negative. So we move the camera to 
+        //the front of that plane. Other wise move camera to face 
         //The "back"
-        //console.log(orthoCameraRef);
         if( vector.dot( new THREE.Vector3( 0, 1, 0) ) <  0 ){
             if( !isOrthographic && persCameraRef.current){
             persCameraRef.current.position.set( 0, 25 ,0 ); 
@@ -83,7 +80,7 @@ export function CadPlanes(props: props){
   function computeCamraPosGreenClick(){
     if( ( !isOrthographic && persCameraRef.current) || ( isOrthographic && orthoCameraRef.current) ){
         
-        //Gets the camra normal vector
+        //Gets the camera normal vector
         let vector = new THREE.Vector3( 0, 0, -1 );
 
         if( !isOrthographic && persCameraRef.current){
@@ -96,8 +93,8 @@ export function CadPlanes(props: props){
         //If our camera is facing the "front" of the green Plane
         //which as a normal vector of [0,0,1] the the sign of the 
         //dot product with the normal vector of the camera 
-        //result will always be negative. So we move the camra to 
-        //the front of that plane. Other wise move carma to face 
+        //result will always be negative. So we move the camera to 
+        //the front of that plane. Other wise move camera to face 
         //The "back"
         if( vector.dot( new THREE.Vector3( 0, 0, 1) ) <  0 ){
 
@@ -142,8 +139,8 @@ export function CadPlanes(props: props){
         //If our camera is facing the "front" of the blue Plane
         //which as a normal vector of [1,0,0] the the sign of the 
         //dot product with the normal vector of the camera 
-        //result will always be negative. So we move the camra to 
-        //the front of that plane. Other wise move carma to face 
+        //result will always be negative. So we move the camera to 
+        //the front of that plane. Other wise move camera to face 
         //The "back"
         if(vector.dot(new THREE.Vector3(1, 0, 0)) <  0){
 
@@ -172,10 +169,6 @@ export function CadPlanes(props: props){
 
     }
   }
-
-
-
-
 
 
 
