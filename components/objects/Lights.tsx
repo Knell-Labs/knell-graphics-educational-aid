@@ -79,7 +79,7 @@ export function  DirectLightFunc({isObjectButtonPressed}:  lightProps){
       <directionalLight 
         color={"#FFFFFF"}
         intensity={1}
-        position={[5,5,5]}
+        position={[15,15,15]}
         ref={dirLight} 
       />
     </group>
