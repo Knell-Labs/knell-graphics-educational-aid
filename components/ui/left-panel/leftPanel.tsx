@@ -22,7 +22,7 @@ const threeJsGeometryMapping: StringDictionary = {
 }
 
 const threeJsFileMapping: StringDictionary = {
-    "Box": "boxUnpressed.svg",
+    "Box": "cube.svg",
     "Sphere": "sphere.svg",
     "Cylinder": "cylinder.svg",
     "Cone": "cone.svg",

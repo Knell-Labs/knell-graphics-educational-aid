@@ -21,39 +21,47 @@ export function ToolPanel(objectButtonPress: props){
           setIsSketchButtonPressed
           } = objectButtonPress;
 
+  const shapePressList: {[key: string]: boolean} = {
+    cube:         false,
+    sphere:       false,
+    cylinder:     false,
+    cone:         false,
+    tetrahedron:  false,
+    pyramid:      false,
+    hemisphere:   false,
+  };
+
+  const [isShapeButtonPressed, setIsShapeButtonPressed] = useState(shapePressList);
+
+
   const toggleButtonPressed = (objectType: string) => {
-    setIsObjectButtonPressed(!isObjectButtonPressed);
-    setObjectTypePressed(objectType)
+    // If button A is pressed and the user presses button B
+    // --> Button A is automatically unpressed
+    let existingPressedButton = false;
+    for(let shape in shapePressList){
+      if(shape !== objectType && isShapeButtonPressed[shape] === true){
+        existingPressedButton = true;
+        setIsShapeButtonPressed( prevState => ({
+          ...prevState,
+          [shape]: false,
+        }));
+        break;
+      }
+    }
+    if(!existingPressedButton){
+      setIsObjectButtonPressed(!isObjectButtonPressed);
+    }
+    setObjectTypePressed(objectType);
+    setIsShapeButtonPressed( prevState => ({
+      ...prevState,
+      [objectType]: !prevState[objectType],
+    }));
   };
-
-  const [isBoxButtonPressed, setBoxButtonPressed]                 = useState<Boolean>(true);
-  const [isSphereButtonPressed, setSphereButtonPressed]           = useState<Boolean>(true);
-  const [isCylinderButtonPressed, setCylinderButtonPressed]       = useState<Boolean>(true);
-  const [isConeButtonPressed, setConeButtonPressed]               = useState<Boolean>(true);
-  const [isTetrahedronButtonPressed, setTetrahedronButtonPressed] = useState<Boolean>(true);
-  const [isPyramidButtonPressed, setPyramidButtonPressed]         = useState<Boolean>(true);
-  const [isHemisphereButtonPressed, setHemisphereButtonPressed]   = useState<Boolean>(true);
-
-  let boxImageSrc;
-  if(!isBoxButtonPressed){
-    boxImageSrc = "boxPressed.svg"
-  }
-  else{
-    boxImageSrc = "boxUnpressed.svg"
-  }
-
-  const handleBoxButtonClick = () => {
-    toggleButtonPressed("cube");
-    setBoxButtonPressed(!isBoxButtonPressed)
-  };
-
-  const handleSphereButtonClick = () => {
-    toggleButtonPressed("sphere");
-  };
-
-  const currObjectTypePressed = (objectType: string) => {
-    setObjectTypePressed(objectType)
-  }
+  
+  
+  const buttonShape = "hover:bg-blueHover rounded-lg p-1 w-8 h-8";
+  const buttonShapePressed = "bg-blueHover rounded-lg p-1 w-8 h-8";
+  const buttonText = "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
 
   return (
     <div style={{
@@ -70,12 +78,12 @@ export function ToolPanel(objectButtonPress: props){
       gap: '5px'
     }}>
 
-      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
+      <button className = {buttonText}
        onClick = { () => console.log("saved")}>
          Save
       </button>
 
-      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
+      <button className = {buttonText}
        onClick = { () => { 
         setIsSketchButtonPressed(!isSketchButtonPressed);
         console.log(isSketchButtonPressed);
@@ -83,55 +91,57 @@ export function ToolPanel(objectButtonPress: props){
        Sketch
       </button>
 
-
       <LineSeparator/>
       
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
-        <img src="CursorSelect.svg" width="25" />
+      <button className={ buttonShape }
+        onClick = { () => {
+          setIsObjectButtonPressed(false);
+          for(let shape in shapePressList){
+            if(isShapeButtonPressed[shape] === true){
+              setIsShapeButtonPressed( prevState => ({
+                ...prevState,
+                [shape]: false,
+              }));
+              break;
+            }
+          }
+        }}>
+        <img src="CursorSelect.svg"/>
       </button>
 
-      { isBoxButtonPressed ? (
-        <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-          onClick = { () => toggleButtonPressed("cube") }>
-          <img src="boxUnpressed.svg" width="25" />
-        </button> )
-      : (
-      <button className="flex items-center hover:bg-blue-500 bg-white rounded p-1 h-100"
-          onClick = { () => toggleButtonPressed("cube") }>
-          <img src="boxPressed.svg" width="25" />
-        </button>
-      )}
+      <button className={isShapeButtonPressed.cube ? buttonShapePressed : buttonShape}
+        onClick = { () => toggleButtonPressed("cube") }>
+        <img src="cube.svg"/>
+      </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.sphere ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("sphere") }>
-        <img src="sphere.svg" width="20" />
+        <img src="sphere.svg"/>
       </button>
 
-
-
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.cylinder ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("cylinder") }>
-        <img src="cylinder.svg" width="20" />
+        <img src="cylinder.svg"/>
       </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.cone ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("cone") }>
-        <img src="cone.svg" width="20" />
+        <img src="cone.svg"/>
       </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.tetrahedron ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("tetrahedron") }>
-        <img src="tetrahedron.svg" width="20" />
+        <img src="tetrahedron.svg"/>
       </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.pyramid ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("pyramid") }>
-        <img src="pyramid.svg" width="20" />
+        <img src="pyramid.svg"/>
       </button>
 
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
+      <button className={isShapeButtonPressed.hemisphere ? buttonShapePressed : buttonShape}
         onClick = { () => toggleButtonPressed("hemisphere") }>
-        <img src="hemisphere.svg" width="20" />
+        <img src="hemisphere.svg"/>
       </button>
 
     </div>
