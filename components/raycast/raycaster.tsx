@@ -42,26 +42,27 @@ export function RayCaster({
             pointIntersect.setY(pointIntersect.y + distance);
             addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
-          case 'cylinder':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('cylinder', { position: pointIntersect });
-            break;
-          case 'cone':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('cone', { position: pointIntersect });
-            break;
-          case 'tetrahedron':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('tetrahedron', { position: pointIntersect });
-            break;
-          case 'pyramid':
-            pointIntersect.setY(pointIntersect.y + 0.5);
-            addObjectToScene('pyramid', { position: pointIntersect });
-            break;
-          case 'hemisphere':
-            pointIntersect.setY(pointIntersect.y);
-            addObjectToScene('hemisphere', { position: pointIntersect });
-            break;
+
+          //case 'cylinder':
+          //  pointIntersect.setY(pointIntersect.y + 0.5);
+          //  addObjectToScene('cylinder', { position: pointIntersect });
+          //  break;
+          //case 'cone':
+          //  pointIntersect.setY(pointIntersect.y + 0.5);
+          //  addObjectToScene('cone', { position: pointIntersect });
+          //  break;
+          //case 'tetrahedron':
+          //  pointIntersect.setY(pointIntersect.y + 0.5);
+          //  addObjectToScene('tetrahedron', { position: pointIntersect });
+          //  break;
+          //case 'pyramid':
+          //  pointIntersect.setY(pointIntersect.y + 0.5);
+          //  addObjectToScene('pyramid', { position: pointIntersect });
+          //  break;
+          //case 'hemisphere':
+          //  pointIntersect.setY(pointIntersect.y);
+          //  addObjectToScene('hemisphere', { position: pointIntersect });
+          //  break;
 
           case CameraDirection.redBottom:
             pointIntersect.setY(pointIntersect.y - distance);
