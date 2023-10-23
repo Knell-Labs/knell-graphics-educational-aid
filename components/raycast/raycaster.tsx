@@ -376,8 +376,6 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       }
       break;
     }
-    break;
-   }
 
     default: {
       console.log(currTool)
