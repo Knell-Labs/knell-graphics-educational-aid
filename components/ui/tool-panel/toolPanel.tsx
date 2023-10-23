@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dispatch, SetStateAction } from "react";
+import {Tooltip as ReactTooltip} from 'react-tooltip';
 
 interface props {
   isObjectButtonPressed: boolean;
@@ -105,44 +106,63 @@ export function ToolPanel(objectButtonPress: props){
               break;
             }
           }
-        }}>
+        }}
+        data-tooltip-id="tooltip" data-tooltip-content="cursor">
         <img src="CursorSelect.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.cube ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cube") }>
+        onClick = { () => toggleButtonPressed("cube")} 
+        data-tooltip-id="tooltip" data-tooltip-content="cube">
         <img src="cube.svg"/>
       </button>
 
+
       <button className={isShapeButtonPressed.sphere ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("sphere") }>
+        onClick = { () => toggleButtonPressed("sphere") }
+        data-tooltip-id="tooltip" data-tooltip-content="sphere">
         <img src="sphere.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.cylinder ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cylinder") }>
+        onClick = { () => toggleButtonPressed("cylinder") }
+        data-tooltip-id="tooltip" data-tooltip-content="cylinder">
         <img src="cylinder.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.cone ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cone") }>
+        onClick = { () => toggleButtonPressed("cone") }
+        data-tooltip-id="tooltip" data-tooltip-content="cone">
         <img src="cone.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.tetrahedron ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("tetrahedron") }>
+        onClick = { () => toggleButtonPressed("tetrahedron") }
+        data-tooltip-id="tooltip" data-tooltip-content="tetrahedron">
         <img src="tetrahedron.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.pyramid ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("pyramid") }>
+        onClick = { () => toggleButtonPressed("pyramid") }
+        data-tooltip-id="tooltip" data-tooltip-content="pyramid">
         <img src="pyramid.svg"/>
       </button>
 
       <button className={isShapeButtonPressed.hemisphere ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("hemisphere") }>
+        onClick = { () => toggleButtonPressed("hemisphere") }
+        data-tooltip-id="tooltip" data-tooltip-content="hemisphere">
         <img src="hemisphere.svg"/>
       </button>
+      
+      <ReactTooltip 
+        id = "tooltip" 
+        place="bottom"
+        style={{
+          borderRadius: '20%',
+          padding: '1px 10px 4px 10px',
+        }}
+      />
+
 
     </div>
   )
