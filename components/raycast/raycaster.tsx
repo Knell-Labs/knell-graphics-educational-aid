@@ -43,27 +43,6 @@ export function RayCaster({
             addObjectToScene(objectTypePressed, { position: pointIntersect });
             break;
 
-          //case 'cylinder':
-          //  pointIntersect.setY(pointIntersect.y + 0.5);
-          //  addObjectToScene('cylinder', { position: pointIntersect });
-          //  break;
-          //case 'cone':
-          //  pointIntersect.setY(pointIntersect.y + 0.5);
-          //  addObjectToScene('cone', { position: pointIntersect });
-          //  break;
-          //case 'tetrahedron':
-          //  pointIntersect.setY(pointIntersect.y + 0.5);
-          //  addObjectToScene('tetrahedron', { position: pointIntersect });
-          //  break;
-          //case 'pyramid':
-          //  pointIntersect.setY(pointIntersect.y + 0.5);
-          //  addObjectToScene('pyramid', { position: pointIntersect });
-          //  break;
-          //case 'hemisphere':
-          //  pointIntersect.setY(pointIntersect.y);
-          //  addObjectToScene('hemisphere', { position: pointIntersect });
-          //  break;
-
           case CameraDirection.redBottom:
             pointIntersect.setY(pointIntersect.y - distance);
             addObjectToScene(objectTypePressed, { position: pointIntersect });
@@ -434,6 +413,16 @@ function displacementDistance( shapeName: string ): number{
         return 0.5;
       case 'sphere':
         return 0.7;
+      case 'cylinder':
+        return 0.5;
+      case 'cone':
+        return 0.5;
+      case 'tetrahedron':
+        return 0.5;
+      case 'pyramid':
+        return 0.5;
+      case 'hemisphere':
+        return 0.0;
       default:
         console.log("Unknown object type");
         return 0.0;
