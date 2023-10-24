@@ -37,6 +37,7 @@ export function BasicScene() {
 
   const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
+  const [sceneMain, setSceneMain] = useState(null)
 
   const [objectsAdded, setObjectsAdded] = useState<any[]>([]);
 
@@ -73,6 +74,7 @@ export function BasicScene() {
             fetchedObjects    = { fetchedObjects }
             setFetchedObjects = { setFetchedObjects }
             setSceneInfo      = { setSceneInfo }
+            setSceneMain      = { setSceneMain }
         />
 
         <CustomCameraControls/>
@@ -159,9 +161,9 @@ export function BasicScene() {
         </Canvas>
 
         { !!sceneInfo && <LeftPanel 
-                          sceneInfo = { sceneInfo } 
-                          sceneTitle = { "Untitled" }
-                          openGroupIDs = {openGroupIDs}
+                          sceneMain       = { sceneMain }
+                          sceneInfo       = { sceneInfo } 
+                          openGroupIDs    = { openGroupIDs }
                           handleOpenGroup = {
                             (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
                           />
@@ -188,11 +190,15 @@ export function BasicScene() {
   )
 }
 
-function GetSceneInfo({ objectsAdded, fetchedObjects, setFetchedObjects, setSceneInfo }){
+function GetSceneInfo({ objectsAdded, fetchedObjects, setFetchedObjects, setSceneInfo, setSceneMain }){
   const { scene } = useThree();
 
   useEffect(() => {
       setSceneInfo(scene.children);
+      if(scene.name === ""){
+        scene.name = "Untitled";
+      }
+      setSceneMain(scene);
       if (!fetchedObjects) { 
         setFetchedObjects(true);
       }
