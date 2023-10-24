@@ -6,6 +6,7 @@ import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { Help } from "./ui/button/help"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
+import { RightPanel } from "./ui/right-panel/rightPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
@@ -27,6 +28,16 @@ export enum CameraDirection {
 export type TwoDimPlaneRotation = [ number, number, number ];
 
 export function BasicScene() {
+  const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
+
+  useEffect( () => {
+    if(objectClicked){
+        //console.log(objectClicked)
+    }
+
+  }, [objectClicked])
+  
+
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
@@ -92,6 +103,7 @@ export function BasicScene() {
             switch (object.type) {
                 case 'cube':
                     return <CreateCube 
+                             setObjectClicked={setObjectClicked}
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
@@ -117,6 +129,13 @@ export function BasicScene() {
             setGirdOrientation = { setGirdOrientation }
             setCurrCameraPos = { setCurrCameraPos }
           />
+        }
+
+        { !!objectClicked 
+            &&
+            <RightPanel
+                objectClicked = { objectClicked}
+            />
         }
 
         <RayCaster
