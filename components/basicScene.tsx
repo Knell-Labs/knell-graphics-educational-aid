@@ -109,6 +109,7 @@ export function BasicScene() {
                             />;
                 case 'sphere':
                     return <CreateSphere
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
