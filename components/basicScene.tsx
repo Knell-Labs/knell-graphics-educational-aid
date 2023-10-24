@@ -131,12 +131,7 @@ export function BasicScene() {
           />
         }
 
-        { !!objectClicked 
-            &&
-            <RightPanel
-                objectClicked = { objectClicked}
-            />
-        }
+
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -178,7 +173,12 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-
+        { !!objectClicked 
+            &&
+            <RightPanel
+                objectClicked = { objectClicked}
+            />
+        }
         { !!sceneInfo && <LeftPanel 
                           sceneMain       = { sceneMain }
                           sceneInfo       = { sceneInfo } 
@@ -188,7 +188,7 @@ export function BasicScene() {
                           />
         }
 
-        <Help/>
+        {/* <Help/> */}
 
         <ToolPanel
          isObjectButtonPressed    = { isObjectButtonPressed }  
