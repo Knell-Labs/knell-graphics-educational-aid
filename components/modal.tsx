@@ -27,7 +27,7 @@ const Modal: FC<ModalProps> = ({ title, isOpen, onClose, children }) => {
       <div className="fixed inset-0 bg-black opacity-50 transition-opacity duration-500"></div>
       <div className={`max-w-md bg-white w-1/2-lg rounded-lg shadow-lg z-10 transition-transform transform duration-300 ${isOpen ? 'translate-y-0' : 'translate-y-4 scale-95'}`}>
         <div className="flex justify-between items-center text-2xl font-bold bg-indigo-800 text-white rounded-t-lg p-4">
-          <div>{title}</div>
+          <div>{title}&nbsp;</div>
           <button
             onClick={onClose}
           >

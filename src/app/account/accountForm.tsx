@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { Database } from '../../supabase/database.types'
+import { Database } from '../../supabase/database.types.ts'
 import { Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function AccountForm({ session }: { session: Session | null }) {
@@ -33,6 +33,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
         setAvatarUrl(data.avatar_url)
       }
     } catch (error) {
+      console.error(error)
       alert('Error loading user data!')
     } finally {
       setLoading(false)
@@ -118,7 +119,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
       </div>
 
       <div>
-        <form action="/auth/signout" method="post">
+        <form action="/auth/logout" method="post">
           <button className="button block" type="submit">
             Sign out
           </button>

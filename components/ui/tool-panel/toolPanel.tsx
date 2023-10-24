@@ -1,56 +1,43 @@
 import React, { useState } from 'react';
-import {RayCaster} from '../../raycast/raycaster' 
 import { Dispatch, SetStateAction } from "react";
+import Button from '../button'
 
-
-interface props {
+interface ToolPanelProps {
   isObjectButtonPressed: boolean;
   setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
-  objectTypePressed: string
+  objectTypePressed: string;
   setObjectTypePressed: Dispatch<SetStateAction<string>>;
-  addObjectToScene: (type: string, props?: any) => void; 
+  addObjectToScene: (type: string, props?: any) => void;
   isSketchButtonPressed: boolean;
   setIsSketchButtonPressed: Dispatch<SetStateAction<boolean>>;
 }
 
-
-export function ToolPanel(objectButtonPress: props){
-  const { isObjectButtonPressed, 
-          setIsObjectButtonPressed, 
-          objectTypePressed, 
-          setObjectTypePressed, 
-          addObjectToScene,
-          isSketchButtonPressed,
-          setIsSketchButtonPressed
-          } = objectButtonPress;
+export function ToolPanel({
+  isObjectButtonPressed,
+  setIsObjectButtonPressed,
+  objectTypePressed,
+  setObjectTypePressed,
+  addObjectToScene,
+  isSketchButtonPressed,
+  setIsSketchButtonPressed
+}: ToolPanelProps) {
 
   const toggleButtonPressed = (objectType: string) => {
     setIsObjectButtonPressed(!isObjectButtonPressed);
-    setObjectTypePressed(objectType)
+    setObjectTypePressed(objectType);
   };
 
-  const [isBoxButtonPressed, setBoxButtonPressed] = useState<Boolean>(true);
-
-  let boxImageSrc;
-  if(!isBoxButtonPressed){
-    boxImageSrc = "boxPressed.svg"
-  }
-  else{
-    boxImageSrc = "boxUnpressed.svg"
-  }
+  const [isBoxButtonPressed, setBoxButtonPressed] = useState<boolean>(true);
+  const boxImageSrc = isBoxButtonPressed ? "boxUnpressed.svg" : "boxPressed.svg";
 
   const handleBoxButtonClick = () => {
     toggleButtonPressed("cube");
-    setBoxButtonPressed(!isBoxButtonPressed)
+    setBoxButtonPressed(!isBoxButtonPressed);
   };
 
   const handleSphereButtonClick = () => {
     toggleButtonPressed("sphere");
   };
-
-  const currObjectTypePressed = (objectType: string) => {
-    setObjectTypePressed(objectType)
-  }
 
   return (
     <div style={{
@@ -65,65 +52,40 @@ export function ToolPanel(objectButtonPress: props){
       display: 'flex',
       alignItems: 'center',
       gap: '5px'
-
     }}>
-
-      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
-       onClick = { () => console.log("saved")}>
-         Save
+      <Button>Profile</Button>
+      <button className="bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1" onClick={() => console.log("saved")}>
+        Save
       </button>
 
-      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
-       onClick = { () => { 
+      <button className="bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1" onClick={() => {
         setIsSketchButtonPressed(!isSketchButtonPressed);
         console.log(isSketchButtonPressed);
-       }}>
-       Sketch
+      }}>
+        Sketch
       </button>
 
+      <div style={{
+        background: 'gray',
+        height: '25px',
+        width: '3px',
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        margin: '0 10px',
+        borderRadius: '20px',
+      }} />
 
-      <LineSeparator/>
-
-      
       <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100">
         <img src="CursorSelect.svg" width="25" />
       </button>
 
-      { isBoxButtonPressed ? (
-        <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
-          <img src="boxUnpressed.svg" width="25" />
-        </button> )
-      : (
-      <button className="flex items-center hover:bg-blue-500 bg-white rounded p-1 h-100"
-          onClick = {handleBoxButtonClick}>
-          <img src="boxPressed.svg" width="25" />
-        </button>
-      )}
-      
-
-      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100"
-        onClick = {handleSphereButtonClick}>
-        <img src="sphere.svg" width="20" />
+      <button className={`flex items-center hover:bg-blue-500 ${!isBoxButtonPressed ? "bg-white" : ""} rounded p-1 h-100`} onClick={handleBoxButtonClick}>
+        <img src={boxImageSrc} width="25" />
       </button>
 
+      <button className="flex items-center hover:bg-blue-500 rounded p-1 h-100" onClick={handleSphereButtonClick}>
+        <img src="sphere.svg" width="20" />
+      </button>
     </div>
-  )
-
-}
-
-
-function LineSeparator(){
-  return (
-    <div style = {{
-      background: 'gray',
-      height: '25px',
-      width: '3px',
-      display: 'inline-block', // Keep the line on the same line as the button
-      verticalAlign: 'middle', // Align the line vertically in the middle
-      marginLeft: '10px', // Add some spacing between the button and the line
-      marginRight: '10px', // Add some spacing between the line and the button
-      borderRadius: '20px',
-    }}/>
-  )
+  );
 }

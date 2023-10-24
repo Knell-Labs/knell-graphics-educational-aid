@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { BasicScene }  from "../../../components/basicScene";
 import Button from '../../../components/ui/button';
 import LoginForm from '../../../components/forms/login';
-import CreateUserForm from '../../../components/forms/createUser';
 import Modal from '../../../components/modal';
 import Welcome from './welcome';
 
@@ -16,22 +15,13 @@ export default function Home() {
   const setModalWelcome = () => {
     const handleWelcomeAction = ( action: "create" | "login" | "" ) => {
       switch (action) {
-        case "create": {
-          setModalBody(
-            <div className="flex">
-              <Button size="small" onClick={setModalWelcome}>&#xab;</Button>
-              <CreateUserForm
-                // handleSubmit={handleSignUp}
-              />
-            </div>
-          );
-          break;
-        }
         case "login": {
           setModalBody(
-            <div className="flex">
+            <div className="flex gap-3">
               <Button size="small" onClick={setModalWelcome}>&#xab;</Button>
-              <LoginForm />
+              <div className="flex-1">
+                <LoginForm />
+              </div>
             </div>
           );
           break;
