@@ -1,5 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/authProvider';
+
 
 import { BasicScene }  from "../../../components/basicScene";
 import Button from '../../../components/ui/button';
@@ -8,7 +10,12 @@ import Modal from '../../../components/modal';
 import Welcome from './welcome';
 
 export default function Home() {
-  
+  const { profile } = useAuth()
+
+  useEffect(() => {
+    console.log(profile)
+  }, [profile])
+
   const [ modalBody, setModalBody ] = useState<React.ReactElement | null>(null);
   const [ showModal, setShowModal ] = useState<boolean>(false);
 
