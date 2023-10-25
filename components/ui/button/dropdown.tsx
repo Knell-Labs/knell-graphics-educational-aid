@@ -1,12 +1,6 @@
 import React, { useState, useRef, useEffect, ButtonHTMLAttributes } from 'react';
 
-interface DropdownItem {
-  label?: string;
-  callback?: () => void;
-  isText?: boolean;
-  isDivider?: boolean;
-}
-
+import { DropdownItem } from '@/types/components'
 
 interface DropdownButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   items: DropdownItem[];
@@ -115,6 +109,24 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
                     <div key={index} className="px-4 py-2 text-sm leading-5 text-gray-700">
                       {item.label}
                     </div>
+                  );
+                }
+
+                // Render form action
+                if (item.isFormAction) {
+                  return (
+                    <form key={index} action={item.formActionUrl} method={item.formMethod} onSubmit={e => e.preventDefault()}>
+                      <button
+                        type="submit"
+                        onClick={() => {
+                          if (item.callback) item.callback();
+                          setIsOpen(false);
+                        }}
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 w-full text-left"
+                      >
+                        {item.label}
+                      </button>
+                    </form>
                   );
                 }
 

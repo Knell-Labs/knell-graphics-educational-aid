@@ -1,10 +1,11 @@
 import Button from '../../../components/ui/button';
 
 interface WelcomeProps {
+  hasSession?: boolean;
   handleAction: (action: "create" | "login" | "") => void;
 }
 
-const Welcome: React.FC<WelcomeProps> = ( ({ handleAction }) => (<div className="flex flex-col gap-3">
+const Welcome: React.FC<WelcomeProps> = ( ({ hasSession, handleAction }) => (<div className="flex flex-col gap-3">
     <p className="my-2">
       <span className="font-medium text-lg">{"🔹 Dive Right Back In!\n"}</span>
       {"Login to pick up where you left off and access your saved 3D creations.\n\n"}
@@ -15,11 +16,15 @@ const Welcome: React.FC<WelcomeProps> = ( ({ handleAction }) => (<div className=
       <span className="font-bold text-xl">{"Happy Modeling! 🛠🌐"}</span>
     </p>
     {/* <div className="w-full flex justify-around gap-2"> */}
-    <Button variant="primary" fullWidth onClick={ () => handleAction("login") }>
-      Login / Sign Up
-    </Button>
+    {
+      !hasSession &&
+        <Button variant="primary" fullWidth onClick={ () => handleAction("login") }>
+          Login / Sign Up
+        </Button>
+    }
     <Button variant="secondary" fullWidth onClick={ () => handleAction("") }>
-      Continue as Guest
+      {"Continue"}
+      { !hasSession ? " as Guest" : ''}
     </Button>
     {/* </div> */}
     {/* <div className="mt-2">

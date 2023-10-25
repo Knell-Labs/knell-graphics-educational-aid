@@ -119,7 +119,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
       </div>
 
       <div>
-        <form action="/auth/logout" method="post">
+        <form action="/auth/logout" method="post" onSubmit={e => e.preventDefault()}>
           <button className="button block" type="submit">
             Sign out
           </button>

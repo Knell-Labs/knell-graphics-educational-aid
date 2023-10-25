@@ -15,6 +15,9 @@ import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
+
+import { Session } from '@/types/auth';
+
 export enum CameraDirection {
     freeDrive, 
     redTop,      // Normal vector (0, 1, 0)
@@ -26,7 +29,16 @@ export enum CameraDirection {
 }
 export type TwoDimPlaneRotation = [ number, number, number ];
 
-export function BasicScene() {
+export interface BasicSceneProps {
+  session             : Session | null;
+  handleLogout        : () => void;
+  handleShowLoginForm : () => void;
+}
+export const BasicScene : React.FC<BasicSceneProps> = ({
+  session,
+  handleLogout,
+  handleShowLoginForm
+}) => {
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
@@ -66,8 +78,6 @@ export function BasicScene() {
 
         <AmbientLightFunc/>
         <DirectLightFunc/>
-
-
 
         <GetSceneInfo
             objectsAdded      = { objectsAdded }
@@ -172,13 +182,16 @@ export function BasicScene() {
         <Help/>
 
         <ToolPanel
-         isObjectButtonPressed    = { isObjectButtonPressed }  
-         setIsObjectButtonPressed = { setIsObjectButtonPressed }
-         objectTypePressed        = { objectTypePressed }
-         setObjectTypePressed     = { setObjectTypePressed }
-         addObjectToScene         = { addObjectToScene }
-         isSketchButtonPressed    = { isSketchButtonPressed }
-         setIsSketchButtonPressed = { setIsSketchButtonPressed }
+          handleLogout             = { handleLogout }
+          handleShowLoginForm      = { handleShowLoginForm }
+          session                  = { session }
+          isObjectButtonPressed    = { isObjectButtonPressed }  
+          setIsObjectButtonPressed = { setIsObjectButtonPressed }
+          objectTypePressed        = { objectTypePressed }
+          setObjectTypePressed     = { setObjectTypePressed }
+          addObjectToScene         = { addObjectToScene }
+          isSketchButtonPressed    = { isSketchButtonPressed }
+          setIsSketchButtonPressed = { setIsSketchButtonPressed }
         />
 
         <CameraSwitch

@@ -4,7 +4,7 @@ import { ThemeSupa, ThemeMinimal } from '@supabase/auth-ui-shared'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function AuthForm() {
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient();
 
   return (
     <div className="relative">
@@ -43,8 +43,7 @@ export default function AuthForm() {
         // 'discord',
         // 'spotify',
       ]}
-
-      //   redirectTo=""
+        // redirectTo="/"
     />
     </div>
   )
