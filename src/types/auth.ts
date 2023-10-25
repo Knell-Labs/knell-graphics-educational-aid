@@ -1,8 +1,7 @@
-
 export type UserTypes = {
     email   : string;
-    username: string;
     password: string;
+    username: string;
 };
 
 export type LoginFormTypes = UserTypes;
@@ -11,6 +10,7 @@ export type SignUpFormTypes = UserTypes & {
     email?: string;
     confirmPassword?: string;
 };
+
 
 export interface UserProfile {
     id: string;
@@ -21,10 +21,20 @@ export interface UserProfile {
 }
 
 import { Session } from '@supabase/auth-helpers-nextjs';
-export interface AuthContextType {
-    session: Session | null;
-    profile: UserProfile | null;
-    loading: boolean;
-    getProfile: () => void;
-    // Add any other utility functions or states as required
+export { Session }
+
+export interface AuthProviderProps {
+    children: React.ReactNode;
+    session: Session | null
 }
+
+export interface AuthContextType {
+    session: Session | null
+};
+// {
+//     session: Session | null;
+//     // profile: UserProfile | null;
+//     // loading: boolean;
+//     // getProfile: () => void;
+//     // Add any other utility functions or states as required
+// }
