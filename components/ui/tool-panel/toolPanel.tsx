@@ -10,6 +10,8 @@ interface props {
   objectTypePressed: string
   setObjectTypePressed: Dispatch<SetStateAction<string>>;
   addObjectToScene: (type: string, props?: any) => void; 
+  isSketchButtonPressed: boolean;
+  setIsSketchButtonPressed: Dispatch<SetStateAction<boolean>>;
 }
 
 export function ToolPanel(objectButtonPress: props){
@@ -17,7 +19,10 @@ export function ToolPanel(objectButtonPress: props){
           setIsObjectButtonPressed, 
           objectTypePressed, 
           setObjectTypePressed, 
-          addObjectToScene } = objectButtonPress;
+          addObjectToScene,
+          isSketchButtonPressed,
+          setIsSketchButtonPressed
+          } = objectButtonPress;
 
   const toggleButtonPressed = (objectType: string) => {
     setIsObjectButtonPressed(!isObjectButtonPressed);
@@ -88,6 +93,14 @@ export function ToolPanel(objectButtonPress: props){
         accept=".stl" 
         onChange={handleFileChange} 
       />
+      <button className = "bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1"
+       onClick = { () => { 
+        setIsSketchButtonPressed(!isSketchButtonPressed);
+        console.log(isSketchButtonPressed);
+       }}>
+       Sketch
+      </button>
+
 
       <LineSeparator/>
 
