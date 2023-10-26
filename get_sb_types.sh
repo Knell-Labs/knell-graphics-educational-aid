@@ -1,5 +1,9 @@
 #!/bin/sh
-source .env.local
+
+# Check if .env.local exists and source it if it does
+if [ -f ".env.local" ]; then
+    source .env.local
+fi
 
 echo $SUPABASE_ACCESS_TOKEN | npx supabase login
 
