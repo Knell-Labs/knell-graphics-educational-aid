@@ -18,10 +18,10 @@ function setWireframeVisibility(objectClicked: THREE.Mesh | null, wireframeStatu
     objectClicked.material.wireframe = wireframeStatus; 
 }
 
-//Not working correctly ATM, changes color only when its clicked but resets back to 
-//default when its unllicked
-// function setColorRGB(objectClicked: THREE.Mesh | null, R: number, G: number, B: number){
 function setColorRGB(objectClicked: THREE.Mesh | null, colToChange: colorToChange, newValue: number){
+  // Intensity: 0.0 - 1.0, RGB: 0 - 255
+  // objectClicked.material.color.r/g/b returns intensity (?)
+  // RGB value = Intensity * 255
   const R = objectClicked?.material.color.r;
   const G = objectClicked?.material.color.g;
   const B = objectClicked?.material.color.b;
@@ -29,26 +29,25 @@ function setColorRGB(objectClicked: THREE.Mesh | null, colToChange: colorToChang
 
   switch (colToChange){
     case colorToChange.r: {
-      colorRGB = new THREE.Color("rgb(" + newValue + ", " + G + ", " + B + ")");
+      colorRGB = new THREE.Color(newValue/255, G, B);
       break;
     }
     case colorToChange.g: {
-      colorRGB = new THREE.Color("rgb(" + R + ", " + newValue + ", " + B + ")");
+      colorRGB = new THREE.Color(R, newValue/255, B);
       break;
     }
     case colorToChange.b: {
-      colorRGB = new THREE.Color("rgb(" + R + ", " + G + ", " + newValue + ")");
+      colorRGB = new THREE.Color(R, G, newValue/255);
       break;
     }
     default: {
-      colorRGB = new THREE.Color("rgb(" + R + ", " + G + ", " + B + ")")
-      console.log("How the hell did you break me ??");
+      colorRGB = new THREE.Color(R, G, B);
     }
   }  
-  console.log(colorRGB);
+
   objectClicked?.material.color.set(colorRGB);
-  
-    // objectClicked?.material.color.setRGB(R, G, B);
+  // const newMaterial = new THREE.MeshBasicMaterial({ color: colorRGB });
+  // objectClicked!.material = newMaterial;
 
 }
 
@@ -76,22 +75,21 @@ function setRotEuler( objectClicked: THREE.Mesh | null, posToChange: fieldToChan
 
     //Convert to rads
     let angleChangeRad = (angleChangeDeg / 180) * Math.PI
-
     switch (posToChange){
         case fieldToChange.x: {
-            objectClicked?.rotateX(angleChangeRad)
-            break;
+          objectClicked?.rotateX(angleChangeRad - objectClicked.rotation.x);
+          break;
         }
         case fieldToChange.y: {
-            objectClicked?.rotateY(angleChangeRad);
-            break;
+          objectClicked?.rotateY(angleChangeRad - objectClicked.rotation.y);
+          break;
         }
         case fieldToChange.z: {
-            objectClicked?.rotateZ(angleChangeRad);
-            break;
+          objectClicked?.rotateZ(angleChangeRad - objectClicked.rotation.z);
+          break;
         }
         default: {
-            console.log("How the hell did you break me ??");
+          console.log("How the hell did you break me ??");
         }
     }
 }
@@ -135,7 +133,6 @@ export function RightPanel({objectClicked}: RightPanelProps) {
         // setColorRGB(objectClicked, colorToChange.r, 120);
         // console.log(objectClicked.material.color);
 
-
         //setRotEuler(objectClicked, fieldToChange.y, 45);
         // setScale(objectClicked, fieldToChange.x, 2);
 
@@ -149,24 +146,17 @@ export function RightPanel({objectClicked}: RightPanelProps) {
     }
   }, [objectClicked])
   
-  const propertyClassName = "flex items-center border-2 border-grayFill hover:border-gray-600 active:border-gray-600 rounded p-1";
-
-  const labelClassName_tight = "px-2 text-gray-400";
-
-  const R_value = 255;
-  const G_value = 182;
-  const B_value = 193;
-  
-  const colorDisplay = "rgb(" + objectClicked?.material.color.r + "," + objectClicked?.material.color.g + "," + objectClicked?.material.color.b + ")";
-  
-  const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
-  const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
+ 
   
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
 
-  const propertySection = (sectionName: string, fieldName: string) => (
+  const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
+  const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
+  const colorDisplay = "rgb(" + Math.round(objectClicked?.material.color.r * 255) + ", " + Math.round(objectClicked?.material.color.g * 255)+ ", " + Math.round(objectClicked?.material.color.b * 255) + ")";
+
+  const propertySection = (sectionName: string, fieldName: string, ratio: number) => (
     <div>
-      {sectionName }
+      {sectionName}
       {Object.values(fields).map((field) => (
         <div className="flex items-center border-2 border-grayFill hover:border-gray-600 active:border-gray-600 rounded p-1" key={field}>
           <label className="whitespace-nowrap px-4 text-gray-400"> 
@@ -177,7 +167,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
             className="p-0.5 w-full bg-grayFill"
             type="text"
             maxLength={15}
-            defaultValue={formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange], 2)}
+            defaultValue={formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
             onBlur={() => updateProperty(`${sectionName.toLowerCase()}-${field}`, objectClicked)}
           />
         </div>
@@ -220,25 +210,24 @@ export function RightPanel({objectClicked}: RightPanelProps) {
                 <input 
                   id={`color-${color_char}`}
                   className="p-0.5 w-full bg-grayFill"
-                  defaultValue={formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange],0)}
+                  defaultValue={formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
                   onBlur={() => {
                     updateProperty(`color-${color_char}`, objectClicked);
-                    // console.log(objectClicked?.material.color);
                   }}
                   />
               </div>
             ))}
           </div>
-          <div className="my-2 h-5" style={{ background: colorDisplay }}/>
+          <div className="my-2 h-5" style={{ backgroundColor: colorDisplay }}/>
         </div>
         
         <LineSeparator/>
         <div>
-          {propertySection("Position","")}
+          {propertySection("Position", "", 1)}
           <LineSeparator/>
-          {propertySection("Rotation","-axis")}
+          {propertySection("Rotation", "-axis", (180 / Math.PI))}
           <LineSeparator/>
-          {propertySection("Scale","")}
+          {propertySection("Scale", "", 1)}
         </div>
 
         <LineSeparator/>
@@ -249,7 +238,6 @@ export function RightPanel({objectClicked}: RightPanelProps) {
             <button className='bg-white text-black hover:bg-blueHover ml-5 p-2 rounded-lg w-16' 
               onClick={() => {
                 setWireframeVisibility(objectClicked, false);  
-                console.log(objectClicked?.material);
               }}> ON </button>
           : 
             <button className='bg-graySubFill hover:bg-blueHover ml-5 p-2 rounded-lg w-16'
@@ -280,40 +268,34 @@ function LineSeparator(){
 // ------------------------------------------------------------------------------------------------------
 
 const formatNumber = (number: number, decimal: number) => {
-  if(number % 1 === 0){
+  const result = number.toFixed(decimal);
+  if(parseFloat(result) * Math.pow(10,decimal) % Math.pow(10,decimal) === 0){
     return number.toFixed(0);
   }
-  return number.toFixed(decimal);
+  return result;
 }
 
 // ------------------------------------------------------------------------------------------------------
 
 function updateProperty(id: string, object: THREE.Mesh | null){
-  // FORMAT: id = property + "-" + position
+  // id = property + "-" + position
   let input = document.getElementById(id) as HTMLInputElement;
+  const property = id.substring(0,id.length - 2).toLowerCase() as keyof typeof object;
+  let pos, prevInput;
   
   if(object !== undefined && input !== undefined){
-    const property = id.substring(0,id.length - 2).toLowerCase() as keyof typeof object;
-    let pos, prevInput;
 
     if(property === "color"){
       pos = id.charAt(id.length - 1) as keyof typeof colorToChange;
-      prevInput = formatNumber(object!.material[property][pos],0);
+      prevInput = formatNumber(object!.material[property][pos] * 255,0);
     }
     else{
       pos = id.charAt(id.length - 1) as keyof typeof fieldToChange;
       prevInput = formatNumber(object![property][pos],2);
     }
-    // console.log(property);
-    // console.log(pos);
-
-    //  NOTE: COLOR VALUE IS BETWEEN 0 AND 255
-
+    
     // Only proceed if input content changes
     if(input.value !== prevInput){
-      console.log("old "+ pos + " = " + prevInput); 
-      console.log("new "+ pos + " = " + input.value);
-
       // Remove whitespace
       if(input.value.replace(/\s/g, "") === ""){
         input.value = prevInput;
@@ -322,7 +304,8 @@ function updateProperty(id: string, object: THREE.Mesh | null){
       else if(isNaN(Number(input.value))){
         input.value = prevInput;
       }
-      else if(property === "position" && ((Number(input.value) * 10 % 10) !== 0) || parseInt(input.value) < 0 || parseInt(input.value) > 255){
+      // Color value is an integer between 0 and 255
+      else if(property === "color" && (((Number(input.value) * 10 % 10) !== 0) || parseInt(input.value) < 0 || parseInt(input.value) > 255)){
         input.value = prevInput;
       }
       else {
