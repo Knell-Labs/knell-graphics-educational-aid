@@ -1,17 +1,20 @@
 import { ThreeElements, useFrame } from '@react-three/fiber';
 import { useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
+import { Dispatch, SetStateAction } from "react";
 import { useCursor } from '@react-three/drei';
 import { TransformCustomControls } from "../../components/controls/objectControls/TransformCustomControls";
 
 type CreateSphereProps = {
+  setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
   isObjectButtonPressed: boolean;
   color?: string;
   radius?: number;
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateSphere({ isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateSphereProps) {
+
+export function CreateSphere({ setObjectClicked,isObjectButtonPressed, color, radius = 1, radialSegments = 32, ...props }: CreateSphereProps) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -21,7 +24,7 @@ export function CreateSphere({ isObjectButtonPressed, color, radius = 0.5, radia
   const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial({ color: 0x000000, depthTest: true, opacity: 0.5, transparent: true }), []);
 
-  useCursor(hovered);
+  useCursor(hovered)
 
   useFrame(() => {
     if (groupRef.current){
@@ -29,6 +32,8 @@ export function CreateSphere({ isObjectButtonPressed, color, radius = 0.5, radia
     }
     if (sphereRef.current && outlineRef.current) {
       outlineRef.current.position.copy(sphereRef.current.position);
+      outlineRef.current.rotation.copy(sphereRef.current.rotation);
+      outlineRef.current.scale.copy(sphereRef.current.scale);
     }
   });
 
@@ -41,9 +46,13 @@ export function CreateSphere({ isObjectButtonPressed, color, radius = 0.5, radia
         onClick= { (event) => {
             if(!isObjectButtonPressed){
                 (event.stopPropagation(), setTransformActive(true))
+                setObjectClicked(sphereRef.current)
             }
         }}
-        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
+        onPointerMissed = { (event) => {
+           (event.type === 'click' && setTransformActive(false))
+           setObjectClicked(null);
+        }}
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
