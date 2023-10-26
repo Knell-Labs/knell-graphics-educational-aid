@@ -6,10 +6,16 @@ import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { Help } from "./ui/button/help"
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
+import { RightPanel } from "./ui/right-panel/rightPanel"
 import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { CreateSphere } from './objects/Sphere';
+import { CreateCylinder } from './objects/Cylinder';
+import { CreateCone } from './objects/Cone';
+import { CreateTetrahedron } from './objects/Tetrahedron';
+import { CreatePyramid } from './objects/Pyramid';
+import { CreateHemisphere } from './objects/Hemisphere';
 import { RayCaster } from './raycast/raycaster';
 import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
@@ -39,6 +45,9 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
   handleLogout,
   handleShowLoginForm
 }) => {
+
+  const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
+
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
@@ -102,11 +111,38 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
             switch (object.type) {
                 case 'cube':
                     return <CreateCube 
+                             setObjectClicked={setObjectClicked}
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
                 case 'sphere':
                     return <CreateSphere
+                            setObjectClicked={setObjectClicked}
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cylinder':
+                    return <CreateCylinder
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cone':
+                    return <CreateCone
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'tetrahedron':
+                    return <CreateTetrahedron
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'pyramid':
+                    return <CreatePyramid
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'hemisphere':
+                    return <CreateHemisphere
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
@@ -128,6 +164,8 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
             setCurrCameraPos = { setCurrCameraPos }
           />
         }
+
+
 
         <RayCaster
           isObjectButtonPressed = { isObjectButtonPressed }
@@ -169,7 +207,12 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-
+        { !!objectClicked 
+            &&
+            <RightPanel
+                objectClicked = { objectClicked}
+            />
+        }
         { !!sceneInfo && <LeftPanel 
                           sceneMain       = { sceneMain }
                           sceneInfo       = { sceneInfo } 
@@ -179,7 +222,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                           />
         }
 
-        <Help/>
+        {/* <Help/> */}
 
         <ToolPanel
           handleLogout             = { handleLogout }

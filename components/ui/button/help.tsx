@@ -34,7 +34,7 @@ export function Help(){
             
                 <button
                     className="flex justify-end p-1 
-                    bg-grayFill hover:bg-blue-500 w-10 h-10 rounded-full"
+                    bg-grayFill hover:bg-blueHover w-10 h-10 rounded-full"
                     onClick     ={() => { setClicked(!isClicked);   }}
                     onMouseEnter={() => { setHovered(true);         }}
                     onMouseLeave={() => { setHovered(false);        }}
