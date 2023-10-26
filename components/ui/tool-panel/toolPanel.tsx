@@ -68,6 +68,8 @@ export function ToolPanel({
             }
         };
     }
+  }
+  
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
     // --> Button A is automatically unpressed
@@ -94,11 +96,6 @@ export function ToolPanel({
 
   const [isBoxButtonPressed, setBoxButtonPressed] = useState<boolean>(true);
   const boxImageSrc = isBoxButtonPressed ? "boxUnpressed.svg" : "boxPressed.svg";
-
-  const handleBoxButtonClick = () => {
-    toggleButtonPressed("cube");
-    setBoxButtonPressed(!isBoxButtonPressed);
-  };
 
   const handleLoadButtonClick = () => {
     fileInputRef.current?.click();
