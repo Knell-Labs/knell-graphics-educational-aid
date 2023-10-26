@@ -52,28 +52,27 @@ export function ToolPanel({
   const buttonText = "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
 
   const toggleButtonPressed = (objectType: string) => {
-      // If button A is pressed and the user presses button B
-      // --> Button A is automatically unpressed
-      let existingPressedButton = false;
-      for(let shape in shapePressList){
-        if(shape !== objectType && isShapeButtonPressed[shape] === true){
-          existingPressedButton = true;
-          setIsShapeButtonPressed( prevState => ({
-            ...prevState,
-            [shape]: false,
-          }));
-          break;
-        }
+    // If button A is pressed and the user presses button B
+    // --> Button A is automatically unpressed
+    let existingPressedButton = false;
+    for(let shape in shapePressList){
+      if(shape !== objectType && isShapeButtonPressed[shape] === true){
+        existingPressedButton = true;
+        setIsShapeButtonPressed( prevState => ({
+          ...prevState,
+          [shape]: false,
+        }));
+        break;
       }
-      if(!existingPressedButton){
-        setIsObjectButtonPressed(!isObjectButtonPressed);
-      }
-      setObjectTypePressed(objectType);
-      setIsShapeButtonPressed( prevState => ({
-        ...prevState,
-        [objectType]: !prevState[objectType],
-      }));
-    };
+    }
+    if(!existingPressedButton){
+      setIsObjectButtonPressed(!isObjectButtonPressed);
+    }
+    setObjectTypePressed(objectType);
+    setIsShapeButtonPressed( prevState => ({
+      ...prevState,
+      [objectType]: !prevState[objectType],
+    }));
   };
 
   const [isBoxButtonPressed, setBoxButtonPressed] = useState<boolean>(true);
@@ -108,7 +107,7 @@ export function ToolPanel({
     verticalAlign: 'middle',
     margin: '0 5px',
     borderRadius: '20px',
-  }} />
+  }}/>
 
   return (
     <div className="absolute top-0 left-1/2 m-2 flex items-center gap-2  p-2 rounded-lg select-none"
@@ -124,27 +123,31 @@ export function ToolPanel({
         <DropdownButton
           items     = {profileMenuOpts}
           variant   = 'primary-link'
-          className = 'px-0 py-0 flex items-center'
+          className = 'ps-2 pe-1 pb-0 pt-0 flex items-center'
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 block">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </DropdownButton>
       ) : (
-        <Button type="button" onClick={handleShowLoginForm}>
-          Login
+        <Button type="button" size="small" onClick={handleShowLoginForm}>
+          {"Login"}
         </Button>
       )}
 
       <Divider />
 
-      <button className="bg-graySubFill text-white hover:bg-blue-500 w-20 rounded-lg p-1" onClick={() => {
-        setIsSketchButtonPressed(!isSketchButtonPressed);
-        console.log(isSketchButtonPressed);
-      }}>
-        Sketch
-      </button>
-
+      <Button 
+        type="button"
+        size="small"
+        variant="secondary"
+        onClick={() => {
+          setIsSketchButtonPressed(!isSketchButtonPressed);
+          console.log(isSketchButtonPressed);
+        }}
+      >
+        {"Sketch"}
+      </Button>
       <Divider/>
       
       <button className={ buttonShape }
