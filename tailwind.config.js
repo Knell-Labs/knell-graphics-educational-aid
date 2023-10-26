@@ -12,7 +12,7 @@ module.exports = {
       colors: {
         grayFill: '#1E1D20',
         graySubFill: '#29282B',
-        blueHover: '#1E40AF',
+        blueHover: '#5046e5',
         redHighlight: '#780d43',
       },
       backgroundImage: {

@@ -1,24 +1,24 @@
 import { ThreeElements, useFrame  } from '@react-three/fiber';
 import { useRef, useState, useMemo } from 'react';
-import { Dispatch, SetStateAction } from "react";
 import * as THREE from 'three';
 import { useCursor  } from '@react-three/drei'
 import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
 
-type CreateCubeProps = {
-  setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
+type CreateConeProps = {
   isObjectButtonPressed: boolean;
   color?: string;
-  size?: [number, number, number];
+  radius?: number;
+  height?: number;
+  radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreateCubeProps) {
-  const cubeRef = useRef<THREE.Mesh>(null!);
+export function CreateCone({ isObjectButtonPressed, color, radius = 0.5, height = 1, radialSegments = 32, ...props }: CreateConeProps) {
+  const coneRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
-  const meshColor = color ? color : (transformActive ? 'white' : 'white'); 
+  const meshColor = color ? color : (transformActive ? 'orange' : 'white'); 
   const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial( { color: 0x000000, depthTest: true, opacity: 0.5, transparent: true } ), []);
 
@@ -26,12 +26,12 @@ export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, siz
 
   useFrame(() => {
     if (groupRef.current){
-      groupRef.current.type = "CubeGroup"
+      groupRef.current.type = "ConeGroup"
     }
-    if (cubeRef.current && outlineRef.current) {
-      outlineRef.current.position.copy(cubeRef.current.position);
-      outlineRef.current.rotation.copy(cubeRef.current.rotation);
-      outlineRef.current.scale.copy(cubeRef.current.scale);
+    if (coneRef.current && outlineRef.current) {
+      outlineRef.current.position.copy(coneRef.current.position);
+      outlineRef.current.rotation.copy(coneRef.current.rotation);
+      outlineRef.current.scale.copy(coneRef.current.scale);
     }
   });
   
@@ -39,29 +39,25 @@ export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, siz
     <group ref = { groupRef }>
       <mesh
         {...props}
-        ref = { cubeRef }
+        ref = { coneRef }
         
         onClick= { (event) => {
             if(!isObjectButtonPressed){
                 (event.stopPropagation(), setTransformActive(true))
-                setObjectClicked(cubeRef.current)
             }
         }}
-        onPointerMissed = { (event) => {
-            (event.type === 'click' && setTransformActive(false));
-            setObjectClicked(null);
-        }}
+        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
-        <boxGeometry args = { size } />
+        <coneGeometry args = { [radius, height, radialSegments] } />
         <meshStandardMaterial color = { meshColor } />
       </mesh>
 
-      {transformActive && <TransformCustomControls mesh = { cubeRef }/>}
+      {transformActive && <TransformCustomControls mesh = { coneRef }/>}
 
       <lineSegments ref = { outlineRef } material = { lineMaterial }>
-        <edgesGeometry attach = "geometry" args = { [new THREE.BoxGeometry(...size)] } />
+        <edgesGeometry attach = "geometry" args = { [new THREE.ConeGeometry(radius, height, radialSegments)] } />
       </lineSegments>
     </group>
   )
