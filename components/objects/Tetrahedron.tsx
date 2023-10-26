@@ -10,7 +10,7 @@ type CreateTetrahedronProps = {
   size?: number; // Note: Tetrahedron only needs a single size value (radius)
 } & ThreeElements['mesh'];
 
-export function CreateTetrahedron({ isObjectButtonPressed, color, size = 1, ...props }: CreateTetrahedronProps) {
+export function CreateTetrahedron({ isObjectButtonPressed, color, size = 0.6, ...props }: CreateTetrahedronProps) {
   const tetraRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -38,7 +38,7 @@ export function CreateTetrahedron({ isObjectButtonPressed, color, size = 1, ...p
       <mesh
         {...props}
         ref = { tetraRef }
-        rotation = { [Math.PI/4, 0, 0] } // Rotate the tetrahedron to sit flat on one of its faces
+        rotation = { [(2*Math.PI)/3  + 0.08, (Math.PI)/4, 0] } // Rotate the tetrahedron to sit flat on one of its faces
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
             (event.stopPropagation(), setTransformActive(true))

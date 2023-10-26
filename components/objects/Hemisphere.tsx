@@ -11,7 +11,7 @@ type CreateHemisphereProps = {
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateHemisphere({ isObjectButtonPressed, color, radius = 0.7, radialSegments = 32, ...props }: CreateHemisphereProps) {
+export function CreateHemisphere({ isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateHemisphereProps) {
   const hemisphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 

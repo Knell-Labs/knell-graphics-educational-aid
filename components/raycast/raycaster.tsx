@@ -127,6 +127,7 @@ export function RayCaster({
 function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, pointZ: number, scene: Object, currCameraPos: CameraDirection ){
   switch (currTool){
     
+    case "pyramid":
     case "cube": {
       var geometry = new THREE.PlaneGeometry(1, 1); // Width and height of the plane
       var material = new THREE.MeshBasicMaterial({
@@ -165,8 +166,11 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
       break;
     }
 
+    case "cylinder":
+    case "cone":
+    case "hemisphere":
     case "sphere": {
-      const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
+      const geometry = new THREE.CircleGeometry(0.5, 32); // Using CircleGeometry for the overlay
       const material = new THREE.MeshBasicMaterial({ 
         color: 0x00ff00, 
         side: THREE.DoubleSide 
@@ -203,34 +207,6 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
       break;
     }
 
-    case "cylinder": {
-      const geometry = new THREE.CircleGeometry(0.5, 32); // Adjust the radius based on your cylinder's size
-      const material = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff00, side: 
-        THREE.DoubleSide 
-      });
-      const circle = new THREE.Mesh(geometry, material);
-      circle.name = "temp cylinder";
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
-      scene.add(circle);
-      break;
-    }
-
-    case "cone": {
-      const geometry = new THREE.CircleGeometry(0.5, 32); // Using CircleGeometry for the cone overlay
-      const material = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff00, 
-        side: THREE.DoubleSide 
-      });
-      const circle = new THREE.Mesh(geometry, material);
-      circle.name = "temp cone-circle";
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
-      scene.add(circle);
-      break;
-    }
-
     case "tetrahedron": {
       const geometry = new THREE.CircleGeometry(0.6, 3); // Using CircleGeometry with 3 segments to represent a triangle
       const material = new THREE.MeshBasicMaterial({ 
@@ -240,36 +216,9 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
       const triangle = new THREE.Mesh(geometry, material);
       triangle.name = "temp triangle";
       triangle.rotation.x = Math.PI / 2;
+      triangle.rotation.z = .52;
       triangle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
       scene.add(triangle);
-      break;
-    }
-
-    case "pyramid": {
-      const geometry = new THREE.PlaneGeometry(1, 1);  // Using PlaneGeometry for a square base
-      const material = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff00, 
-        side: THREE.DoubleSide 
-      });
-      const pyramidBase = new THREE.Mesh(geometry, material);
-      pyramidBase.name = "temp pyramidBase";
-      pyramidBase.rotation.x = Math.PI / 2;  // Rotate to lie flat on the grid
-      pyramidBase.position.set(pointX, 0.01, pointZ);
-      scene.add(pyramidBase);
-      break;
-    }
-
-    case "hemisphere": {
-      const geometry = new THREE.CircleGeometry(0.7, 32); // Using CircleGeometry for the overlay
-      const material = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff00, 
-        side: THREE.DoubleSide 
-      });
-      const circle = new THREE.Mesh(geometry, material);
-      circle.name = "temp hemisphere";
-      circle.rotation.x = Math.PI / 2;
-      circle.position.set(pointX, 0.01, pointZ); // Slightly above the grid
-      scene.add(circle);
       break;
     }
   
@@ -283,6 +232,7 @@ function ActiveToolOverLay(currTool: string, pointX: number, pointY: number, poi
 function DestroyActiveToolOverlay(currTool: string, scene: Object){
   switch (currTool){
 
+    case "pyramid":
     case "cube":{
       var existingPlane = scene.getObjectByName("temp plane");
       // If it exists, remove it from the scene
@@ -297,6 +247,9 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       break;
     }
 
+    case "cylinder":
+    case "cone":
+    case "hemisphere":
     case "sphere": {
       const existingCircle = scene.getObjectByName("temp circle");
       if (existingCircle) {
@@ -307,52 +260,12 @@ function DestroyActiveToolOverlay(currTool: string, scene: Object){
       break;
     }
 
-    case "cylinder": {
-      const existingCylinder = scene.getObjectByName("temp cylinder");
-      if (existingCylinder) {
-        scene.remove(existingCylinder);
-        existingCylinder.geometry.dispose();
-        existingCylinder.material.dispose();
-      }
-      break;
-    }
-
-    case "cone": {
-      const existingConeCircle = scene.getObjectByName("temp cone-circle");
-      if (existingConeCircle) {
-        scene.remove(existingConeCircle);
-        existingConeCircle.geometry.dispose();
-        existingConeCircle.material.dispose();
-      }
-      break;
-    }
-
     case "tetrahedron": {
       const existingTriangle = scene.getObjectByName("temp triangle");
       if (existingTriangle) {
         scene.remove(existingTriangle);
         existingTriangle.geometry.dispose();
         existingTriangle.material.dispose();
-      }
-      break;
-    }
-
-    case "pyramid": {
-      const existingPyramidBase = scene.getObjectByName("temp pyramidBase");
-      if (existingPyramidBase) {
-        scene.remove(existingPyramidBase);
-        existingPyramidBase.geometry.dispose();
-        existingPyramidBase.material.dispose();
-      }
-      break;
-    }
-
-    case "hemisphere": {
-      const existingHemisphere = scene.getObjectByName("temp hemisphere");
-      if (existingHemisphere) {
-        scene.remove(existingHemisphere);
-        existingHemisphere.geometry.dispose();
-        existingHemisphere.material.dispose();
       }
       break;
     }
@@ -410,17 +323,13 @@ function objectPlacingPosition( currCameraPos: CameraDirection,  pointX: number,
 function displacementDistance( shapeName: string ): number{
     switch (shapeName) {
       case 'cube':
-        return 0.5;
       case 'sphere':
-        return 0.7;
       case 'cylinder':
-        return 0.5;
       case 'cone':
-        return 0.5;
-      case 'tetrahedron':
-        return 0.5;
       case 'pyramid':
         return 0.5;
+      case 'tetrahedron':
+        return 0.2;
       case 'hemisphere':
         return 0.0;
       default:

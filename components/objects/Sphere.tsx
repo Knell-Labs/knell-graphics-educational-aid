@@ -11,7 +11,7 @@ type CreateSphereProps = {
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateSphere({ isObjectButtonPressed, color, radius = 0.7, radialSegments = 32, ...props }: CreateSphereProps) {
+export function CreateSphere({ isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateSphereProps) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
