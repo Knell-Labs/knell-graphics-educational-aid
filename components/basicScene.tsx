@@ -19,8 +19,8 @@ import { CreateHemisphere } from './objects/Hemisphere';
 import { RayCaster } from './raycast/raycaster';
 import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
-import { STLImporter } from "./ui/button/importSTL";
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { STLImporter } from './ui/button/importSTL';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 
 
@@ -75,6 +75,8 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
   const [planeOrientation, setPlaneOrientation] = useState<TwoDimPlaneRotation>([-Math.PI/2, 0, 0])
   const [girdOrientation, setGirdOrientation] = useState<TwoDimPlaneRotation>([0, 0, 0])
 
+  const stlImporterRef = useRef(null);
+
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
@@ -110,6 +112,14 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
         />
 
         {/*<STLImporter addObjectToScene={addObjectToScene} />*/}
+        
+        {/*<STLImporter 
+        ref={stlImporterRef} 
+        addObjectToScene={addObjectToScene} 
+        setObjectClicked={setObjectClicked}
+        isObjectButtonPressed={isObjectButtonPressed}
+        />*/}
+
 
         {objectsAdded.map((object, idx) => {
             switch (object.type) {

@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { TransformCustomControls } from "../../../components/controls/objectControls/TransformCustomControls";
+import { Dispatch, SetStateAction } from "react";
 
 interface STLImporterProps {
     addObjectToScene: (type: string, props?: any) => void;
+    color?: string;
+    size?: [number, number, number];
+    setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
+    isObjectButtonPressed: boolean;
 }
 
-const STLImporter: React.FC<STLImporterProps> = ({ addObjectToScene }) => {
+export function STLImporter({ 
+    addObjectToScene, 
+    color = 'white', 
+    size = [0.1, 0.1, 0.1], 
+    setObjectClicked, 
+    isObjectButtonPressed 
+}: STLImporterProps) {
+    const meshRef = useRef<THREE.Mesh>(null!);
+    const [transformActive, setTransformActive] = useState(false);
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -33,11 +48,11 @@ const STLImporter: React.FC<STLImporterProps> = ({ addObjectToScene }) => {
         // Translate the geometry to move its center to the origin
         geometry.translate(-center.x, -center.y, -center.z);
     
-        const material = new THREE.MeshStandardMaterial();
+        const material = new THREE.MeshStandardMaterial({ color });
         const mesh = new THREE.Mesh(geometry, material);
         
         // Explicitly set the scale
-        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.scale.set(...size);
     
         // Set the mesh's position to the origin
         mesh.position.set(0, 0, 0);
@@ -46,7 +61,25 @@ const STLImporter: React.FC<STLImporterProps> = ({ addObjectToScene }) => {
         addObjectToScene('stlObject', { mesh });
     };
 
-    return <input type="file" accept=".stl" onChange={handleFileChange} />;
-};
-
-export default STLImporter;
+    return (
+        <>
+            <input type="file" accept=".stl" onChange={handleFileChange} />
+            <mesh
+                ref={meshRef}
+                onClick={(event) => {
+                    if (!isObjectButtonPressed) {
+                        event.stopPropagation();
+                        setTransformActive(true);
+                        setObjectClicked(meshRef.current);
+                    }
+                }}
+                onPointerMissed={() => {
+                    setTransformActive(false);
+                    setObjectClicked(null);
+                }}
+            >
+                {transformActive && <TransformCustomControls mesh={meshRef} />}
+            </mesh>
+        </>
+    );
+}
