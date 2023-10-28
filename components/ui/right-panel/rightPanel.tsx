@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 
 enum fieldToChange {
     x,
@@ -74,18 +73,19 @@ function setPos( objectClicked: THREE.Mesh | null, posToChange: fieldToChange, p
 function setRotEuler( objectClicked: THREE.Mesh | null, posToChange: fieldToChange, angleChangeDeg: number){
 
     //Convert to rads
-    let angleChangeRad = (angleChangeDeg / 180) * Math.PI
+    let angleChangeRad = THREE.MathUtils.degToRad(angleChangeDeg);
+    
     switch (posToChange){
         case fieldToChange.x: {
-          objectClicked?.rotateX(angleChangeRad - objectClicked.rotation.x);
+          objectClicked!.rotation.x = angleChangeRad;
           break;
         }
         case fieldToChange.y: {
-          objectClicked?.rotateY(angleChangeRad - objectClicked.rotation.y);
+          objectClicked!.rotation.y = angleChangeRad;
           break;
         }
         case fieldToChange.z: {
-          objectClicked?.rotateZ(angleChangeRad - objectClicked.rotation.z);
+          objectClicked!.rotation.z = angleChangeRad;
           break;
         }
         default: {
@@ -153,8 +153,9 @@ export function RightPanel({objectClicked}: RightPanelProps) {
   const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
   const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
   const colorDisplay = "rgb(" + Math.round(objectClicked?.material.color.r * 255) + ", " + Math.round(objectClicked?.material.color.g * 255)+ ", " + Math.round(objectClicked?.material.color.b * 255) + ")";
-
-  const propertySection = (sectionName: string, fieldName: string, ratio: number) => (
+  
+  // TODO: the values in right panel are NOT updated if you transform the object using mouse 
+  const propertySection = (sectionName: string, fieldName: string, ratio: number, decimalValue: number) => (
     <div>
       {sectionName}
       {Object.values(fields).map((field) => (
@@ -168,7 +169,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
             type="text"
             maxLength={15}
             defaultValue={formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
-            onBlur={() => updateProperty(`${sectionName.toLowerCase()}-${field}`, objectClicked)}
+            onBlur={() => updateProperty(`${sectionName.toLowerCase()}-${field}`, objectClicked, decimalValue)}
           />
         </div>
       ))}
@@ -196,8 +197,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
 
     { isCollapsed ? 
       <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm">
-        <h1 className='text-base'>Object Properties</h1>
-        <h2 className='italic'> Object name </h2>
+        <h1 className='italic'> Object name </h1>
         <LineSeparator/>
 
         <div>
@@ -211,8 +211,9 @@ export function RightPanel({objectClicked}: RightPanelProps) {
                   id={`color-${color_char}`}
                   className="p-0.5 w-full bg-grayFill"
                   defaultValue={formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
+                  maxLength={3}
                   onBlur={() => {
-                    updateProperty(`color-${color_char}`, objectClicked);
+                    updateProperty(`color-${color_char}`, objectClicked, 2);
                   }}
                   />
               </div>
@@ -223,11 +224,11 @@ export function RightPanel({objectClicked}: RightPanelProps) {
         
         <LineSeparator/>
         <div>
-          {propertySection("Position", "", 1)}
+          {propertySection("Position", "", 1, 2)}
           <LineSeparator/>
-          {propertySection("Rotation", "-axis", (180 / Math.PI))}
+          {propertySection("Rotation", "-axis", (180 / Math.PI), 2)}
           <LineSeparator/>
-          {propertySection("Scale", "", 1)}
+          {propertySection("Scale", "", 1, 2)}
         </div>
 
         <LineSeparator/>
@@ -277,24 +278,26 @@ const formatNumber = (number: number, decimal: number) => {
 
 // ------------------------------------------------------------------------------------------------------
 
-function updateProperty(id: string, object: THREE.Mesh | null){
+function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
   // id = property + "-" + position
   let input = document.getElementById(id) as HTMLInputElement;
   const property = id.substring(0,id.length - 2).toLowerCase() as keyof typeof object;
-  let pos, prevInput;
   
   if(object !== undefined && input !== undefined){
-
+    let pos = id.charAt(id.length - 1);
+    let prevInput;
     if(property === "color"){
-      pos = id.charAt(id.length - 1) as keyof typeof colorToChange;
       prevInput = formatNumber(object!.material[property][pos] * 255,0);
     }
+    else if(property === "rotation"){
+      prevInput = formatNumber(THREE.MathUtils.radToDeg(object![property][pos]),decimal);
+    }
     else{
-      pos = id.charAt(id.length - 1) as keyof typeof fieldToChange;
-      prevInput = formatNumber(object![property][pos],2);
+      prevInput = formatNumber(object![property][pos],decimal);
     }
     
     // Only proceed if input content changes
+    input.value = formatNumber(parseFloat(input.value),decimal);
     if(input.value !== prevInput){
       // Remove whitespace
       if(input.value.replace(/\s/g, "") === ""){
@@ -309,22 +312,26 @@ function updateProperty(id: string, object: THREE.Mesh | null){
         input.value = prevInput;
       }
       else {
-        input.value = formatNumber(parseFloat(input.value),2);
         switch(property){
           case "position": {
-            setPos(object,fieldToChange[pos],parseFloat(input.value));
+            setPos(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
             break;
           }
           case "rotation": {
-            setRotEuler(object,fieldToChange[pos],parseFloat(input.value));
+            console.log("prev angle = " + prevInput + " degrees = " + formatNumber(object![property][pos],decimal) + " rads");
+            console.log("new angle = " + input.value + " degrees");
+            console.log("");
+            // Angle is a value between 0 and 360 --> mod 360
+            input.value = (parseFloat(input.value) % 360).toString();
+            setRotEuler(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
             break;
           }
           case "scale": {
-            setScale(object,fieldToChange[pos],parseFloat(input.value));
+            setScale(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
             break;
           }
           case "color": {
-            setColorRGB(object, colorToChange[pos],parseInt(input.value));
+            setColorRGB(object, colorToChange[pos as keyof typeof colorToChange],parseInt(input.value));
             break;
           }
           default:
