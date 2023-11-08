@@ -1,10 +1,12 @@
 import { ThreeElements, useFrame } from '@react-three/fiber';
 import { useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
+import { Dispatch, SetStateAction } from "react";
 import { useCursor } from '@react-three/drei'
 import { TransformCustomControls } from "../../components/controls/objectControls/TransformCustomControls"
 
 type CreateCylinderProps = {
+  setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
   isObjectButtonPressed: boolean;
   color?: string;
   height?: number;
@@ -12,13 +14,13 @@ type CreateCylinderProps = {
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateCylinder({ isObjectButtonPressed, color, height = 1, radius = 0.5, radialSegments = 32, ...props }: CreateCylinderProps) {
+export function CreateCylinder({ setObjectClicked,isObjectButtonPressed, color, height = 1, radius = 0.5, radialSegments = 32, ...props }: CreateCylinderProps) {
   const cylinderRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
-  const meshColor = color ? color : (transformActive ? 'orange' : 'white');
+  const meshColor = color ? color : (transformActive ? 'white' : 'white');
   const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial({ color: 0x000000, depthTest: true, opacity: 0.5, transparent: true }), []);
 
@@ -44,9 +46,13 @@ export function CreateCylinder({ isObjectButtonPressed, color, height = 1, radiu
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
             (event.stopPropagation(), setTransformActive(true))
+            setObjectClicked(cylinderRef.current)
           }
         } }
-        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
+        onPointerMissed = { (event) => {
+          (event.type === 'click' && setTransformActive(false))
+          setObjectClicked(null);
+       }}
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >

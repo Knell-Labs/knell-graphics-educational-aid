@@ -123,26 +123,31 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                             />;
                 case 'cylinder':
                     return <CreateCylinder
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
                 case 'cone':
                     return <CreateCone
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
                 case 'tetrahedron':
                     return <CreateTetrahedron
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
                 case 'pyramid':
                     return <CreatePyramid
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
                 case 'hemisphere':
                     return <CreateHemisphere
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;

@@ -1,23 +1,25 @@
 import { ThreeElements, useFrame } from '@react-three/fiber';
 import { useRef, useState, useMemo } from 'react';
+import { Dispatch, SetStateAction } from "react";
 import * as THREE from 'three';
 import { useCursor } from '@react-three/drei'
 import { TransformCustomControls } from "../../components/controls/objectControls/TransformCustomControls"
 
 type CreateHemisphereProps = {
+  setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
   isObjectButtonPressed: boolean;
   color?: string;
   radius?: number;
   radialSegments?: number;
 } & ThreeElements['mesh'];
 
-export function CreateHemisphere({ isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateHemisphereProps) {
+export function CreateHemisphere({ setObjectClicked,isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateHemisphereProps) {
   const hemisphereRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
-  const meshColor = color ? color : (transformActive ? 'orange' : 'white');
+  const meshColor = color ? color : (transformActive ? 'white' : 'white');
   const groupRef = useRef<THREE.Group>(null);
   const lineMaterial = useMemo(() => new THREE.LineBasicMaterial({ color: 0x000000, depthTest: true, opacity: 0.5, transparent: true }), []);
 
@@ -44,9 +46,13 @@ export function CreateHemisphere({ isObjectButtonPressed, color, radius = 0.5, r
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
             (event.stopPropagation(), setTransformActive(true))
+            setObjectClicked(hemisphereRef.current)
           }
         } }
-        onPointerMissed = { (event) => event.type === 'click' && setTransformActive(false) }
+        onPointerMissed = { (event) => {
+          (event.type === 'click' && setTransformActive(false))
+          setObjectClicked(null);
+       }}
         onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
         onPointerOut    = { (event) => hover(false) }
       >
