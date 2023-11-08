@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Dispatch, SetStateAction } from "react";
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { useSTLImporter } from '../../../components/ui/button/importSTL';
 import * as THREE from 'three';
 import {Tooltip as ReactTooltip} from 'react-tooltip';
 
@@ -21,6 +22,7 @@ interface ToolPanelProps {
   addObjectToScene          : (type: string, props?: any) => void;
   isSketchButtonPressed     : boolean;
   setIsSketchButtonPressed  : Dispatch<SetStateAction<boolean>>;
+  setObjectClicked          : Dispatch<SetStateAction<THREE.Mesh | null>>;
 }
 
 export function ToolPanel({
@@ -33,7 +35,8 @@ export function ToolPanel({
   setObjectTypePressed,
   addObjectToScene,
   isSketchButtonPressed,
-  setIsSketchButtonPressed
+  setIsSketchButtonPressed,
+  setObjectClicked
 }: ToolPanelProps) {
 
   const shapePressList: {[key: string]: boolean} = {
@@ -54,21 +57,8 @@ export function ToolPanel({
 
   const fileInputRef = useRef(null);
   
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onload = (event) => {
-            const contents = event.target?.result;
-            if (contents) {
-                const loader = new STLLoader();
-                const geometry = loader.parse(contents as ArrayBuffer);
-                addObjectToScene('stlObject', { mesh: new THREE.Mesh(geometry, new THREE.MeshNormalMaterial()) });
-            }
-        };
-    }
-  }
+  // Use the useSTLImporter hook to get the handleFileChange function
+  const { handleFileChange } = useSTLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed);
   
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
@@ -166,20 +156,20 @@ export function ToolPanel({
       <Divider/>
 
       <Button 
-        type = "button"
-        size = "small"
+        type    = "button"
+        size    = "small"
         variant = "secondary"
-        onClick = { handleLoadButtonClick }>
+        onClick = { handleLoadButtonClick }
+      >
         {"Load"}
-
+      </Button>
       <input 
-        type = "file" 
-        ref = { fileInputRef } 
-        style = {{ display: 'none' }} 
-        accept = ".stl" 
+        type     = "file" 
+        ref      = { fileInputRef } 
+        style    = { { display: 'none' } } 
+        accept   = ".stl" 
         onChange = { handleFileChange } 
       />
-      </Button>
       
       <Divider/>
       

@@ -49,6 +49,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 }) => {
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
+  const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
@@ -112,7 +113,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
         />
 
         {/*<STLImporter addObjectToScene={addObjectToScene} />*/}
-        
+
         {/*<STLImporter 
         ref={stlImporterRef} 
         addObjectToScene={addObjectToScene} 
@@ -125,13 +126,13 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
             switch (object.type) {
                 case 'cube':
                     return <CreateCube 
-                             setObjectClicked={setObjectClicked}
+                             setObjectClicked = { setObjectClicked }
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
                 case 'sphere':
                     return <CreateSphere
-                            setObjectClicked={setObjectClicked}
+                            setObjectClicked = { setObjectClicked }
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
@@ -254,6 +255,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
           addObjectToScene         = { addObjectToScene }
           isSketchButtonPressed    = { isSketchButtonPressed }
           setIsSketchButtonPressed = { setIsSketchButtonPressed }
+          setObjectClicked         = { setSelectedObject }
         />
 
         <CameraSwitch
