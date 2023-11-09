@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Dispatch, SetStateAction } from "react";
-import { STLImporter  } from '../../../components/ui/button/importSTL';
+import { STLImporter, useSTLImporter  } from '../../../components/ui/button/importSTL';
 import * as THREE from 'three';
 import {Tooltip as ReactTooltip} from 'react-tooltip';
 
@@ -57,7 +57,7 @@ export function ToolPanel({
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Use the useSTLImporter hook to get the handleFileChange function
-  const { handleFileChange } = STLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed);
+  const { handleFileChange } = useSTLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed);
   
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
