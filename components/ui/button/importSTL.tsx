@@ -28,6 +28,7 @@ export const useSTLImporter = (
         const material = new THREE.MeshStandardMaterial({ color });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.scale.set(...size);
+        mesh.rotation.x = -Math.PI / 2; // Rotate 90 degrees on the X-axis
         addObjectToScene('stlObject', { mesh });
         setObjectClicked(mesh);
     }, [addObjectToScene, setObjectClicked, color, size]);
