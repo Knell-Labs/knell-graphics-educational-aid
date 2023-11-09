@@ -13,7 +13,7 @@ interface STLImporterProps {
 }
 
 // This hook can now be exported and used by the toolPanel
-export const useSTLImporter = (
+export const STLImporter = (
     addObjectToScene: (type: string, props?: any) => void,
     setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>,
     isObjectButtonPressed: boolean,
@@ -63,38 +63,4 @@ export const useSTLImporter = (
         setTransformActive,
         handleFileChange
     };
-}
-
-export function STLImporter({ 
-    addObjectToScene, 
-    color, 
-    size, 
-    setObjectClicked, 
-    isObjectButtonPressed 
-}: STLImporterProps) {
-    const {
-        meshRef,
-        transformActive,
-        setTransformActive,
-        handleFileChange
-    } = useSTLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed, color, size);
-
-    return (
-        <mesh
-            ref={meshRef}
-            onClick={(event) => {
-                if (!isObjectButtonPressed) {
-                    event.stopPropagation();
-                    setTransformActive(true);
-                    setObjectClicked(meshRef.current);
-                }
-            }}
-            onPointerMissed={() => {
-                setTransformActive(false);
-                setObjectClicked(null);
-            }}
-        >
-            {transformActive && <TransformCustomControls mesh={meshRef} />}
-        </mesh>
-    );
 }

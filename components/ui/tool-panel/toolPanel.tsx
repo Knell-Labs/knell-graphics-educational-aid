@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Dispatch, SetStateAction } from "react";
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
-import { useSTLImporter } from '../../../components/ui/button/importSTL';
+import { STLImporter  } from '../../../components/ui/button/importSTL';
 import * as THREE from 'three';
 import {Tooltip as ReactTooltip} from 'react-tooltip';
 
@@ -55,10 +54,10 @@ export function ToolPanel({
   const buttonShapePressed = "bg-blueHover rounded-lg p-1 w-8 h-8";
   const buttonText = "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
 
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Use the useSTLImporter hook to get the handleFileChange function
-  const { handleFileChange } = useSTLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed);
+  const { handleFileChange } = STLImporter(addObjectToScene, setObjectClicked, isObjectButtonPressed);
   
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
@@ -162,14 +161,14 @@ export function ToolPanel({
         onClick = { handleLoadButtonClick }
       >
         {"Load"}
+        <input 
+          type     = "file" 
+          ref      = { fileInputRef } 
+          style    = { { display: 'none' } } 
+          accept   = ".stl" 
+          onChange = { handleFileChange } 
+        />
       </Button>
-      <input 
-        type     = "file" 
-        ref      = { fileInputRef } 
-        style    = { { display: 'none' } } 
-        accept   = ".stl" 
-        onChange = { handleFileChange } 
-      />
       
       <Divider/>
       
