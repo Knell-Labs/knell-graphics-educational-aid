@@ -25,7 +25,7 @@ function setColorRGB(objectClicked: THREE.Mesh | null, colToChange: colorToChang
   const G = objectClicked?.material.color.g;
   const B = objectClicked?.material.color.b;
   let colorRGB;
-
+  
   switch (colToChange){
     case colorToChange.r: {
       colorRGB = new THREE.Color(newValue/255, G, B);
@@ -146,15 +146,12 @@ export function RightPanel({objectClicked}: RightPanelProps) {
     }
   }, [objectClicked])
   
- 
-  
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
+  const colorID = "#" + objectClicked?.material.color.getHexString();
 
   const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
   const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
-  const colorDisplay = "rgb(" + Math.round(objectClicked?.material.color.r * 255) + ", " + Math.round(objectClicked?.material.color.g * 255)+ ", " + Math.round(objectClicked?.material.color.b * 255) + ")";
-  
-  // TODO: the values in right panel are NOT updated if you transform the object using mouse 
+
   const propertySection = (sectionName: string, fieldName: string, ratio: number, decimalValue: number) => (
     <div>
       {sectionName}
@@ -163,14 +160,17 @@ export function RightPanel({objectClicked}: RightPanelProps) {
           <label className="whitespace-nowrap px-4 text-gray-400"> 
             {field.toString().toUpperCase()}{fieldName} 
           </label>
-          <input
-            id={`${sectionName.toLowerCase()}-${field}`}
+          <div  
+            id={`${sectionName.toLowerCase()}_${field}`}
             className="p-0.5 w-full bg-grayFill"
-            type="text"
-            maxLength={15}
-            defaultValue={formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
-            onBlur={() => updateProperty(`${sectionName.toLowerCase()}-${field}`, objectClicked, decimalValue)}
-          />
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onBlur={() => {
+              updateProperty(`${sectionName.toLowerCase()}_${field}`,objectClicked,2);
+            }}
+          >
+            {formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
+          </div>
         </div>
       ))}
     </div>
@@ -203,23 +203,36 @@ export function RightPanel({objectClicked}: RightPanelProps) {
         <div>
           Color
           <div className='w-48 h-48 justify-self-center p-4'> <img src="color_wheel.png"/> </div>
-          <div className='grid grid-cols-3 content-evenly'>
+          <div 
+            id="colorRGBInput"
+            className='grid grid-cols-3 content-evenly'
+          >
             {Object.values(rgb).map((color_char) => (
               <div className="flex items-center border-2 border-grayFill hover:border-gray-600 active:border-gray-600 rounded p-1" key={color_char}>
                 <label className="pr-2 text-gray-400"> {color_char.toString().toUpperCase()} </label>
-                <input 
-                  id={`color-${color_char}`}
+                <div  
+                  id={`color_${color_char}`}
                   className="p-0.5 w-full bg-grayFill"
-                  defaultValue={formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
-                  maxLength={3}
+                  contentEditable={true}
+                  suppressContentEditableWarning={true}
                   onBlur={() => {
-                    updateProperty(`color-${color_char}`, objectClicked, 2);
+                    updateProperty(`color_${color_char}`, objectClicked, 2);
                   }}
-                  />
+                >
+                  {formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
+                </div>
               </div>
             ))}
           </div>
-          <div className="my-2 h-5" style={{ backgroundColor: colorDisplay }}/>
+          <input 
+            className="my-2 w-full" 
+            type="color" 
+            value={colorID}
+            style={{ backgroundColor: colorID }}
+            onChange={(e) => {
+              objectClicked?.material.color.set(e.target.value);
+            }}
+          />
         </div>
         
         <LineSeparator/>
@@ -230,7 +243,6 @@ export function RightPanel({objectClicked}: RightPanelProps) {
           <LineSeparator/>
           {propertySection("Scale", "", 1, 2)}
         </div>
-
         <LineSeparator/>
 
         <div>
@@ -279,13 +291,14 @@ const formatNumber = (number: number, decimal: number) => {
 // ------------------------------------------------------------------------------------------------------
 
 function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
-  // id = property + "-" + position
-  let input = document.getElementById(id) as HTMLInputElement;
+  // id = property + "_" + position
+  let input = document.getElementById(id) as HTMLDivElement;
   const property = id.substring(0,id.length - 2).toLowerCase() as keyof typeof object;
   
   if(object !== undefined && input !== undefined){
     let pos = id.charAt(id.length - 1);
     let prevInput;
+
     if(property === "color"){
       prevInput = formatNumber(object!.material[property][pos] * 255,0);
     }
@@ -297,47 +310,51 @@ function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
     }
     
     // Only proceed if input content changes
-    input.value = formatNumber(parseFloat(input.value),decimal);
-    if(input.value !== prevInput){
+    if(input.textContent != null && input.textContent !== prevInput ){
       // Remove whitespace
-      if(input.value.replace(/\s/g, "") === ""){
-        input.value = prevInput;
+      if(input.textContent.replace(/\s/g, "") === ""){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       // Only accept number
-      else if(isNaN(Number(input.value))){
-        input.value = prevInput;
+      else if(isNaN(Number(input.textContent))){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       // Color value is an integer between 0 and 255
-      else if(property === "color" && (((Number(input.value) * 10 % 10) !== 0) || parseInt(input.value) < 0 || parseInt(input.value) > 255)){
-        input.value = prevInput;
+      else if(property === "color" && (((parseInt(input.textContent) * 10 % 10) !== 0) 
+                                      || parseInt(input.textContent) < 0 || parseInt(input.textContent) > 255)){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       else {
+        input.textContent = formatNumber(parseFloat(input!.textContent!),decimal);
         switch(property){
           case "position": {
-            setPos(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
+            setPos(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "rotation": {
-            console.log("prev angle = " + prevInput + " degrees = " + formatNumber(object![property][pos],decimal) + " rads");
-            console.log("new angle = " + input.value + " degrees");
             console.log("");
             // Angle is a value between 0 and 360 --> mod 360
-            input.value = (parseFloat(input.value) % 360).toString();
-            setRotEuler(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
+            input.textContent = (parseFloat(input.textContent) % 360).toString();
+            setRotEuler(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "scale": {
-            setScale(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.value));
+            setScale(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "color": {
-            setColorRGB(object, colorToChange[pos as keyof typeof colorToChange],parseInt(input.value));
+            setColorRGB(object, colorToChange[pos as keyof typeof colorToChange],parseInt(input.textContent));
             break;
           }
           default:
             break;
         }
       }
+
     }
   }
 }
+
