@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { HexColorPicker } from "react-colorful";
 
 enum fieldToChange {
     x,
@@ -146,11 +147,34 @@ export function RightPanel({objectClicked}: RightPanelProps) {
     }
   }, [objectClicked])
   
+  const [hex, setHex] = useState("#59c09a");
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
-  const colorID = "#" + objectClicked?.material.color.getHexString();
+  const [colorID, setColorID] = useState("#" + objectClicked?.material.color.getHexString());
 
   const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
   const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
+
+  const scrollbarStyles = `
+  ::-webkit-scrollbar {
+    width: 20px; 
+    height: 20px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #1a1a1a ;
+    border-radius: 16px;
+    border: 4px solid #3a3b3a; 
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background-color: #3a3b3a;
+  }
+
+  ::-webkit-scrollbar-button {
+    display:none;
+  }
+`;
 
   const propertySection = (sectionName: string, fieldName: string, ratio: number, decimalValue: number) => (
     <div>
@@ -162,7 +186,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
           </label>
           <div  
             id={`${sectionName.toLowerCase()}_${field}`}
-            className="p-0.5 w-full bg-grayFill"
+            className=" w-full bg-grayFill"
             contentEditable={true}
             suppressContentEditableWarning={true}
             onBlur={() => {
@@ -179,7 +203,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
   return (
     <>
     <div className="fixed flex flex-row top-5 bottom-5 right-3 rounded-lg">
-
+    
     {/* Collapse-Tab Button */}
     <div className="flex justify-start items-center w-8 h-full">
         <button 
@@ -196,15 +220,26 @@ export function RightPanel({objectClicked}: RightPanelProps) {
       </div>
 
     { isCollapsed ? 
-      <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm">
+      <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm overflow-auto">
+        <style>{scrollbarStyles}</style>
         <h1 className='italic'> Object name </h1>
-        <LineSeparator/>
-
+        
         <div>
+        <LineSeparator/>
           Color
-          <div className='w-48 h-48 justify-self-center p-4'> <img src="color_wheel.png"/> </div>
+            <HexColorPicker 
+              color={colorID} 
+              style={{
+                width: "auto",
+                height: "100px",
+                margin: "15px 5px 15px 5px",
+                borderRadius: "0px",
+              }}
+              onChange={ (e) => {
+                setColorID(e);
+                objectClicked?.material.color.set(e);
+              }} />
           <div 
-            id="colorRGBInput"
             className='grid grid-cols-3 content-evenly'
           >
             {Object.values(rgb).map((color_char) => (
@@ -215,8 +250,11 @@ export function RightPanel({objectClicked}: RightPanelProps) {
                   className="p-0.5 w-full bg-grayFill"
                   contentEditable={true}
                   suppressContentEditableWarning={true}
-                  onBlur={() => {
+                  onBlur={(e) => {
                     updateProperty(`color_${color_char}`, objectClicked, 2);
+                  }}
+                  onKeyDown={(e) =>{
+                    limitTextLength(`color_${color_char}`, e, 3);
                   }}
                 >
                   {formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
@@ -224,26 +262,30 @@ export function RightPanel({objectClicked}: RightPanelProps) {
               </div>
             ))}
           </div>
+          {/* Color Display Box / Table Picker */}
           <input 
-            className="my-2 w-full" 
+            className="mt-2 w-full" 
             type="color" 
             value={colorID}
             style={{ backgroundColor: colorID }}
             onChange={(e) => {
+              setColorID(e.target.value);
               objectClicked?.material.color.set(e.target.value);
             }}
           />
         </div>
-        
-        <LineSeparator/>
+
+
         <div>
+          <LineSeparator/>
           {propertySection("Position", "", 1, 2)}
           <LineSeparator/>
           {propertySection("Rotation", "-axis", (180 / Math.PI), 2)}
           <LineSeparator/>
           {propertySection("Scale", "", 1, 2)}
+          <LineSeparator/>
         </div>
-        <LineSeparator/>
+
 
         <div>
           Wireframe 
@@ -335,7 +377,6 @@ function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
             break;
           }
           case "rotation": {
-            console.log("");
             // Angle is a value between 0 and 360 --> mod 360
             input.textContent = (parseFloat(input.textContent) % 360).toString();
             setRotEuler(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
@@ -358,3 +399,17 @@ function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
   }
 }
 
+function limitTextLength(id: string, event: any, maxLength: number){
+  const div = document.getElementById(id) as HTMLDivElement;
+  if(div !== undefined){
+    // Prevent "Return" (13)
+    // If hit max, only allow "Backspace" (8), "Tab" (9), "Left/Right Arrow" (37/39)
+    if( event.keyCode === 13 
+      || 
+      ( div!.textContent!.length >= maxLength 
+        && ( event.keyCode !== 8 && event.keyCode !== 9 && event.keyCode !== 37 && event.keyCode !== 39 )
+    )){
+      event.preventDefault();
+    }
+  }
+}
