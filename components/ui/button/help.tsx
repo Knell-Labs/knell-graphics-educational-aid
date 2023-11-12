@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export function Help(){
 
@@ -14,20 +14,17 @@ export function Help(){
     zoom in Orthographic mode then 
     switch to Perspective mode.`
 
-    const [ctrlButton, setCtrlButton] = useState('');
+    const [ ctrlKeyText, setCtrlKeyText] = useState('CTRL');
 
     useEffect(() => {
-        if(window.navigator.userAgent.indexOf("Mac") != -1){
-            setCtrlButton("control");
+        if (navigator && navigator.userAgent.toLowerCase().includes('mac')) {
+            setCtrlKeyText('Control ^')
         }
-        else {
-            setCtrlButton("CTRL");
-        }
-    }, []);
+    }, [])
 
-    const keyBgStyle = "flex flex-row items-center mt-2";
+    const keyBgStyle = "flex flex-row mt-2";
 
-    const keyLineStyle = `self-center text-center font-bold text-gray-300
+    const keyLineStyle = `self-center text-center text-sm font-bold text-gray-300
                         w-wrap h-wrap mr-2 px-1.5 border-2 border-gray-300 rounded`;
 
     return (
@@ -37,7 +34,7 @@ export function Help(){
             
                 <button
                     className="flex justify-end p-1 
-                    bg-grayFill hover:bg-blue-500 w-10 h-10 rounded-full"
+                    bg-grayFill hover:bg-blueHover w-10 h-10 rounded-full"
                     onClick     ={() => { setClicked(!isClicked);   }}
                     onMouseEnter={() => { setHovered(true);         }}
                     onMouseLeave={() => { setHovered(false);        }}
@@ -49,7 +46,7 @@ export function Help(){
 
 
             { isClicked ? (
-                <div className="flex-grow bg-grayFill text-gray-300 text-sm
+                <div className="flex-grow bg-grayFill text-gray-300
                                 px-4 py-2 pb-3 mt-3 w-wrap h-wrap rounded-lg">
                     
                     <div className="font-bold italic whitespace-pre-line mb-3">
@@ -73,21 +70,21 @@ export function Help(){
                     <div className="font-bold italic whitespace-pre-line mt-5 mb-3">
                         Or press Key and use Mouse
                     </div>
-
+                    
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="leftMouse.svg" width={23}/>
                         &nbsp;Rotate Camera
                     </div>
 
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="rightMouse.svg" width={23}/>
                         &nbsp;Pan Camera
                     </div>
 
                     <div className={keyBgStyle}>
-                        <div className={keyLineStyle}> {ctrlButton} </div> +&nbsp;
+                        <div className={keyLineStyle}> {ctrlKeyText} </div> +&nbsp;
                         <img src="scrollWheelMouse.svg" width={25}/>
                         &nbsp;Zoom In/Out
                     </div>

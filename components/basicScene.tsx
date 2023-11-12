@@ -11,10 +11,18 @@ import { SwitchBetweenCameras } from './camera/camera';
 import { TestBox } from './objects/testCube';
 import { CreateCube } from './objects/Cube';
 import { CreateSphere } from './objects/Sphere';
+import { CreateCylinder } from './objects/Cylinder';
+import { CreateCone } from './objects/Cone';
+import { CreateTetrahedron } from './objects/Tetrahedron';
+import { CreatePyramid } from './objects/Pyramid';
+import { CreateHemisphere } from './objects/Hemisphere';
 import { RayCaster } from './raycast/raycaster';
 import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
+
+
+import { Session } from '@/types/auth';
 
 export enum CameraDirection {
     freeDrive, 
@@ -27,17 +35,19 @@ export enum CameraDirection {
 }
 export type TwoDimPlaneRotation = [ number, number, number ];
 
-export function BasicScene() {
+export interface BasicSceneProps {
+  session             : Session | null;
+  handleLogout        : () => void;
+  handleShowLoginForm : () => void;
+}
+export const BasicScene : React.FC<BasicSceneProps> = ({
+  session,
+  handleLogout,
+  handleShowLoginForm
+}) => {
+
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
   const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
-
-  useEffect( () => {
-    if(objectClicked){
-        //console.log(objectClicked)
-    }
-
-  }, [objectClicked])
-  
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
@@ -79,8 +89,6 @@ export function BasicScene() {
         <AmbientLightFunc/>
         <DirectLightFunc/>
 
-
-
         <GetSceneInfo
             objectsAdded      = { objectsAdded }
             fetchedObjects    = { fetchedObjects }
@@ -113,6 +121,31 @@ export function BasicScene() {
                     return <CreateSphere
                             setObjectClickedUUID = {setObjectClickedUUID}
                             setObjectClicked={setObjectClicked}
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cylinder':
+                    return <CreateCylinder
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'cone':
+                    return <CreateCone
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'tetrahedron':
+                    return <CreateTetrahedron
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'pyramid':
+                    return <CreatePyramid
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { idx } { ...object.props } 
+                            />;
+                case 'hemisphere':
+                    return <CreateHemisphere
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
@@ -197,13 +230,16 @@ export function BasicScene() {
         {/* <Help/> */}
 
         <ToolPanel
-         isObjectButtonPressed    = { isObjectButtonPressed }  
-         setIsObjectButtonPressed = { setIsObjectButtonPressed }
-         objectTypePressed        = { objectTypePressed }
-         setObjectTypePressed     = { setObjectTypePressed }
-         addObjectToScene         = { addObjectToScene }
-         isSketchButtonPressed    = { isSketchButtonPressed }
-         setIsSketchButtonPressed = { setIsSketchButtonPressed }
+          handleLogout             = { handleLogout }
+          handleShowLoginForm      = { handleShowLoginForm }
+          session                  = { session }
+          isObjectButtonPressed    = { isObjectButtonPressed }  
+          setIsObjectButtonPressed = { setIsObjectButtonPressed }
+          objectTypePressed        = { objectTypePressed }
+          setObjectTypePressed     = { setObjectTypePressed }
+          addObjectToScene         = { addObjectToScene }
+          isSketchButtonPressed    = { isSketchButtonPressed }
+          setIsSketchButtonPressed = { setIsSketchButtonPressed }
         />
 
         <CameraSwitch
