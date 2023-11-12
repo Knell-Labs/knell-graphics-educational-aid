@@ -29,6 +29,7 @@ export type TwoDimPlaneRotation = [ number, number, number ];
 
 export function BasicScene() {
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
+  const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
 
   useEffect( () => {
     if(objectClicked){
@@ -103,12 +104,14 @@ export function BasicScene() {
             switch (object.type) {
                 case 'cube':
                     return <CreateCube 
+                             setObjectClickedUUID = {setObjectClickedUUID}
                              setObjectClicked={setObjectClicked}
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
                 case 'sphere':
                     return <CreateSphere
+                            setObjectClickedUUID = {setObjectClickedUUID}
                             setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
@@ -174,10 +177,12 @@ export function BasicScene() {
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-        { !!objectClicked 
+        { !!objectClicked  && !!objectClickedUUID && !!sceneInfo
             &&
             <RightPanel
                 objectClicked = { objectClicked}
+                objectClickedUUID={objectClickedUUID}
+                sceneInfo  = { sceneInfo } 
             />
         }
         { !!sceneInfo && <LeftPanel 

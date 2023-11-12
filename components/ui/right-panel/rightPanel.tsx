@@ -120,12 +120,33 @@ function setScale( objectClicked: THREE.Mesh | null, posToChange: fieldToChange,
 
 interface RightPanelProps {
     objectClicked: THREE.Mesh | null;
+    objectClickedUUID: string | null;
+    sceneInfo: Array<any>;
 }
 
-export function RightPanel({objectClicked}: RightPanelProps) {
+export function RightPanel({objectClicked, objectClickedUUID, sceneInfo}: RightPanelProps) {
+
+  //The left panel updates the group name which is 
+  //what we want to display 
+  let [objectClickedParentName, setObjectClickedParentName] = useState<string>('');
+
   useEffect( () => {
     if(objectClicked){
-        objectClicked.geometry.computeBoundingSphere()
+        //objectClicked.geometry.computeBoundingSphere()
+
+        const filteredObjects = sceneInfo.filter(object => 
+          object?.uuid?.includes(objectClickedUUID) 
+        );
+
+        sceneInfo.forEach(object =>{
+            if( object?.uuid?.includes(objectClickedUUID)  ){
+                console.log(object.name)
+                setObjectClickedParentName(object.name);
+            }
+        });
+        //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        //console.log(objectClickedParentName)
+        //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         // console.log(objectClicked);
         // console.log(objectClicked.geometry.type);//string
         // console.log(objectClicked.name);//string
@@ -222,7 +243,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
     { isCollapsed ? 
       <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm overflow-auto">
         <style>{scrollbarStyles}</style>
-        <h1 className='italic'> Object name </h1>
+        <h1 className='italic'> {objectClickedParentName || "Default Name"} </h1>
         
         <div>
         <LineSeparator/>
