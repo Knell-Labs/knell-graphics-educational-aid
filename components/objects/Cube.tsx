@@ -6,13 +6,14 @@ import { useCursor  } from '@react-three/drei'
 import {TransformCustomControls}  from "../../components/controls/objectControls/TransformCustomControls"
 
 type CreateCubeProps = {
+  setObjectClickedUUID: Dispatch<SetStateAction<string | null>>;
   setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
   isObjectButtonPressed: boolean;
   color?: string;
   size?: [number, number, number];
 } & ThreeElements['mesh'];
 
-export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreateCubeProps) {
+export function CreateCube({ setObjectClickedUUID, setObjectClicked, isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreateCubeProps) {
   const cubeRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
@@ -26,7 +27,7 @@ export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, siz
 
   useFrame(() => {
     if (groupRef.current){
-      groupRef.current.type = "CubeGroup"
+      groupRef.current.type = "CubeGroup";
     }
     if (cubeRef.current && outlineRef.current) {
       outlineRef.current.position.copy(cubeRef.current.position);
@@ -45,6 +46,10 @@ export function CreateCube({ setObjectClicked, isObjectButtonPressed, color, siz
             if(!isObjectButtonPressed){
                 (event.stopPropagation(), setTransformActive(true))
                 setObjectClicked(cubeRef.current)
+
+                if(groupRef.current){
+                    setObjectClickedUUID(groupRef.current.uuid);
+                }
             }
         }}
         onPointerMissed = { (event) => {
