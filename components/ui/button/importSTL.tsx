@@ -16,8 +16,12 @@ export function STLImporter({ mesh, setObjectClicked, setObjectClickedUUID, isOb
   const meshRef = useRef<THREE.Mesh>(mesh);
   const outlineRef = useRef<THREE.LineSegments>(null!);
   const [transformActive, setTransformActive] = useState(false);
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
+    if (groupRef.current){
+      groupRef.current.type = "stlObjectGroup";
+    }
     if (meshRef.current && outlineRef.current) {
       outlineRef.current.position.copy(meshRef.current.position);
       outlineRef.current.rotation.copy(meshRef.current.rotation);
@@ -26,7 +30,7 @@ export function STLImporter({ mesh, setObjectClicked, setObjectClickedUUID, isOb
   });
 
   return (
-    <group>
+    <group ref = { groupRef }>
       <primitive 
         object  = { meshRef.current } 
         onClick = { (event) => {
@@ -64,16 +68,27 @@ export const handleSTLFileChange = (
             if (buffer instanceof ArrayBuffer) {
                 const loader = new STLLoader();
                 const geometry = loader.parse(buffer);
-                console.log("STL Geometry:", geometry); // Log the geometry
-        
+                //console.log("STL Geometry:", geometry); // Log the geometry
+
+                // Center the geometry
+                geometry.computeBoundingBox();
+                const center = new THREE.Vector3();
+                geometry.boundingBox!.getCenter(center);
+                const offset = center.negate();
+                geometry.translate(offset.x, offset.y, offset.z);
+
                 const material = new THREE.MeshStandardMaterial({ color });
                 const mesh = new THREE.Mesh(geometry, material);
-                console.log("STL Mesh:", mesh); // Log the mesh
-        
-                mesh.scale.set(0.1, 0.1, 0.1); // Adjust as needed
-                mesh.rotation.x = -Math.PI / 2; // Rotate 90 degrees on the X-axis
-        
-                addObjectToScene('stlObject', { mesh }); // Ensure this matches the case in your switch statement
+                mesh.userData = {
+                    type: 'stlObject',
+                    fileName: file.name // Store the file name
+                };
+                //console.log("STL Mesh:", mesh); // Log the mesh
+
+                mesh.scale.set(0.1, 0.1, 0.1);
+                mesh.rotation.x = -Math.PI / 2; // Rotate 90 degrees on the X axis
+
+                addObjectToScene('stlObject', { mesh });
                 setObjectClicked(mesh);
             } else {
                 console.error('File read did not result in an ArrayBuffer.');

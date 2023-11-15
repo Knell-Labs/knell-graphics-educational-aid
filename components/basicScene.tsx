@@ -86,8 +86,9 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 
   const addObjectToScene = (type: string, props: any = {}) => {
     if (type === 'stlObject' && props.mesh) {
-      // Directly use the mesh object provided
-      setObjectsAdded(prevObjects => [{ type: 'stlObject', props: { mesh: props.mesh } }, ...prevObjects]);
+      // Use a unique key for each STL mesh
+      const uniqueKey = `stl-${Date.now()}`;
+      setObjectsAdded(prevObjects => [{ type: 'stlObject', props: { mesh: props.mesh, key: uniqueKey } }, ...prevObjects]);
     } else {
       setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects]);
     }
@@ -165,7 +166,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                             setObjectClickedUUID = { setObjectClickedUUID }
                             setObjectClicked = { setObjectClicked }
                             isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx }
+                            key = { object.props.key } 
                             mesh = { object.props.mesh }
                             />);
                 // Add more cases for other shapes
