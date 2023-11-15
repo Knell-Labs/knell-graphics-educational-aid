@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
+import { HexColorPicker } from "react-colorful";
 
 enum fieldToChange {
     x,
@@ -26,7 +26,7 @@ function setColorRGB(objectClicked: THREE.Mesh | null, colToChange: colorToChang
   const G = objectClicked?.material.color.g;
   const B = objectClicked?.material.color.b;
   let colorRGB;
-
+  
   switch (colToChange){
     case colorToChange.r: {
       colorRGB = new THREE.Color(newValue/255, G, B);
@@ -74,18 +74,19 @@ function setPos( objectClicked: THREE.Mesh | null, posToChange: fieldToChange, p
 function setRotEuler( objectClicked: THREE.Mesh | null, posToChange: fieldToChange, angleChangeDeg: number){
 
     //Convert to rads
-    let angleChangeRad = (angleChangeDeg / 180) * Math.PI
+    let angleChangeRad = THREE.MathUtils.degToRad(angleChangeDeg);
+    
     switch (posToChange){
         case fieldToChange.x: {
-          objectClicked?.rotateX(angleChangeRad - objectClicked.rotation.x);
+          objectClicked!.rotation.x = angleChangeRad;
           break;
         }
         case fieldToChange.y: {
-          objectClicked?.rotateY(angleChangeRad - objectClicked.rotation.y);
+          objectClicked!.rotation.y = angleChangeRad;
           break;
         }
         case fieldToChange.z: {
-          objectClicked?.rotateZ(angleChangeRad - objectClicked.rotation.z);
+          objectClicked!.rotation.z = angleChangeRad;
           break;
         }
         default: {
@@ -119,12 +120,33 @@ function setScale( objectClicked: THREE.Mesh | null, posToChange: fieldToChange,
 
 interface RightPanelProps {
     objectClicked: THREE.Mesh | null;
+    objectClickedUUID: string | null;
+    sceneInfo: Array<any>;
 }
 
-export function RightPanel({objectClicked}: RightPanelProps) {
+export function RightPanel({objectClicked, objectClickedUUID, sceneInfo}: RightPanelProps) {
+
+  //The left panel updates the group name which is 
+  //what we want to display 
+  let [objectClickedParentName, setObjectClickedParentName] = useState<string>('');
+
   useEffect( () => {
     if(objectClicked){
-        objectClicked.geometry.computeBoundingSphere()
+        //objectClicked.geometry.computeBoundingSphere()
+
+        const filteredObjects = sceneInfo.filter(object => 
+          object?.uuid?.includes(objectClickedUUID) 
+        );
+
+        sceneInfo.forEach(object =>{
+            if( object?.uuid?.includes(objectClickedUUID)  ){
+                console.log(object.name)
+                setObjectClickedParentName(object.name);
+            }
+        });
+        //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        //console.log(objectClickedParentName)
+        //console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         // console.log(objectClicked);
         // console.log(objectClicked.geometry.type);//string
         // console.log(objectClicked.name);//string
@@ -146,15 +168,36 @@ export function RightPanel({objectClicked}: RightPanelProps) {
     }
   }, [objectClicked])
   
- 
-  
+  const [hex, setHex] = useState("#59c09a");
   const [isCollapsed, setIsCollapsed] = useState<Boolean>(true);
+  const [colorID, setColorID] = useState("#" + objectClicked?.material.color.getHexString());
 
   const fields = Object.values(fieldToChange).filter(field => isNaN(Number(field)));
   const rgb = Object.values(colorToChange).filter(field => isNaN(Number(field)));
-  const colorDisplay = "rgb(" + Math.round(objectClicked?.material.color.r * 255) + ", " + Math.round(objectClicked?.material.color.g * 255)+ ", " + Math.round(objectClicked?.material.color.b * 255) + ")";
 
-  const propertySection = (sectionName: string, fieldName: string, ratio: number) => (
+  const scrollbarStyles = `
+  ::-webkit-scrollbar {
+    width: 20px; 
+    height: 20px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #1a1a1a ;
+    border-radius: 16px;
+    border: 4px solid #3a3b3a; 
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background-color: #3a3b3a;
+  }
+
+  ::-webkit-scrollbar-button {
+    display:none;
+  }
+`;
+
+  const propertySection = (sectionName: string, fieldName: string, ratio: number, decimalValue: number) => (
     <div>
       {sectionName}
       {Object.values(fields).map((field) => (
@@ -162,14 +205,17 @@ export function RightPanel({objectClicked}: RightPanelProps) {
           <label className="whitespace-nowrap px-4 text-gray-400"> 
             {field.toString().toUpperCase()}{fieldName} 
           </label>
-          <input
-            id={`${sectionName.toLowerCase()}-${field}`}
-            className="p-0.5 w-full bg-grayFill"
-            type="text"
-            maxLength={15}
-            defaultValue={formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
-            onBlur={() => updateProperty(`${sectionName.toLowerCase()}-${field}`, objectClicked)}
-          />
+          <div  
+            id={`${sectionName.toLowerCase()}_${field}`}
+            className=" w-full bg-grayFill"
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onBlur={() => {
+              updateProperty(`${sectionName.toLowerCase()}_${field}`,objectClicked,2);
+            }}
+          >
+            {formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof fieldToChange] * ratio, 2)}
+          </div>
         </div>
       ))}
     </div>
@@ -178,7 +224,7 @@ export function RightPanel({objectClicked}: RightPanelProps) {
   return (
     <>
     <div className="fixed flex flex-row top-5 bottom-5 right-3 rounded-lg">
-
+    
     {/* Collapse-Tab Button */}
     <div className="flex justify-start items-center w-8 h-full">
         <button 
@@ -195,42 +241,72 @@ export function RightPanel({objectClicked}: RightPanelProps) {
       </div>
 
     { isCollapsed ? 
-      <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm">
-        <h1 className='text-base'>Object Properties</h1>
-        <h2 className='italic'> Object name </h2>
-        <LineSeparator/>
-
+      <div className="flex flex-col space-y-3 top-10 bottom-10 right-3 p-4 w-56 h-full bg-grayFill rounded-r-lg text-sm overflow-auto">
+        <style>{scrollbarStyles}</style>
+        <h1 className='italic'> {objectClickedParentName || "Default Name"} </h1>
+        
         <div>
+        <LineSeparator/>
           Color
-          <div className='w-48 h-48 justify-self-center p-4'> <img src="color_wheel.png"/> </div>
-          <div className='grid grid-cols-3 content-evenly'>
+            <HexColorPicker 
+              color={colorID} 
+              style={{
+                width: "auto",
+                height: "100px",
+                margin: "15px 5px 15px 5px",
+                borderRadius: "0px",
+              }}
+              onChange={ (e) => {
+                setColorID(e);
+                objectClicked?.material.color.set(e);
+              }} />
+          <div 
+            className='grid grid-cols-3 content-evenly'
+          >
             {Object.values(rgb).map((color_char) => (
               <div className="flex items-center border-2 border-grayFill hover:border-gray-600 active:border-gray-600 rounded p-1" key={color_char}>
                 <label className="pr-2 text-gray-400"> {color_char.toString().toUpperCase()} </label>
-                <input 
-                  id={`color-${color_char}`}
+                <div  
+                  id={`color_${color_char}`}
                   className="p-0.5 w-full bg-grayFill"
-                  defaultValue={formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
-                  onBlur={() => {
-                    updateProperty(`color-${color_char}`, objectClicked);
+                  contentEditable={true}
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => {
+                    updateProperty(`color_${color_char}`, objectClicked, 2);
                   }}
-                  />
+                  onKeyDown={(e) =>{
+                    limitTextLength(`color_${color_char}`, e, 3);
+                  }}
+                >
+                  {formatNumber(objectClicked?.material.color[color_char as keyof typeof colorToChange] * 255,0)}
+                </div>
               </div>
             ))}
           </div>
-          <div className="my-2 h-5" style={{ backgroundColor: colorDisplay }}/>
-        </div>
-        
-        <LineSeparator/>
-        <div>
-          {propertySection("Position", "", 1)}
-          <LineSeparator/>
-          {propertySection("Rotation", "-axis", (180 / Math.PI))}
-          <LineSeparator/>
-          {propertySection("Scale", "", 1)}
+          {/* Color Display Box / Table Picker */}
+          <input 
+            className="mt-2 w-full" 
+            type="color" 
+            value={colorID}
+            style={{ backgroundColor: colorID }}
+            onChange={(e) => {
+              setColorID(e.target.value);
+              objectClicked?.material.color.set(e.target.value);
+            }}
+          />
         </div>
 
-        <LineSeparator/>
+
+        <div>
+          <LineSeparator/>
+          {propertySection("Position", "", 1, 2)}
+          <LineSeparator/>
+          {propertySection("Rotation", "-axis", (180 / Math.PI), 2)}
+          <LineSeparator/>
+          {propertySection("Scale", "", 1, 2)}
+          <LineSeparator/>
+        </div>
+
 
         <div>
           Wireframe 
@@ -277,60 +353,84 @@ const formatNumber = (number: number, decimal: number) => {
 
 // ------------------------------------------------------------------------------------------------------
 
-function updateProperty(id: string, object: THREE.Mesh | null){
-  // id = property + "-" + position
-  let input = document.getElementById(id) as HTMLInputElement;
+function updateProperty(id: string, object: THREE.Mesh | null, decimal: number){
+  // id = property + "_" + position
+  let input = document.getElementById(id) as HTMLDivElement;
   const property = id.substring(0,id.length - 2).toLowerCase() as keyof typeof object;
-  let pos, prevInput;
   
   if(object !== undefined && input !== undefined){
+    let pos = id.charAt(id.length - 1);
+    let prevInput;
 
     if(property === "color"){
-      pos = id.charAt(id.length - 1) as keyof typeof colorToChange;
       prevInput = formatNumber(object!.material[property][pos] * 255,0);
     }
+    else if(property === "rotation"){
+      prevInput = formatNumber(THREE.MathUtils.radToDeg(object![property][pos]),decimal);
+    }
     else{
-      pos = id.charAt(id.length - 1) as keyof typeof fieldToChange;
-      prevInput = formatNumber(object![property][pos],2);
+      prevInput = formatNumber(object![property][pos],decimal);
     }
     
     // Only proceed if input content changes
-    if(input.value !== prevInput){
+    if(input.textContent != null && input.textContent !== prevInput ){
       // Remove whitespace
-      if(input.value.replace(/\s/g, "") === ""){
-        input.value = prevInput;
+      if(input.textContent.replace(/\s/g, "") === ""){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       // Only accept number
-      else if(isNaN(Number(input.value))){
-        input.value = prevInput;
+      else if(isNaN(Number(input.textContent))){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       // Color value is an integer between 0 and 255
-      else if(property === "color" && (((Number(input.value) * 10 % 10) !== 0) || parseInt(input.value) < 0 || parseInt(input.value) > 255)){
-        input.value = prevInput;
+      else if(property === "color" && (((parseInt(input.textContent) * 10 % 10) !== 0) 
+                                      || parseInt(input.textContent) < 0 || parseInt(input.textContent) > 255)){
+        input.textContent = prevInput;
+        input.innerText = prevInput;
       }
       else {
-        input.value = formatNumber(parseFloat(input.value),2);
+        input.textContent = formatNumber(parseFloat(input!.textContent!),decimal);
         switch(property){
           case "position": {
-            setPos(object,fieldToChange[pos],parseFloat(input.value));
+            setPos(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "rotation": {
-            setRotEuler(object,fieldToChange[pos],parseFloat(input.value));
+            // Angle is a value between 0 and 360 --> mod 360
+            input.textContent = (parseFloat(input.textContent) % 360).toString();
+            setRotEuler(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "scale": {
-            setScale(object,fieldToChange[pos],parseFloat(input.value));
+            setScale(object,fieldToChange[pos as keyof typeof fieldToChange],parseFloat(input.textContent));
             break;
           }
           case "color": {
-            setColorRGB(object, colorToChange[pos],parseInt(input.value));
+            setColorRGB(object, colorToChange[pos as keyof typeof colorToChange],parseInt(input.textContent));
             break;
           }
           default:
             break;
         }
       }
+
+    }
+  }
+}
+
+function limitTextLength(id: string, event: any, maxLength: number){
+  const div = document.getElementById(id) as HTMLDivElement;
+  if(div !== undefined){
+    // Prevent "Return" (13)
+    // If hit max, only allow "Backspace" (8), "Tab" (9), "Left/Right Arrow" (37/39)
+    if( event.keyCode === 13 
+      || 
+      ( div!.textContent!.length >= maxLength 
+        && ( event.keyCode !== 8 && event.keyCode !== 9 && event.keyCode !== 37 && event.keyCode !== 39 )
+    )){
+      event.preventDefault();
     }
   }
 }

@@ -48,6 +48,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
   const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
+  const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
@@ -111,13 +112,15 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
             switch (object.type) {
                 case 'cube':
                     return <CreateCube 
-                             setObjectClicked = { setObjectClicked }
+                             setObjectClickedUUID = {setObjectClickedUUID}
+                             setObjectClicked={setObjectClicked}
                              isObjectButtonPressed = { isObjectButtonPressed }
                              key = { idx } { ...object.props }
                             />;
                 case 'sphere':
                     return <CreateSphere
-                            setObjectClicked = { setObjectClicked }
+                            setObjectClickedUUID = {setObjectClickedUUID}
+                            setObjectClicked={setObjectClicked}
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx } { ...object.props } 
                             />;
@@ -210,10 +213,12 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
         <AxesHelper width = {6} length = {2} />
 
         </Canvas>
-        { !!objectClicked 
+        { !!objectClicked  && !!objectClickedUUID && !!sceneInfo
             &&
             <RightPanel
                 objectClicked = { objectClicked}
+                objectClickedUUID={objectClickedUUID}
+                sceneInfo  = { sceneInfo } 
             />
         }
         { !!sceneInfo && <LeftPanel 
