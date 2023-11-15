@@ -78,8 +78,19 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
 
+  /*
   const addObjectToScene = (type: string, props: any = {}) => {
     setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects ]);
+  };
+  */
+
+  const addObjectToScene = (type: string, props: any = {}) => {
+    if (type === 'stlObject' && props.mesh) {
+      // Directly use the mesh object provided
+      setObjectsAdded(prevObjects => [{ type: 'stlObject', props: { mesh: props.mesh } }, ...prevObjects]);
+    } else {
+      setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects]);
+    }
   };
 
   return (
@@ -150,9 +161,12 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                             key = { idx } { ...object.props } 
                             />;
                 case 'stlObject':
-                    return (<primitive 
-                            object = { object.props.mesh }
+                    return (<STLImporter
+                            setObjectClickedUUID = { setObjectClickedUUID }
+                            setObjectClicked = { setObjectClicked }
+                            isObjectButtonPressed = { isObjectButtonPressed }
                             key = { idx }
+                            mesh = { object.props.mesh }
                             />);
                 // Add more cases for other shapes
                 default:
@@ -164,7 +178,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
           isSketchButtonPressed &&  <CadPlanes
             isOrthographic =  {isOrthographic}
             orthoCameraRef = {orthographicCameraRef}
-            persCameraRef={ perspectiveCameraRef }
+            persCameraRef = { perspectiveCameraRef }
             planeOrientation = { planeOrientation }
             setPlaneOrientation = { setPlaneOrientation }
             girdOrientation = { girdOrientation }
