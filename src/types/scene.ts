@@ -27,6 +27,5 @@ export interface ShapeProps {
 
 export interface ShapeObject {
   type: ShapeType;
-  mesh: Mesh;
   props?: ShapeProps;
 }

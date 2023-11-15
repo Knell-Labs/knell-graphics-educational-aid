@@ -45,6 +45,7 @@ export function ToolPanel({
   };
 
   const [isShapeButtonPressed, setIsShapeButtonPressed] = useState(shapePressList);
+  const selectionChecked = Object.values(isShapeButtonPressed).every(val => !val)
   
   
   const buttonShape = "hover:bg-blueHover rounded-lg p-1 w-8 h-8";
@@ -150,7 +151,7 @@ export function ToolPanel({
       </Button>
       <Divider/>
       
-      <button className={ buttonShape }
+      <button className={ selectionChecked ? buttonShapePressed : buttonShape}
         onClick = { () => {
           setIsObjectButtonPressed(false);
           for(let shape in shapePressList){

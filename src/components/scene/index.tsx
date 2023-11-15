@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CameraSwitch } from "../ui/button/cameraSwitch"
-// import { Help } from "../ui/button/help"
+import { Help } from "../ui/button/help"
 import { ToolPanel } from "../ui/tool-panel/toolPanel"
 import { LeftPanel } from "../ui/left-panel/leftPanel"
 import { RightPanel } from "../ui/right-panel/rightPanel"
@@ -8,17 +8,21 @@ import SceneCanvas from './canvas';
 
 import { Session } from '@/types/auth';
 
+import { ShapeType, ShapeProps } from '@/types/scene';
+
 interface SceneProps {
   session             : Session | null;
   handleLogout        : () => void;
   handleShowLoginForm : () => void;
 }
 
-export const Scene : React.FC<SceneProps> = ({
+const Scene : React.FC<SceneProps> = ({
   session,
   handleLogout,
   handleShowLoginForm
 }) => {
+
+  // const [selected, setSelected] = useState<string[]>([]); // arr of selected uuid's
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
   const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
@@ -27,26 +31,31 @@ export const Scene : React.FC<SceneProps> = ({
 
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
-  // const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([15,15,15])
 
   const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);   
 
-  // const [fetchedObjects, setFetchedObjects] = useState<boolean>(false)
   const [sceneInfo, setSceneInfo] = useState(null)
   const [sceneMain, setSceneMain] = useState(null)
-
   
   const [isSketchButtonPressed, setIsSketchButtonPressed] = useState<boolean>(false);
 
-  useEffect(() => {
-    // console.log(`orthographic set to : ${isOrthographic}`);
-  }, [isOrthographic]);
-
   const [objects, setObjects] = useState<any[]>([]);
 
-  const addObjectToScene = (type: string, props: any = {}) => {
-    setObjects(prevObjects => [{ type, props }, ...prevObjects ]);
+  const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
+    setObjects(prevObjects => 
+      [
+        { 
+          type: shapeType,
+          props
+        },
+        ...prevObjects
+      ]
+    );
   };
+
+  useEffect(() => {
+    console.log(objects)
+  }, [objects])
 
   return (
     <>
@@ -56,33 +65,26 @@ export const Scene : React.FC<SceneProps> = ({
 
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
-          // cameraCoordinates={cameraCoordinates}
-          // perspectiveCameraRef={perspectiveCameraRef}
-          // orthographicCameraRef={orthographicCameraRef}
+
           setObjectClickedUUID={setObjectClickedUUID}
           setObjectClicked={setObjectClicked}
-          isObjectButtonPressed={isObjectButtonPressed}
-          // setObjectTypePressed={setObjectTypePressed}
-          // planeOrientation={planeOrientation}
-          // setPlaneOrientation={setPlaneOrientation}
-          // girdOrientation={girdOrientation}
-          // setGirdOrientation={setGirdOrientation}
-          // setCurrCameraPos={setCurrCameraPos}
+          
           objectTypePressed={objectTypePressed}
-          // currCameraPos={currCameraPos}
-          // fetchedObjects={fetchedObjects}
-          // setFetchedObjects={setFetchedObjects}
+          setObjectTypePressed={setObjectTypePressed}
+          isObjectButtonPressed={isObjectButtonPressed}
+
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
         />
+
         { !!sceneInfo && (
           <>
 
-            { !!objectClicked  && !!objectClickedUUID &&
+            { !!objectClicked && !!objectClickedUUID &&
               <RightPanel
                 objectClicked = { objectClicked }
-                objectClickedUUID={objectClickedUUID}
+                objectClickedUUID = { objectClickedUUID }
                 sceneInfo  = { sceneInfo } 
               />
             }
@@ -100,7 +102,7 @@ export const Scene : React.FC<SceneProps> = ({
 
 
 
-        {/* <Help/> */}
+        <Help/>
 
         <ToolPanel
           handleLogout             = { handleLogout }
@@ -123,3 +125,5 @@ export const Scene : React.FC<SceneProps> = ({
     </>
   )
 }
+
+export default Scene;

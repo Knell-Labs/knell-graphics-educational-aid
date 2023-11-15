@@ -8,20 +8,16 @@ import { AxesHelper } from "../axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "../controls/CameraControls"
 import { SwitchBetweenCameras } from '../camera/camera';
 
-import { CreateCube } from '../objects/Cube';
-import { CreateSphere } from '../objects/Sphere';
-import { CreateCylinder } from '../objects/Cylinder';
-import { CreateCone } from '../objects/Cone';
-import { CreateTetrahedron } from '../objects/Tetrahedron';
-import { CreatePyramid } from '../objects/Pyramid';
-import { CreateHemisphere } from '../objects/Hemisphere';
+import {
+    getCreateShape
+} from '../objects/createShape'
 
 import { AmbientLightFunc, DirectLightFunc } from '../objects/Lights';
 
 import { RayCaster } from '../raycast/raycaster';
 import { CadPlanes } from '../raycast/ScenePlanes';
 
-import { CameraDirection, TwoDimPlaneRotation, ShapeProps } from '@/types/scene'
+import { CameraDirection, TwoDimPlaneRotation, ShapeProps, ShapeObject } from '@/types/scene'
 
 
 interface SceneCanvasProps {
@@ -105,55 +101,17 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
             />
 
             {objects.map((object, idx) => {
-                switch (object.type) {
-                    case 'cube':
-                        return <CreateCube 
-                            setObjectClickedUUID = {setObjectClickedUUID}
-                            setObjectClicked={setObjectClicked}
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props }
-                        />;
-                    case 'sphere':
-                        return <CreateSphere
-                                setObjectClickedUUID = {setObjectClickedUUID}
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    case 'cylinder':
-                        return <CreateCylinder
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    case 'cone':
-                        return <CreateCone
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    case 'tetrahedron':
-                        return <CreateTetrahedron
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    case 'pyramid':
-                        return <CreatePyramid
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    case 'hemisphere':
-                        return <CreateHemisphere
-                                setObjectClicked={setObjectClicked}
-                                isObjectButtonPressed = { isObjectButtonPressed }
-                                key = { idx } { ...object.props } 
-                            />;
-                    // Add more cases for other shapes
-                    default:
-                        return null;
-                }
+                const Shape = getCreateShape(object.type);
+                if (!Shape) return null;
+                return (
+                    <Shape
+                        key = { idx }
+                        setObjectClickedUUID = {setObjectClickedUUID}
+                        setObjectClicked={setObjectClicked}
+                        isObjectButtonPressed = { isObjectButtonPressed }
+                        { ...object.props }
+                    />
+                )
             })}
 
             { 

@@ -6,7 +6,7 @@ import { AuthChangeEvent } from '@supabase/supabase-js';
 
 import { useAuth } from '../contexts/authProvider';
 
-import { Scene } from "../../components/scene";
+import Scene from "../../components/scene";
 
 import Button from '../../components/ui/button';
 import LoginForm from '../../components/forms/login';
