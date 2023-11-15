@@ -20,8 +20,10 @@ export function RayCaster({
         currCameraPos
   }: props){
   const world = useThree()
-  const mouseCords = new THREE.Vector2()
+  // const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()
+
+  const [ mouseCords, setMouseCords ] = useState<THREE.Vector2>(new THREE.Vector2)
 
   useEffect(() => {
     const handleClick = (event) => {
@@ -92,6 +94,7 @@ export function RayCaster({
     };
   }, [isObjectButtonPressed, addObjectToScene, raycaster, world.scene]);
 
+  // useEffect(() => console.log(mouseCords), [mouseCords])
   useFrame(({ gl, scene, camera }) => {
     if(!isObjectButtonPressed){
       setCoordinates([camera.position.x, camera.position.y, camera.position.z])
@@ -99,18 +102,19 @@ export function RayCaster({
 
     if(isObjectButtonPressed){
       raycaster.setFromCamera(mouseCords, camera)
+      
       let objectFound = world.scene.getObjectByName("grid-plane-hidden-helper")
       const intersect = raycaster.intersectObject(objectFound)
 
       if(intersect.length > 0){
-        ActiveToolOverLay(
-                          objectTypePressed,
-                          intersect[0].point.x,
-                          intersect[0].point.y,
-                          intersect[0].point.z,
-                          scene,
-                          currCameraPos,
-                          )
+        ActiveToolOverLay (
+          objectTypePressed,
+          intersect[0].point.x,
+          intersect[0].point.y,
+          intersect[0].point.z,
+          scene,
+          currCameraPos,
+        )
       }
     }
 

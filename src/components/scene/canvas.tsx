@@ -106,8 +106,8 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
                 return (
                     <Shape
                         key = { idx }
-                        setObjectClickedUUID = {setObjectClickedUUID}
-                        setObjectClicked={setObjectClicked}
+                        setObjectClickedUUID  = { setObjectClickedUUID }
+                        setObjectClicked      = { setObjectClicked }
                         isObjectButtonPressed = { isObjectButtonPressed }
                         { ...object.props }
                     />
@@ -140,28 +140,28 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
             <color args={ [ '#343a45' ] } attach="background" />
 
             <gridHelper
-            name = "init-grid"
-            args = { [20, 20, '#ffffff'] }
-            position = { [0, -0.01, 0] }
-            rotation={ [
-                        girdOrientation[0],
-                        girdOrientation[1],
-                        girdOrientation[2]
-                        ]
-            }
+                name = "init-grid"
+                args = { [20, 20, '#ffffff'] }
+                position = { [0, -0.01, 0] }
+                rotation={ [
+                            girdOrientation[0],
+                            girdOrientation[1],
+                            girdOrientation[2]
+                            ]
+                }
             />
 
             <Plane 
-            name = "grid-plane-hidden-helper"
-            rotation = { [
-                            planeOrientation[0],
-                            planeOrientation[1],
-                            planeOrientation[2]
-                        ]
-            } 
-            args = { [20, 20] } 
-            position = { [0, -0.01, 0] } 
-            visible = { false }
+                name = "grid-plane-hidden-helper"
+                rotation = { [
+                                planeOrientation[0],
+                                planeOrientation[1],
+                                planeOrientation[2]
+                            ]
+                } 
+                args = { [20, 20] } 
+                position = { [0, -0.01, 0] } 
+                visible = { false }
 
 
             />
