@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { useThree, useFrame } from '@react-three/fiber';
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { CameraDirection } from "../basicScene";
+import { CameraDirection } from "@/types/scene";
 
 interface props {
   isObjectButtonPressed: boolean;

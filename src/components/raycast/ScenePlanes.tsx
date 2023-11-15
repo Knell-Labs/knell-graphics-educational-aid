@@ -1,9 +1,8 @@
 import React from "react";
 import { Plane } from '@react-three/drei';
-import { useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import { Dispatch, SetStateAction } from "react";
-import { TwoDimPlaneRotation, CameraDirection } from "../basicScene";
+import { TwoDimPlaneRotation, CameraDirection } from "@/types/scene";
 
 
 interface props {
@@ -16,7 +15,6 @@ interface props {
   setGirdOrientation:  Dispatch<SetStateAction<TwoDimPlaneRotation>>;
   setCurrCameraPos: Dispatch<SetStateAction<CameraDirection>>;
 }
-
 
 export function CadPlanes(props: props){
   const { 
