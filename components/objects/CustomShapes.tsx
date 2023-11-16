@@ -17,7 +17,13 @@ export function CustomShapes() {
 
   // Define the hole
   const hole = new THREE.Path();
-  hole.moveTo( 2, 2 ).absarc( 1, 1, .5, 0, Math.PI , true );
+  hole.moveTo( 0, 2 )
+  .quadraticCurveTo( 2, 4, 4, 2)
+  //.bezierCurveTo(5, 2.5, 5, 3, 4, 4)
+  //.quadraticCurveTo( 2, 6, 0, 4)
+  //.quadraticCurveTo(-.5, 3, 0, 2)
+
+  //hole.moveTo( 2, 2 ).absarc( 1, 1, .5, 0, Math.PI , true );
   //const holeRadius = 2; // Set the radius of the hole
   //const holePositionX = length / 2 + 1; // Center of the shape in X
   //const holePositionY = width / 2 + 1;  // Center of the shape in Y
