@@ -4,6 +4,7 @@ import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
 import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { Help } from "./ui/button/help"
+import { STLImporter } from './ui/button/importSTL';
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { RightPanel } from "./ui/right-panel/rightPanel"
@@ -19,8 +20,10 @@ import { CreateHemisphere } from './objects/Hemisphere';
 import { RayCaster } from './raycast/raycaster';
 import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
-import { STLImporter } from './ui/button/importSTL';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
+import { CustomShapes } from './objects/CustomShapes';
+import { CustomShapePanel } from './ui/custom-shape-panel/customShapePanel';
+
 
 import { Session } from '@/types/auth';
 
@@ -47,10 +50,11 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 }) => {
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
-  const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
   const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
+
+  const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
 
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
@@ -71,18 +75,16 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 
   const [currCameraPos, setCurrCameraPos] =  useState<CameraDirection>(CameraDirection.freeDrive);
 
+
   const [planeOrientation, setPlaneOrientation] = useState<TwoDimPlaneRotation>([-Math.PI/2, 0, 0])
   const [girdOrientation, setGirdOrientation] = useState<TwoDimPlaneRotation>([0, 0, 0])
+
+
+  const [mainCanvasView, setMainCanvasView] = useState<boolean>(true);
 
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
-
-  /*
-  const addObjectToScene = (type: string, props: any = {}) => {
-    setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects ]);
-  };
-  */
 
   const addObjectToScene = (type: string, props: any = {}) => {
     if (type === 'stlObject' && props.mesh) {
@@ -94,141 +96,230 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
     }
   };
 
+
   return (
     <>
-      <Canvas >
+    {mainCanvasView && 
+        <Canvas>
+          <AmbientLightFunc/>
+          <DirectLightFunc/>
+          
 
-        <AmbientLightFunc/>
-        <DirectLightFunc/>
+          <GetSceneInfo
+              objectsAdded      = { objectsAdded }
+              fetchedObjects    = { fetchedObjects }
+              setFetchedObjects = { setFetchedObjects }
+              setSceneInfo      = { setSceneInfo }
+              setSceneMain      = { setSceneMain }
+          />
 
-        <GetSceneInfo
-            objectsAdded      = { objectsAdded }
-            fetchedObjects    = { fetchedObjects }
-            setFetchedObjects = { setFetchedObjects }
-            setSceneInfo      = { setSceneInfo }
-            setSceneMain      = { setSceneMain }
-        />
+          <CustomCameraControls/>
 
-        <CustomCameraControls/>
+          <SwitchBetweenCameras
+            isOrthographic    = { isOrthographic }
+            setIsOrthographic = { setIsOrthographic }
+            cameraCoordinates = { cameraCoordinates }
+            persCameraRef = { perspectiveCameraRef }
+            orthoCameraRef = { orthographicCameraRef }
 
-        <SwitchBetweenCameras
-          isOrthographic    = { isOrthographic }
-          setIsOrthographic = { setIsOrthographic }
-          cameraCoordinates = { cameraCoordinates }
-          persCameraRef = { perspectiveCameraRef }
-          orthoCameraRef = { orthographicCameraRef }
+          />
 
-        />
-
-        {objectsAdded.map((object, idx) => {
-            switch (object.type) {
-                case 'cube':
-                    return <CreateCube 
-                             setObjectClickedUUID = {setObjectClickedUUID}
-                             setObjectClicked={setObjectClicked}
-                             isObjectButtonPressed = { isObjectButtonPressed }
-                             key = { idx } { ...object.props }
-                            />;
-                case 'sphere':
-                    return <CreateSphere
-                            setObjectClickedUUID = {setObjectClickedUUID}
-                            setObjectClicked={setObjectClicked}
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'cylinder':
-                    return <CreateCylinder
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'cone':
-                    return <CreateCone
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'tetrahedron':
-                    return <CreateTetrahedron
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'pyramid':
-                    return <CreatePyramid
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'hemisphere':
-                    return <CreateHemisphere
-                            isObjectButtonPressed = { isObjectButtonPressed }
-                            key = { idx } { ...object.props } 
-                            />;
-                case 'stlObject':
-                    return (<STLImporter
+          {objectsAdded.map((object, idx) => {
+              switch (object.type) {
+                  case 'cube':
+                      return <CreateCube 
+                               setObjectClickedUUID = {setObjectClickedUUID}
+                               setObjectClicked={setObjectClicked}
+                               isObjectButtonPressed = { isObjectButtonPressed }
+                               key = { idx } { ...object.props }
+                              />;
+                  case 'sphere':
+                      return <CreateSphere
+                              setObjectClickedUUID = {setObjectClickedUUID}
+                              setObjectClicked={setObjectClicked}
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'cylinder':
+                      return <CreateCylinder
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'cone':
+                      return <CreateCone
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'tetrahedron':
+                      return <CreateTetrahedron
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'pyramid':
+                      return <CreatePyramid
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'hemisphere':
+                      return <CreateHemisphere
+                              isObjectButtonPressed = { isObjectButtonPressed }
+                              key = { idx } { ...object.props } 
+                              />;
+                  case 'stlObject':
+                      return (<STLImporter
                             setObjectClickedUUID = { setObjectClickedUUID }
                             setObjectClicked = { setObjectClicked }
                             isObjectButtonPressed = { isObjectButtonPressed }
                             key = { object.props.key } 
                             mesh = { object.props.mesh }
                             />);
-                // Add more cases for other shapes
-                default:
-                    return null;
-            }
-        })}
+                  // Add more cases for other shapes
+                  default:
+                      return null;
+              }
+          })}
 
-        { 
-          isSketchButtonPressed &&  <CadPlanes
-            isOrthographic =  {isOrthographic}
-            orthoCameraRef = {orthographicCameraRef}
-            persCameraRef = { perspectiveCameraRef }
-            planeOrientation = { planeOrientation }
-            setPlaneOrientation = { setPlaneOrientation }
-            girdOrientation = { girdOrientation }
-            setGirdOrientation = { setGirdOrientation }
-            setCurrCameraPos = { setCurrCameraPos }
+          { 
+            isSketchButtonPressed &&  <CadPlanes
+              isOrthographic =  {isOrthographic}
+              orthoCameraRef = {orthographicCameraRef}
+              persCameraRef={ perspectiveCameraRef }
+              planeOrientation = { planeOrientation }
+              setPlaneOrientation = { setPlaneOrientation }
+              girdOrientation = { girdOrientation }
+              setGirdOrientation = { setGirdOrientation }
+              setCurrCameraPos = { setCurrCameraPos }
+            />
+          }
+
+
+
+          <RayCaster
+            isObjectButtonPressed = { isObjectButtonPressed }
+            addObjectToScene      = { addObjectToScene }
+            setCoordinates        = { setCameraCoordinates }
+            objectTypePressed     = { objectTypePressed }
+            currCameraPos         = {  currCameraPos }
           />
+
+          <color args={ [ '#343a45' ] } attach="background" />
+
+          <gridHelper
+            name = "init-grid"
+            args = { [20, 20, '#ffffff'] }
+            position = { [0, -0.01, 0] }
+            rotation={ [
+                         girdOrientation[0],
+                         girdOrientation[1],
+                         girdOrientation[2]
+                       ]
+           }
+          />
+
+          <Plane 
+            name = "grid-plane-hidden-helper"
+            rotation = { [
+                          planeOrientation[0],
+                          planeOrientation[1],
+                          planeOrientation[2]
+                         ]
+            } 
+            args = { [20, 20] } 
+            position = { [0, -0.01, 0] } 
+            visible = { false }
+
+
+          />
+
+          <AxesHelper width = {6} length = {2} />
+
+          </Canvas>
         }
 
-        <RayCaster
-          isObjectButtonPressed = { isObjectButtonPressed }
-          addObjectToScene      = { addObjectToScene }
-          setCoordinates        = { setCameraCoordinates }
-          objectTypePressed     = { objectTypePressed }
-          currCameraPos         = {  currCameraPos }
-        />
+        { !mainCanvasView && 
+          <Canvas>
+            <AmbientLightFunc/>
+            
 
-        <color args={ [ '#343a45' ] } attach="background" />
+            <GetSceneInfo
+                objectsAdded      = { objectsAdded }
+                fetchedObjects    = { fetchedObjects }
+                setFetchedObjects = { setFetchedObjects }
+                setSceneInfo      = { setSceneInfo }
+                setSceneMain      = { setSceneMain }
+            />
 
-        <gridHelper
-          name = "init-grid"
-          args = { [20, 20, '#ffffff'] }
-          position = { [0, -0.01, 0] }
-          rotation={ [
-                       girdOrientation[0],
-                       girdOrientation[1],
-                       girdOrientation[2]
-                     ]
-         }
-        />
+            <CustomCameraControls/>
 
-        <Plane 
-          name = "grid-plane-hidden-helper"
-          rotation = { [
-                        planeOrientation[0],
-                        planeOrientation[1],
-                        planeOrientation[2]
-                       ]
-          } 
-          args = { [20, 20] } 
-          position = { [0, -0.01, 0] } 
-          visible = { false }
+            <SwitchBetweenCameras
+              isOrthographic    = { isOrthographic }
+              setIsOrthographic = { setIsOrthographic }
+              cameraCoordinates = { cameraCoordinates }
+              persCameraRef = { perspectiveCameraRef }
+              orthoCameraRef = { orthographicCameraRef }
+
+            />
+
+            { 
+              isSketchButtonPressed &&  <CadPlanes
+                isOrthographic =  {isOrthographic}
+                orthoCameraRef = {orthographicCameraRef}
+                persCameraRef={ perspectiveCameraRef }
+                planeOrientation = { planeOrientation }
+                setPlaneOrientation = { setPlaneOrientation }
+                girdOrientation = { girdOrientation }
+                setGirdOrientation = { setGirdOrientation }
+                setCurrCameraPos = { setCurrCameraPos }
+              />
+            }
+
+            <CustomShapes/>
+
+            <RayCaster
+              isObjectButtonPressed = { isObjectButtonPressed }
+              addObjectToScene      = { addObjectToScene }
+              setCoordinates        = { setCameraCoordinates }
+              objectTypePressed     = { objectTypePressed }
+              currCameraPos         = {  currCameraPos }
+            />
+
+            <color args={ [ '#343a45' ] } attach="background" />
+
+            <gridHelper
+              name = "init-grid"
+              args = { [20, 20, '#ffffff'] }
+              position = { [0, -0.01, 0] }
+              rotation={ [
+                           girdOrientation[0],
+                           girdOrientation[1],
+                           girdOrientation[2]
+                         ]
+             }
+            />
+
+            <Plane 
+              name = "grid-plane-hidden-helper"
+              rotation = { [
+                            planeOrientation[0],
+                            planeOrientation[1],
+                            planeOrientation[2]
+                           ]
+              } 
+              args = { [20, 20] } 
+              position = { [0, -0.01, 0] } 
+              visible = { false }
 
 
-        />
+            />
 
-        <AxesHelper width = {6} length = {2} />
+            <AxesHelper width = {2} length = {2} />
 
-        </Canvas>
-        { !!objectClicked  && !!objectClickedUUID && !!sceneInfo
+            </Canvas>
+        }
+
+
+
+        { mainCanvasView && !!objectClicked  && !!objectClickedUUID && !!sceneInfo
             &&
             <RightPanel
                 objectClicked = { objectClicked}
@@ -236,7 +327,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                 sceneInfo  = { sceneInfo } 
             />
         }
-        { !!sceneInfo && <LeftPanel 
+        { mainCanvasView && !!sceneInfo && <LeftPanel 
                           sceneMain       = { sceneMain }
                           sceneInfo       = { sceneInfo } 
                           openGroupIDs    = { openGroupIDs }
@@ -245,9 +336,8 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                           />
         }
 
-        {/* <Help/> */}
 
-        <ToolPanel
+        { mainCanvasView && <ToolPanel
           handleLogout             = { handleLogout }
           handleShowLoginForm      = { handleShowLoginForm }
           session                  = { session }
@@ -258,14 +348,18 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
           addObjectToScene         = { addObjectToScene }
           isSketchButtonPressed    = { isSketchButtonPressed }
           setIsSketchButtonPressed = { setIsSketchButtonPressed }
-          setObjectClicked         = { setSelectedObject }
+          setObjectClicked = { setSelectedObject }
         />
+        }
 
-        <CameraSwitch
-          isOrthographic        = { isOrthographic }
-          setIsOrthographic     = { setIsOrthographic }
-          isObjectButtonPressed = { isObjectButtonPressed }
-        />
+        {  mainCanvasView && <CameraSwitch
+            isOrthographic        = { isOrthographic }
+            setIsOrthographic     = { setIsOrthographic }
+            isObjectButtonPressed = { isObjectButtonPressed }
+          />
+        }
+
+        { !mainCanvasView && <CustomShapePanel/> }
     </>
   )
 }
