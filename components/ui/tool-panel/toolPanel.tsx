@@ -57,7 +57,7 @@ export function ToolPanel({
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Use the useSTLImporter hook to get the handleFileChange function
-  const handleFileChange = handleSTLFileChange(addObjectToScene, setObjectClicked, isObjectButtonPressed);
+  const handleFileChange = handleSTLFileChange(addObjectToScene, setObjectClicked, fileInputRef);
   
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B

@@ -57,6 +57,7 @@ export function STLImporter({ mesh, setObjectClicked, setObjectClickedUUID, isOb
 export const handleSTLFileChange = (
     addObjectToScene: (type: string, props?: any) => void,
     setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>,
+    fileInputRef: React.RefObject<HTMLInputElement>,
     color: string = 'white'
 ) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -97,6 +98,9 @@ export const handleSTLFileChange = (
         reader.onerror = (e) => {
             console.error('FileReader error: ', e);
         };
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
     }
 };
 
