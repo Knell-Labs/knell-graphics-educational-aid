@@ -18,7 +18,8 @@ const threeJsGeometryMapping: StringDictionary = {
     "ConeGeometry" : "Cone",
     "TetrahedronGeometry" : "Tetrahedron",
     "PyramidGeometry" : "Pyramid",
-    "HemisphereGeometry" : "Hemisphere"
+    "HemisphereGeometry" : "Hemisphere",
+    "stlObject": "STL Model"
 }
 
 const threeJsFileMapping: StringDictionary = {
@@ -31,7 +32,8 @@ const threeJsFileMapping: StringDictionary = {
     "Hemisphere": "hemisphere.svg",
     "AmbientLight": "AmbientLight.svg" ,
     "Group": "Group.svg",
-    "DirectionalLight" : "DirectionalLight.svg"
+    "DirectionalLight" : "DirectionalLight.svg",
+    "STL Model": "stlModel.svg"
 }
 
 const groupMapping: StringDictionary = {
@@ -42,7 +44,8 @@ const groupMapping: StringDictionary = {
     "ConeGroup": "Cone",
     "TetrahedronGroup": "Tetrahedron",
     "PyramidGroup": "Pyramid",
-    "HemisphereGroup": "Hemisphere"
+    "HemisphereGroup": "Hemisphere",
+    "stlObjectGroup": "STL Model"
 }
 
 export function LeftPanel(props: LeftPanelProps ) {

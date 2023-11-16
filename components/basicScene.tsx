@@ -4,6 +4,7 @@ import { AxesHelper } from "./axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "./controls/CameraControls"
 import { CameraSwitch } from "./ui/button/cameraSwitch"
 import { Help } from "./ui/button/help"
+import { STLImporter } from './ui/button/importSTL';
 import { ToolPanel } from "./ui/tool-panel/toolPanel"
 import { LeftPanel } from "./ui/left-panel/leftPanel"
 import { RightPanel } from "./ui/right-panel/rightPanel"
@@ -53,6 +54,8 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
+  const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
+
   const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
   const [objectTypePressed, setObjectTypePressed] = useState<string>("")
   const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([15,15,15])
@@ -77,15 +80,22 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
   const [girdOrientation, setGirdOrientation] = useState<TwoDimPlaneRotation>([0, 0, 0])
 
 
-  const [mainCanvasView, setMainCanvasView] = useState<boolean>(false);
+  const [mainCanvasView, setMainCanvasView] = useState<boolean>(true);
 
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
 
   const addObjectToScene = (type: string, props: any = {}) => {
-    setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects ]);
+    if (type === 'stlObject' && props.mesh) {
+      // Use a unique key for each STL mesh
+      const uniqueKey = `stl-${Date.now()}`;
+      setObjectsAdded(prevObjects => [{ type: 'stlObject', props: { mesh: props.mesh, key: uniqueKey } }, ...prevObjects]);
+    } else {
+      setObjectsAdded(prevObjects => [{ type, props }, ...prevObjects]);
+    }
   };
+
 
   return (
     <>
@@ -155,6 +165,14 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
                               isObjectButtonPressed = { isObjectButtonPressed }
                               key = { idx } { ...object.props } 
                               />;
+                  case 'stlObject':
+                      return (<STLImporter
+                            setObjectClickedUUID = { setObjectClickedUUID }
+                            setObjectClicked = { setObjectClicked }
+                            isObjectButtonPressed = { isObjectButtonPressed }
+                            key = { object.props.key } 
+                            mesh = { object.props.mesh }
+                            />);
                   // Add more cases for other shapes
                   default:
                       return null;
@@ -330,6 +348,7 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
           addObjectToScene         = { addObjectToScene }
           isSketchButtonPressed    = { isSketchButtonPressed }
           setIsSketchButtonPressed = { setIsSketchButtonPressed }
+          setObjectClicked = { setSelectedObject }
         />
         }
 
