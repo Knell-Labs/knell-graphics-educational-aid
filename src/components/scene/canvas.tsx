@@ -8,10 +8,6 @@ import { AxesHelper } from "../axesHelperCustom/axesHelper"
 import { CustomCameraControls } from "../controls/CameraControls"
 import { SwitchBetweenCameras } from '../camera/camera';
 
-import {
-    getCreateShape
-} from '../objects/createShape'
-
 import { AmbientLightFunc, DirectLightFunc } from '../objects/Lights';
 
 import { RayCaster } from '../raycast/raycaster';
@@ -19,6 +15,9 @@ import { CadPlanes } from '../raycast/ScenePlanes';
 
 import { CameraDirection, TwoDimPlaneRotation, ShapeProps, ShapeObject } from '@/types/scene'
 
+import {
+    getCreateShape
+} from '../objects/createShape'
 
 interface SceneCanvasProps {
     objects: Array<{
@@ -100,19 +99,32 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
                 orthoCameraRef = { orthographicCameraRef }
             />
 
+            {objects.map((obj, idx) => {
+                return obj.node
+                // const Shape = getCreateShape(obj.type);
+                // if (!Shape) return null;
+                // <Shape
+                //     key                   = { objects.length.toString() + Date.now().toString() }
+                //     setObjectClickedUUID  = { setObjectClickedUUID }
+                //     setObjectClicked      = { setObjectClicked }
+                //     isObjectButtonPressed = { !isObjectButtonPressed }
+                //     { ...obj.props }
+                // />
+            })}
+            {/* 
             {objects.map((object, idx) => {
                 const Shape = getCreateShape(object.type);
                 if (!Shape) return null;
                 return (
                     <Shape
-                        key = { idx }
+                        key                   = { `${idx}-${object.uuid}` }
                         setObjectClickedUUID  = { setObjectClickedUUID }
                         setObjectClicked      = { setObjectClicked }
                         isObjectButtonPressed = { isObjectButtonPressed }
                         { ...object.props }
                     />
                 )
-            })}
+            })} */}
 
             { 
                 isSketchButtonPressed &&  <CadPlanes

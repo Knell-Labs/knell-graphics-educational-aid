@@ -19,6 +19,7 @@ export function RayCaster({
         objectTypePressed,
         currCameraPos
   }: props){
+    
   const world = useThree()
   // const mouseCords = new THREE.Vector2()
   const raycaster = new THREE.Raycaster()

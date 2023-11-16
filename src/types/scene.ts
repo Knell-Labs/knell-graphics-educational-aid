@@ -1,7 +1,3 @@
-import {
-    Mesh
-} from 'three'
-
 export enum CameraDirection {
     freeDrive, 
     redTop,      // Normal vector (0, 1, 0)
@@ -17,11 +13,18 @@ export type ShapeType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'pyramid' | 'h
 
 export interface ShapeProps {
   color?: string;
-  size?: number | [number, number, number];
-  radialSegments?: number;
+  radius?: number;
   height?: number;
+  radialSegments?: number;
+
+  size?: number | [number, number, number];
+
   position?: [number, number, number];
+  scale?:    [number, number, number];
+  rotation?: [number, number, number];
+  
   // position?: THREE.Vector3Tuple; // Add position as a Vector3Tuple
+
   // Add more props as needed
 }
 

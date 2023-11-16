@@ -10,6 +10,10 @@ import { Session } from '@/types/auth';
 
 import { ShapeType, ShapeProps } from '@/types/scene';
 
+import {
+  getCreateShape
+} from '../objects/createShape'
+
 interface SceneProps {
   session             : Session | null;
   handleLogout        : () => void;
@@ -41,21 +45,41 @@ const Scene : React.FC<SceneProps> = ({
 
   const [objects, setObjects] = useState<any[]>([]);
 
+  // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
+  //   setObjects(prevObjects => 
+  //     [
+  //       {
+  //         type: shapeType,
+  //         props
+  //       },
+  //       ...prevObjects
+  //     ]
+  //   );
+  // };
+
   const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
+    const Shape = getCreateShape(shapeType);
+    if (!Shape) return;
+
     setObjects(prevObjects => 
       [
-        { 
+        {
           type: shapeType,
-          props
+          props: props,
+          node: (
+            <Shape
+              key                   = { objects.length.toString() + Date.now().toString() }
+              setObjectClickedUUID  = { setObjectClickedUUID }
+              setObjectClicked      = { setObjectClicked }
+              isObjectButtonPressed = { !isObjectButtonPressed }
+              { ...props }
+            />
+          )
         },
         ...prevObjects
       ]
     );
   };
-
-  useEffect(() => {
-    console.log(objects)
-  }, [objects])
 
   return (
     <>

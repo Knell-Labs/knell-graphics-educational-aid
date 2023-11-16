@@ -1,5 +1,5 @@
 import { ThreeElements, useFrame } from '@react-three/fiber';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { Dispatch, SetStateAction } from "react";
 import * as THREE from 'three';
 import { useCursor  } from '@react-three/drei'
@@ -7,15 +7,14 @@ import {TransformCustomControls}  from "../controls/objectControls/TransformCust
 
 import { ShapeType, ShapeProps, ShapeObject } from '@/types/scene'
 
-
 type CreateConeProps = {
     setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
-    isObjectButtonPressed: boolean;
+    isObjectButtonPressed: () => boolean;
     color?: string;
     radius?: number;
     height?: number;
     radialSegments?: number;
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   function CreateCone({ setObjectClicked, isObjectButtonPressed, color, radius = 0.5, height = 1, radialSegments = 32, ...props }: CreateConeProps) {
     const coneRef = useRef<THREE.Mesh>(null!);
@@ -47,7 +46,7 @@ type CreateConeProps = {
           ref = { coneRef }
           
           onClick= { (event) => {
-              if(!isObjectButtonPressed){
+              if (!isObjectButtonPressed){
                   (event.stopPropagation(), setTransformActive(true))
                   setObjectClicked(coneRef.current)
               }
@@ -58,6 +57,7 @@ type CreateConeProps = {
           }}
           onPointerOver   = { (event) => (event.stopPropagation(), hover(true)) }
           onPointerOut    = { (event) => hover(false) }
+          onUpdate={(e) => console.log(e)}
         >
           <coneGeometry args = { [radius, height, radialSegments] } />
           <meshStandardMaterial color = { meshColor } />
@@ -73,12 +73,13 @@ type CreateConeProps = {
 }
 
 type CreateCubeProps = {
+    // onTransform: (uuid:string, props:ShapeProps) => void;
     setObjectClickedUUID: Dispatch<SetStateAction<string | null>>;
     setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
     isObjectButtonPressed: boolean;
     color?: string;
     size?: [number, number, number];
-  } & ThreeElements['mesh'];
+  } & ShapeProps  & ThreeElements['mesh'];
   
   function CreateCube({ setObjectClickedUUID, setObjectClicked, isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreateCubeProps) {
     const cubeRef = useRef<THREE.Mesh>(null!);
@@ -89,9 +90,9 @@ type CreateCubeProps = {
     const meshColor = color ? color : (transformActive ? 'white' : 'white'); 
     const groupRef = useRef<THREE.Group>(null);
     const lineMaterial = useMemo(() => new THREE.LineBasicMaterial( { color: 0x000000, depthTest: true, opacity: 0.5, transparent: true } ), []);
-  
+    
     useCursor(hovered)
-  
+
     useFrame(() => {
       if (groupRef.current){
         groupRef.current.type = "CubeGroup";
@@ -110,7 +111,7 @@ type CreateCubeProps = {
           ref = { cubeRef }
           
           onClick= { (event) => {
-              if(!isObjectButtonPressed){
+              if (!isObjectButtonPressed){
                   (event.stopPropagation(), setTransformActive(true))
                   setObjectClicked(cubeRef.current)
   
@@ -147,7 +148,7 @@ type CreateCylinderProps = {
     height?: number;
     radius?: number;
     radialSegments?: number;
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   function CreateCylinder({ setObjectClicked,isObjectButtonPressed, color, height = 1, radius = 0.5, radialSegments = 32, ...props }: CreateCylinderProps) {
     const cylinderRef = useRef<THREE.Mesh>(null!);
@@ -211,7 +212,7 @@ type CreateHemisphereProps = {
     color?: string;
     radius?: number;
     radialSegments?: number;
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   function CreateHemisphere({ setObjectClicked,isObjectButtonPressed, color, radius = 0.5, radialSegments = 32, ...props }: CreateHemisphereProps) {
     const hemisphereRef = useRef<THREE.Mesh>(null!);
@@ -275,7 +276,7 @@ type CreatePyramidProps = {
     isObjectButtonPressed: boolean;
     color?: string;
     size?: [number, number, number];
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   function CreatePyramid({ setObjectClicked,isObjectButtonPressed, color, size = [1, 1, 1], ...props }: CreatePyramidProps) {
     const pyramidRef = useRef<THREE.Mesh>(null!);
@@ -340,7 +341,7 @@ type CreateSphereProps = {
     color?: string;
     radius?: number;
     radialSegments?: number;
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   
   function CreateSphere({ setObjectClicked,isObjectButtonPressed, color, radius = 1, radialSegments = 32, ...props }: CreateSphereProps) {
@@ -373,7 +374,7 @@ type CreateSphereProps = {
           ref = { sphereRef }
   
           onClick= { (event) => {
-              if(!isObjectButtonPressed){
+              if (!isObjectButtonPressed){
                   (event.stopPropagation(), setTransformActive(true))
                   setObjectClicked(sphereRef.current)
               }
@@ -404,7 +405,7 @@ type CreateTetrahedronProps = {
     isObjectButtonPressed: boolean;
     color?: string;
     size?: number; // Note: Tetrahedron only needs a single size value (radius)
-  } & ThreeElements['mesh'];
+  } & ShapeProps & ThreeElements['mesh'];
   
   function CreateTetrahedron({ setObjectClicked,isObjectButtonPressed, color, size = 0.6, ...props }: CreateTetrahedronProps) {
     const tetraRef = useRef<THREE.Mesh>(null!);
@@ -436,7 +437,7 @@ type CreateTetrahedronProps = {
           ref = { tetraRef }
           rotation = { [(2*Math.PI)/3  + 0.08, (Math.PI)/4, 0] } // Rotate the tetrahedron to sit flat on one of its faces
           onClick= { (event) => {
-            if(!isObjectButtonPressed){
+            if (!isObjectButtonPressed){
                 (event.stopPropagation(), setTransformActive(true))
                 setObjectClicked(tetraRef.current)
             }
