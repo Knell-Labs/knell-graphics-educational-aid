@@ -21,6 +21,7 @@ import { CadPlanes } from './raycast/ScenePlanes';
 import { Plane } from '@react-three/drei';
 import { AmbientLightFunc, DirectLightFunc } from './objects/Lights';
 import { CustomShapes } from './objects/CustomShapes';
+import { CustomShapePanel } from './ui/custom-shape-panel/customShapePanel';
 
 
 import { Session } from '@/types/auth';
@@ -338,6 +339,8 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
             isObjectButtonPressed = { isObjectButtonPressed }
           />
         }
+
+        { !mainCanvasView && <CustomShapePanel/> }
     </>
   )
 }
