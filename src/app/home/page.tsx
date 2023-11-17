@@ -6,11 +6,11 @@ import { AuthChangeEvent } from '@supabase/supabase-js';
 
 import { useAuth } from '../contexts/authProvider';
 
-import { BasicScene }  from "../../../components/basicScene";
+import Scene from "../../components/scene";
 
-import Button from '../../../components/ui/button';
-import LoginForm from '../../../components/forms/login';
-import Modal from '../../../components/modal';
+import Button from '../../components/ui/button';
+import LoginForm from '../../components/forms/login';
+import Modal from '../../components/modal';
 import Welcome from './welcome';
 
 export default function Home() {
@@ -80,7 +80,7 @@ export default function Home() {
         </Modal>
         
         <div className="fixed top-0 left-0 w-full h-full overflow-hidden">
-            <BasicScene
+            <Scene
               session             = { session }
               handleShowLoginForm = { () => handleModalAction("login") }
               handleLogout = { () => supabase.auth.signOut() }

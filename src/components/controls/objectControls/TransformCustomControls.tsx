@@ -29,6 +29,6 @@ export function TransformCustomControls<TransformCustomControlsProps>({ mesh }) 
         return()=> window.removeEventListener('keydown',onKeyPress)
     },[])
     return (
-        <TransformControls object={mesh} mode = {mode}></TransformControls>
+        <TransformControls object={mesh} mode = {mode} onChange={e => console.log(e)}></TransformControls>
     )
 }

@@ -4,13 +4,14 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { TransformCustomControls } from "../../../components/controls/objectControls/TransformCustomControls";
 import { Dispatch, SetStateAction } from "react";
 import { useFrame } from '@react-three/fiber';
+import { ShapeProps } from '@/types/scene'
 
 type STLImporterProps = {
   mesh: THREE.Mesh;
   setObjectClicked: React.Dispatch<React.SetStateAction<THREE.Mesh | null>>;
   setObjectClickedUUID: React.Dispatch<React.SetStateAction<string | null>>;
   isObjectButtonPressed: boolean;
-};
+} & ShapeProps;
 
 export function STLImporter({ mesh, setObjectClicked, setObjectClickedUUID, isObjectButtonPressed }: STLImporterProps) {
   const meshRef = useRef<THREE.Mesh>(mesh);
@@ -32,6 +33,7 @@ export function STLImporter({ mesh, setObjectClicked, setObjectClickedUUID, isOb
   return (
     <group ref = { groupRef }>
       <primitive 
+
         object  = { meshRef.current } 
         onClick = { (event) => {
           if (!isObjectButtonPressed) {
