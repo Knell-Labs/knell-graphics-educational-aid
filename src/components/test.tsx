@@ -1,14 +1,14 @@
-import { useRef, useEffect, useState } from 'react';
-import anime from 'animejs';
-import * as THREE from 'three';
-import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
-import { OrbitControls, Grid} from '@react-three/drei'
+import { useRef, useEffect, useState } from "react";
+import anime from "animejs";
+import * as THREE from "three";
+import { Canvas, useFrame, ThreeElements } from "@react-three/fiber";
+import { OrbitControls, Grid } from "@react-three/drei";
 
-function Box(props: ThreeElements['mesh']) {
-  const ref = useRef<THREE.Mesh>(null!)
-  const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  useFrame((state, delta) => (ref.current.rotation.x += delta))
+function Box(props: ThreeElements["mesh"]) {
+  const ref = useRef<THREE.Mesh>(null!);
+  const [hovered, hover] = useState(false);
+  const [clicked, click] = useState(false);
+  useFrame((state, delta) => (ref.current.rotation.x += delta));
 
   return (
     <mesh
@@ -17,43 +17,39 @@ function Box(props: ThreeElements['mesh']) {
       scale={clicked ? 1.5 : 1}
       onClick={(event) => click(!clicked)}
       onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
+      onPointerOut={(event) => hover(false)}
+    >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
     </mesh>
-  )
+  );
 }
 
 export function ReactFiber() {
   return (
     <Canvas>
-      <OrbitControls enableDamping = { false } />
+      <OrbitControls enableDamping={false} />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <color args={ [ '#F5F5DC' ] } attach="background" />
-      <Ground/>
+      <color args={["#F5F5DC"]} attach="background" />
+      <Ground />
     </Canvas>
-  )
+  );
 }
-
-
 
 function Ground() {
   const gridConfig = {
     cellSize: 0.5,
     cellThickness: 0.5,
-    cellColor: '#6f6f6f',
+    cellColor: "#6f6f6f",
     sectionSize: 3,
     sectionThickness: 1,
-    sectionColor: '#9d4b4b',
+    sectionColor: "#9d4b4b",
     followCamera: false,
-    infiniteGrid: true
-  }
-  return <Grid position={[0, 0, 0]} args={[10.5, 10.5]} {...gridConfig} />
+    infiniteGrid: true,
+  };
+  return <Grid position={[0, 0, 0]} args={[10.5, 10.5]} {...gridConfig} />;
 }
-
-
-
 
 export function ThreeScene() {
   const canvasRef = useRef(null);
@@ -65,7 +61,12 @@ export function ThreeScene() {
     const scene = new THREE.Scene();
 
     // Create a camera
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    );
     camera.position.z = 5;
 
     // Create a renderer
@@ -93,7 +94,7 @@ export function ThreeScene() {
   }, []);
 
   return <canvas ref={canvasRef} />;
-};
+}
 
 export function AnimeExample() {
   const boxRef = useRef(null);
@@ -103,12 +104,12 @@ export function AnimeExample() {
 
     anime({
       targets: boxElement,
-      translateX: '200px',
-      backgroundColor: '#00ff00',
+      translateX: "200px",
+      backgroundColor: "#00ff00",
       duration: 2000,
       loop: true,
-      direction: 'alternate',
-      easing: 'easeInOutQuad',
+      direction: "alternate",
+      easing: "easeInOutQuad",
     });
 
     return () => {
@@ -121,6 +122,4 @@ export function AnimeExample() {
       Anime.js Example
     </div>
   );
-};
-
-
+}

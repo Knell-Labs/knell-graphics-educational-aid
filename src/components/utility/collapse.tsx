@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 interface CollapseProps {
-  title:    string;
+  title: string;
   children: React.ReactNode;
 }
 
@@ -11,7 +11,9 @@ const Collapse: React.FC<CollapseProps> = ({ title, children }) => {
 
   useEffect(() => {
     if (contentRef.current) {
-      contentRef.current.style.maxHeight = isOpen ? `${contentRef.current.scrollHeight}px` : '0';
+      contentRef.current.style.maxHeight = isOpen
+        ? `${contentRef.current.scrollHeight}px`
+        : "0";
     }
   }, [isOpen]);
 
@@ -27,9 +29,7 @@ const Collapse: React.FC<CollapseProps> = ({ title, children }) => {
         ref={contentRef}
         className="overflow-hidden transition-all duration-300 mt-2"
       >
-        <div className="p-5 border border-gray-300 rounded">
-          {children}
-        </div>
+        <div className="p-5 border border-gray-300 rounded">{children}</div>
       </div>
     </div>
   );

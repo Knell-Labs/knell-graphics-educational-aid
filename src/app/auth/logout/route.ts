@@ -1,27 +1,27 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-    const requestUrl = new URL(request.url)
-    const supabase = createRouteHandlerClient({ cookies })
+  const requestUrl = new URL(request.url);
+  const supabase = createRouteHandlerClient({ cookies });
 
-    // check if we have a session
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+  // check if we have a session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-    if (session) {
-        await supabase.auth.signOut()
-    }
+  if (session) {
+    await supabase.auth.signOut();
+  }
 
-    return new Response(null, {
-        status: 200
-    })
-    // return NextResponse.redirect(`${requestUrl.origin}/`, {
-    //     // a 301 status is required to redirect from a POST to a GET route
-    //     status: 301,
-    // })
+  return new Response(null, {
+    status: 200,
+  });
+  // return NextResponse.redirect(`${requestUrl.origin}/`, {
+  //     // a 301 status is required to redirect from a POST to a GET route
+  //     status: 301,
+  // })
 }

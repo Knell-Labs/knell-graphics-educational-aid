@@ -1,33 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SceneCanvas from './canvas';
+import React, { useState, useEffect, useRef } from "react";
+import SceneCanvas from "./canvas";
 
-import {
-  getCreateShape
-} from '../objects/createShape'
+import { getCreateShape } from "../objects/createShape";
 
-import { CameraSwitch } from "../ui/button/cameraSwitch"
-import { Help } from "../ui/button/help"
-import { ToolPanel } from "../ui/tool-panel/toolPanel"
-import { LeftPanel } from "../ui/left-panel/leftPanel"
-import { RightPanel } from "../ui/right-panel/rightPanel"
-import { STLImporter } from '../ui/button/importSTL';
-import { CustomShapePanel } from '../ui/custom-shape-panel/customShapePanel';
+import { CameraSwitch } from "../ui/button/cameraSwitch";
+import { Help } from "../ui/button/help";
+import { ToolPanel } from "../ui/tool-panel/toolPanel";
+import { LeftPanel } from "../ui/left-panel/leftPanel";
+import { RightPanel } from "../ui/right-panel/rightPanel";
+import { STLImporter } from "../ui/button/importSTL";
+import { CustomShapePanel } from "../ui/custom-shape-panel/customShapePanel";
 
-import { Session } from '@/types/auth';
-import { ShapeType, ShapeProps } from '@/types/scene';
+import { Session } from "@/types/auth";
+import { ShapeType, ShapeProps } from "@/types/scene";
 
 interface SceneProps {
-  session             : Session | null;
-  handleLogout        : () => void;
-  handleShowLoginForm : () => void;
+  session: Session | null;
+  handleLogout: () => void;
+  handleShowLoginForm: () => void;
 }
 
-const Scene : React.FC<SceneProps> = ({
+const Scene: React.FC<SceneProps> = ({
   session,
   handleLogout,
-  handleShowLoginForm
+  handleShowLoginForm,
 }) => {
-
   const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
   const [mainCanvasView, setMainCanvasView] = useState<boolean>(true);
 
@@ -36,20 +33,22 @@ const Scene : React.FC<SceneProps> = ({
 
   const [isOrthographic, setIsOrthographic] = useState<boolean>(false);
 
-  const [isObjectButtonPressed, setIsObjectButtonPressed] = useState<boolean>(false)
-  const [objectTypePressed, setObjectTypePressed] = useState<string>("")
+  const [isObjectButtonPressed, setIsObjectButtonPressed] =
+    useState<boolean>(false);
+  const [objectTypePressed, setObjectTypePressed] = useState<string>("");
 
-  const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);   
+  const [openGroupIDs, setOpenGroupIDs] = useState<string[]>([]);
 
-  const [sceneInfo, setSceneInfo] = useState(null)
-  const [sceneMain, setSceneMain] = useState(null)
-  
-  const [isSketchButtonPressed, setIsSketchButtonPressed] = useState<boolean>(false);
+  const [sceneInfo, setSceneInfo] = useState(null);
+  const [sceneMain, setSceneMain] = useState(null);
+
+  const [isSketchButtonPressed, setIsSketchButtonPressed] =
+    useState<boolean>(false);
 
   const [objects, setObjects] = useState<any[]>([]);
 
   // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
-  //   setObjects(prevObjects => 
+  //   setObjects(prevObjects =>
   //     [
   //       {
   //         type: shapeType,
@@ -64,115 +63,112 @@ const Scene : React.FC<SceneProps> = ({
     const Shape = !!props.mesh ? STLImporter : getCreateShape(shapeType);
     if (!Shape) return;
 
-    setObjects(prevObjects => 
-      [
-        {
-          type: shapeType,
-          props: props,
-          node: (
-            <Shape
-              key                   = { objects.length.toString() + Date.now().toString() }
-              setObjectClickedUUID  = { setObjectClickedUUID }
-              setObjectClicked      = { setObjectClicked }
-              isObjectButtonPressed = { !!props.mesh ? isObjectButtonPressed : !isObjectButtonPressed }
-              { ...props }
-            />
-          )
-        },
-        ...prevObjects
-      ]
-    );
+    setObjects((prevObjects) => [
+      {
+        type: shapeType,
+        props: props,
+        node: (
+          <Shape
+            key={objects.length.toString() + Date.now().toString()}
+            setObjectClickedUUID={setObjectClickedUUID}
+            setObjectClicked={setObjectClicked}
+            isObjectButtonPressed={
+              !!props.mesh ? isObjectButtonPressed : !isObjectButtonPressed
+            }
+            {...props}
+          />
+        ),
+      },
+      ...prevObjects,
+    ]);
   };
 
   return (
     <>
-      { mainCanvasView ? 
+      {mainCanvasView ? (
         <SceneCanvas
           objects={objects}
           addObjectToScene={addObjectToScene}
-
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
-
           setObjectClickedUUID={setObjectClickedUUID}
           setObjectClicked={setObjectClicked}
-          
           objectTypePressed={objectTypePressed}
           setObjectTypePressed={setObjectTypePressed}
           isObjectButtonPressed={isObjectButtonPressed}
-
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
-        /> :
+        />
+      ) : (
         <SceneCanvas
           // objects={objects}
           addObjectToScene={addObjectToScene}
-
           isOrthographic={isOrthographic}
           setIsOrthographic={setIsOrthographic}
-
           setObjectClickedUUID={setObjectClickedUUID}
           setObjectClicked={setObjectClicked}
-          
           objectTypePressed={objectTypePressed}
           setObjectTypePressed={setObjectTypePressed}
           isObjectButtonPressed={isObjectButtonPressed}
-
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
-        /> 
-      }
+        />
+      )}
 
-      { mainCanvasView ? (
+      {mainCanvasView ? (
         <>
           {!!sceneInfo && (
             <>
-              { !!objectClicked && !!objectClickedUUID &&
+              {!!objectClicked && !!objectClickedUUID && (
                 <RightPanel
-                  objectClicked = { objectClicked }
-                  objectClickedUUID = { objectClickedUUID }
-                  sceneInfo  = { sceneInfo } 
+                  objectClicked={objectClicked}
+                  objectClickedUUID={objectClickedUUID}
+                  sceneInfo={sceneInfo}
                 />
-              }
-              
-              <LeftPanel 
-                sceneMain       = { sceneMain }
-                sceneInfo       = { sceneInfo } 
-                openGroupIDs    = { openGroupIDs }
-                handleOpenGroup = {
-                  (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
+              )}
+
+              <LeftPanel
+                sceneMain={sceneMain}
+                sceneInfo={sceneInfo}
+                openGroupIDs={openGroupIDs}
+                handleOpenGroup={(group_id: string) =>
+                  setOpenGroupIDs((prev) =>
+                    openGroupIDs.includes(group_id)
+                      ? prev.filter((n) => n != group_id)
+                      : [...prev, group_id],
+                  )
+                }
               />
             </>
           )}
           <ToolPanel
-            session                  = { session }
-            handleLogout             = { handleLogout }
-            handleShowLoginForm      = { handleShowLoginForm }
-
-            objectTypePressed        = { objectTypePressed }
-            isObjectButtonPressed    = { isObjectButtonPressed }  
-            setIsObjectButtonPressed = { setIsObjectButtonPressed }
-            setObjectTypePressed     = { setObjectTypePressed }
-            setObjectClicked         = { setObjectClicked }
-            
-            addObjectToScene         = { addObjectToScene }
-            
-            isSketchButtonPressed    = { isSketchButtonPressed }
-            setIsSketchButtonPressed = { setIsSketchButtonPressed }
+            session={session}
+            handleLogout={handleLogout}
+            handleShowLoginForm={handleShowLoginForm}
+            objectTypePressed={objectTypePressed}
+            isObjectButtonPressed={isObjectButtonPressed}
+            setIsObjectButtonPressed={setIsObjectButtonPressed}
+            setObjectTypePressed={setObjectTypePressed}
+            setObjectClicked={setObjectClicked}
+            addObjectToScene={addObjectToScene}
+            isSketchButtonPressed={isSketchButtonPressed}
+            setIsSketchButtonPressed={setIsSketchButtonPressed}
           />
 
           <CameraSwitch
-            isOrthographic        = { isOrthographic }
-            setIsOrthographic     = { setIsOrthographic }
-            isObjectButtonPressed = { isObjectButtonPressed }
+            isOrthographic={isOrthographic}
+            setIsOrthographic={setIsOrthographic}
+            isObjectButtonPressed={isObjectButtonPressed}
           />
-          <Help/>
+          <Help />
         </>
-      ) : <CustomShapePanel />}
+      ) : (
+        <CustomShapePanel />
+      )}
     </>
-  )
-}
+  );
+};
 
 export default Scene;

@@ -37,6 +37,7 @@
   "devDependencies": {
     "@types/animejs": "3.1.7",
     "@types/three": "0.152.1",
-    "supabase": "^1.106.1"
+    "prettier": "3.1.0",
+    "supabase": "^1.112.0"
   }
 }

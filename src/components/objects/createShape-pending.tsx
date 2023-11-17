@@ -1,11 +1,11 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo } from "react";
 import { Dispatch, SetStateAction } from "react";
-import * as THREE from 'three';
-import { ThreeElements, useFrame } from '@react-three/fiber';
-import { useCursor } from '@react-three/drei';
+import * as THREE from "three";
+import { ThreeElements, useFrame } from "@react-three/fiber";
+import { useCursor } from "@react-three/drei";
 import { TransformCustomControls } from "../controls/objectControls/TransformCustomControls";
 
-import { ShapeType, ShapeProps, ShapeObject } from '@/types/scene';
+import { ShapeType, ShapeProps, ShapeObject } from "@/types/scene";
 
 type CreateShapeProps = {
   setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
@@ -16,17 +16,37 @@ type CreateShapeProps = {
   radius?: number;
   height?: number;
   radialSegments?: number;
-} & ShapeProps & ThreeElements['mesh'];
+} & ShapeProps &
+  ThreeElements["mesh"];
 
-function CreateShape({ setObjectClicked, isObjectButtonPressed, shapeType, color, size = [1, 1, 1], radius = 0.5, height = 1, radialSegments = 32, ...props }: CreateShapeProps) {
+function CreateShape({
+  setObjectClicked,
+  isObjectButtonPressed,
+  shapeType,
+  color,
+  size = [1, 1, 1],
+  radius = 0.5,
+  height = 1,
+  radialSegments = 32,
+  ...props
+}: CreateShapeProps) {
   const shapeRef = useRef<THREE.Mesh>(null!);
   const outlineRef = useRef<THREE.LineSegments>(null!);
 
   const [hovered, hover] = useState(false);
   const [transformActive, setTransformActive] = useState(false);
-  const meshColor = color ? color : (transformActive ? 'white' : 'white');
+  const meshColor = color ? color : transformActive ? "white" : "white";
   const groupRef = useRef<THREE.Group>(null);
-  const lineMaterial = useMemo(() => new THREE.LineBasicMaterial({ color: 0x000000, depthTest: true, opacity: 0.5, transparent: true }), []);
+  const lineMaterial = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: 0x000000,
+        depthTest: true,
+        opacity: 0.5,
+        transparent: true,
+      }),
+    [],
+  );
 
   useCursor(hovered);
 
@@ -41,43 +61,66 @@ function CreateShape({ setObjectClicked, isObjectButtonPressed, shapeType, color
     }
   });
 
-  
   const geometryArgs = (() => {
     switch (shapeType) {
-      case 'cube':        return size;
-      case 'sphere':      return [radius, radialSegments, radialSegments];
-      case 'cylinder':    return [radius, radius, height, radialSegments];
-      case 'cone':        return [radius, height, radialSegments];
-      case 'tetrahedron': return [size[0]];
-      case 'pyramid':     return [size[0] / 1.4, size[1], 4];
-      case 'hemisphere':  return [radius, radialSegments, radialSegments, 0, Math.PI];
-      default:            return [];
+      case "cube":
+        return size;
+      case "sphere":
+        return [radius, radialSegments, radialSegments];
+      case "cylinder":
+        return [radius, radius, height, radialSegments];
+      case "cone":
+        return [radius, height, radialSegments];
+      case "tetrahedron":
+        return [size[0]];
+      case "pyramid":
+        return [size[0] / 1.4, size[1], 4];
+      case "hemisphere":
+        return [radius, radialSegments, radialSegments, 0, Math.PI];
+      default:
+        return [];
     }
-  })()
+  })();
 
   const geometryClass = (() => {
     switch (shapeType) {
-      case 'cube':        return new THREE.BoxGeometry(...geometryArgs);
-      case 'sphere':      return new THREE.SphereGeometry(...geometryArgs);
-      case 'cylinder':    return new THREE.CylinderGeometry(...geometryArgs);
-      case 'cone':        return new THREE.ConeGeometry(...geometryArgs);
-      case 'tetrahedron': return new THREE.TetrahedronGeometry(...geometryArgs);
-      case 'pyramid':     return new THREE.ConeGeometry(...geometryArgs); // Adjust as needed for pyramid
-      case 'hemisphere':  return new THREE.SphereGeometry(...geometryArgs);
-      default:            return null;
+      case "cube":
+        return new THREE.BoxGeometry(...geometryArgs);
+      case "sphere":
+        return new THREE.SphereGeometry(...geometryArgs);
+      case "cylinder":
+        return new THREE.CylinderGeometry(...geometryArgs);
+      case "cone":
+        return new THREE.ConeGeometry(...geometryArgs);
+      case "tetrahedron":
+        return new THREE.TetrahedronGeometry(...geometryArgs);
+      case "pyramid":
+        return new THREE.ConeGeometry(...geometryArgs); // Adjust as needed for pyramid
+      case "hemisphere":
+        return new THREE.SphereGeometry(...geometryArgs);
+      default:
+        return null;
     }
   })();
-  
+
   const geometry = (() => {
     switch (shapeType) {
-      case 'cube':        return <boxGeometry args={geometryArgs} />;
-      case 'sphere':      return <sphereGeometry args={geometryArgs} />;
-      case 'cylinder':    return <cylinderGeometry args={geometryArgs} />;
-      case 'cone':        return <coneGeometry args={geometryArgs} />;
-      case 'tetrahedron': return <tetrahedronGeometry args={geometryArgs} />;
-      case 'pyramid':     return <coneGeometry args={geometryArgs} />;
-      case 'hemisphere':  return <sphereGeometry args={geometryArgs} />;
-      default:            return null;
+      case "cube":
+        return <boxGeometry args={geometryArgs} />;
+      case "sphere":
+        return <sphereGeometry args={geometryArgs} />;
+      case "cylinder":
+        return <cylinderGeometry args={geometryArgs} />;
+      case "cone":
+        return <coneGeometry args={geometryArgs} />;
+      case "tetrahedron":
+        return <tetrahedronGeometry args={geometryArgs} />;
+      case "pyramid":
+        return <coneGeometry args={geometryArgs} />;
+      case "hemisphere":
+        return <sphereGeometry args={geometryArgs} />;
+      default:
+        return null;
     }
   })();
 
@@ -90,7 +133,7 @@ function CreateShape({ setObjectClicked, isObjectButtonPressed, shapeType, color
   };
 
   const handlePointerMissed = (event: THREE.Event) => {
-    if (event.type === 'click') setTransformActive(false);
+    if (event.type === "click") setTransformActive(false);
     setObjectClicked(null);
   };
 
@@ -111,7 +154,7 @@ function CreateShape({ setObjectClicked, isObjectButtonPressed, shapeType, color
       {transformActive && <TransformCustomControls mesh={shapeRef} />}
 
       <lineSegments ref={outlineRef} material={lineMaterial}>
-        <edgesGeometry attach="geometry" args={[ geometryClass ]} />
+        <edgesGeometry attach="geometry" args={[geometryClass]} />
       </lineSegments>
     </group>
   );
