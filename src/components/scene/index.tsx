@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
+import SceneCanvas from './canvas';
+
+import {
+  getCreateShape
+} from '../objects/createShape'
+
 import { CameraSwitch } from "../ui/button/cameraSwitch"
 import { Help } from "../ui/button/help"
 import { ToolPanel } from "../ui/tool-panel/toolPanel"
 import { LeftPanel } from "../ui/left-panel/leftPanel"
 import { RightPanel } from "../ui/right-panel/rightPanel"
-import SceneCanvas from './canvas';
+import { STLImporter } from '../ui/button/importSTL';
+import { CustomShapePanel } from '../ui/custom-shape-panel/customShapePanel';
 
 import { Session } from '@/types/auth';
-
 import { ShapeType, ShapeProps } from '@/types/scene';
-
-import {
-  getCreateShape
-} from '../objects/createShape'
 
 interface SceneProps {
   session             : Session | null;
@@ -26,7 +28,8 @@ const Scene : React.FC<SceneProps> = ({
   handleShowLoginForm
 }) => {
 
-  // const [selected, setSelected] = useState<string[]>([]); // arr of selected uuid's
+  const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
+  const [mainCanvasView, setMainCanvasView] = useState<boolean>(true);
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
   const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
@@ -58,7 +61,7 @@ const Scene : React.FC<SceneProps> = ({
   // };
 
   const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
-    const Shape = getCreateShape(shapeType);
+    const Shape = !!props.mesh ? STLImporter : getCreateShape(shapeType);
     if (!Shape) return;
 
     setObjects(prevObjects => 
@@ -71,7 +74,7 @@ const Scene : React.FC<SceneProps> = ({
               key                   = { objects.length.toString() + Date.now().toString() }
               setObjectClickedUUID  = { setObjectClickedUUID }
               setObjectClicked      = { setObjectClicked }
-              isObjectButtonPressed = { !isObjectButtonPressed }
+              isObjectButtonPressed = { !!props.mesh ? isObjectButtonPressed : !isObjectButtonPressed }
               { ...props }
             />
           )
@@ -83,6 +86,7 @@ const Scene : React.FC<SceneProps> = ({
 
   return (
     <>
+      { mainCanvasView ? 
         <SceneCanvas
           objects={objects}
           addObjectToScene={addObjectToScene}
@@ -100,52 +104,73 @@ const Scene : React.FC<SceneProps> = ({
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
-        />
+        /> :
+        <SceneCanvas
+          // objects={objects}
+          addObjectToScene={addObjectToScene}
 
-        { !!sceneInfo && (
-          <>
+          isOrthographic={isOrthographic}
+          setIsOrthographic={setIsOrthographic}
 
-            { !!objectClicked && !!objectClickedUUID &&
-              <RightPanel
-                objectClicked = { objectClicked }
-                objectClickedUUID = { objectClickedUUID }
-                sceneInfo  = { sceneInfo } 
+          setObjectClickedUUID={setObjectClickedUUID}
+          setObjectClicked={setObjectClicked}
+          
+          objectTypePressed={objectTypePressed}
+          setObjectTypePressed={setObjectTypePressed}
+          isObjectButtonPressed={isObjectButtonPressed}
+
+          setSceneInfo={setSceneInfo}
+          setSceneMain={setSceneMain}
+          isSketchButtonPressed={isSketchButtonPressed}
+        /> 
+      }
+
+      { mainCanvasView ? (
+        <>
+          {!!sceneInfo && (
+            <>
+              { !!objectClicked && !!objectClickedUUID &&
+                <RightPanel
+                  objectClicked = { objectClicked }
+                  objectClickedUUID = { objectClickedUUID }
+                  sceneInfo  = { sceneInfo } 
+                />
+              }
+              
+              <LeftPanel 
+                sceneMain       = { sceneMain }
+                sceneInfo       = { sceneInfo } 
+                openGroupIDs    = { openGroupIDs }
+                handleOpenGroup = {
+                  (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
               />
-            }
+            </>
+          )}
+          <ToolPanel
+            session                  = { session }
+            handleLogout             = { handleLogout }
+            handleShowLoginForm      = { handleShowLoginForm }
+
+            objectTypePressed        = { objectTypePressed }
+            isObjectButtonPressed    = { isObjectButtonPressed }  
+            setIsObjectButtonPressed = { setIsObjectButtonPressed }
+            setObjectTypePressed     = { setObjectTypePressed }
+            setObjectClicked         = { setObjectClicked }
             
-            <LeftPanel 
-              sceneMain       = { sceneMain }
-              sceneInfo       = { sceneInfo } 
-              openGroupIDs    = { openGroupIDs }
-              handleOpenGroup = {
-                (group_id: string) => setOpenGroupIDs( prev => openGroupIDs.includes(group_id) ? prev.filter( n => n != group_id) : [...prev,group_id])}
-            />
+            addObjectToScene         = { addObjectToScene }
             
-          </>
-        )}
+            isSketchButtonPressed    = { isSketchButtonPressed }
+            setIsSketchButtonPressed = { setIsSketchButtonPressed }
+          />
 
-
-
-        <Help/>
-
-        <ToolPanel
-          handleLogout             = { handleLogout }
-          handleShowLoginForm      = { handleShowLoginForm }
-          session                  = { session }
-          isObjectButtonPressed    = { isObjectButtonPressed }  
-          setIsObjectButtonPressed = { setIsObjectButtonPressed }
-          objectTypePressed        = { objectTypePressed }
-          setObjectTypePressed     = { setObjectTypePressed }
-          addObjectToScene         = { addObjectToScene }
-          isSketchButtonPressed    = { isSketchButtonPressed }
-          setIsSketchButtonPressed = { setIsSketchButtonPressed }
-        />
-
-        <CameraSwitch
-          isOrthographic        = { isOrthographic }
-          setIsOrthographic     = { setIsOrthographic }
-          isObjectButtonPressed = { isObjectButtonPressed }
-        />
+          <CameraSwitch
+            isOrthographic        = { isOrthographic }
+            setIsOrthographic     = { setIsOrthographic }
+            isObjectButtonPressed = { isObjectButtonPressed }
+          />
+          <Help/>
+        </>
+      ) : <CustomShapePanel />}
     </>
   )
 }

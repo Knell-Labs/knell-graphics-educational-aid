@@ -99,7 +99,7 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
                 orthoCameraRef = { orthographicCameraRef }
             />
 
-            {objects.map((obj, idx) => {
+            { objects ? objects.map((obj, idx) => {
                 return obj.node
                 // const Shape = getCreateShape(obj.type);
                 // if (!Shape) return null;
@@ -110,7 +110,9 @@ const SceneCanvas : React.FC<SceneCanvasProps> = ({
                 //     isObjectButtonPressed = { !isObjectButtonPressed }
                 //     { ...obj.props }
                 // />
-            })}
+            }) : (
+                <CustomShapes />
+            )}
             {/* 
             {objects.map((object, idx) => {
                 const Shape = getCreateShape(object.type);

@@ -1,3 +1,5 @@
+import { Mesh } from 'three';
+
 export enum CameraDirection {
     freeDrive, 
     redTop,      // Normal vector (0, 1, 0)
@@ -12,6 +14,7 @@ export type TwoDimPlaneRotation = [ number, number, number ];
 export type ShapeType = 'cube' | 'sphere' | 'cylinder' | 'cone' | 'pyramid' | 'hemisphere' | 'tetrahedron';
 
 export interface ShapeProps {
+  mesh?: Mesh;
   color?: string;
   radius?: number;
   height?: number;

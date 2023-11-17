@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Dispatch, SetStateAction } from "react";
+import { handleSTLFileChange } from '../../../components/ui/button/importSTL';
+import * as THREE from 'three';
 import {Tooltip as ReactTooltip} from 'react-tooltip';
 
 import DropdownButton from '../button/dropdown'
@@ -19,6 +21,7 @@ interface ToolPanelProps {
   addObjectToScene          : (type: string, props?: any) => void;
   isSketchButtonPressed     : boolean;
   setIsSketchButtonPressed  : Dispatch<SetStateAction<boolean>>;
+  setObjectClicked          : Dispatch<SetStateAction<THREE.Mesh | null>>;
 }
 
 export function ToolPanel({
@@ -31,7 +34,8 @@ export function ToolPanel({
   setObjectTypePressed,
   addObjectToScene,
   isSketchButtonPressed,
-  setIsSketchButtonPressed
+  setIsSketchButtonPressed,
+  setObjectClicked
 }: ToolPanelProps) {
 
   const shapePressList: {[key: string]: boolean} = {
@@ -51,6 +55,11 @@ export function ToolPanel({
   const buttonShapePressed = "bg-blueHover rounded-lg p-1 w-8 h-8";
   const buttonText         = "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Use the useSTLImporter hook to get the handleFileChange function
+  const handleFileChange = handleSTLFileChange(addObjectToScene, setObjectClicked, fileInputRef);
+  
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
     // --> Button A is automatically unpressed
@@ -78,13 +87,8 @@ export function ToolPanel({
   const [isBoxButtonPressed, setBoxButtonPressed] = useState<boolean>(true);
   const boxImageSrc = isBoxButtonPressed ? "boxUnpressed.svg" : "boxPressed.svg";
 
-  const handleBoxButtonClick = () => {
-    toggleButtonPressed("cube");
-    setBoxButtonPressed(!isBoxButtonPressed);
-  };
-
-  const handleSphereButtonClick = () => {
-    toggleButtonPressed("sphere");
+  const handleLoadButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
   const profileMenuOpts : DropdownItem[] = [
@@ -148,6 +152,25 @@ export function ToolPanel({
       >
         {"Sketch"}
       </Button>
+
+      <Divider/>
+
+      <Button 
+        type    = "button"
+        size    = "small"
+        variant = "secondary"
+        onClick = { () => fileInputRef.current?.click() }
+      >
+        {"Load"}
+        <input 
+          type     = "file" 
+          ref      = { fileInputRef } 
+          style    = { { display: 'none' } } 
+          accept   = ".stl" 
+          onChange = { handleFileChange } 
+        />
+      </Button>
+      
       <Divider/>
       
       <button className={ selectionChecked ? buttonShapePressed : buttonShape}
