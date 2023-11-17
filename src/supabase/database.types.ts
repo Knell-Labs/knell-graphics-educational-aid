@@ -4,78 +4,79 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export interface Database {
   public: {
     Tables: {
       profiles: {
         Row: {
-          first_name: string | null;
-          id: string;
-          last_name: string | null;
-        };
+          first_name: string | null
+          id: string
+          last_name: string | null
+        }
         Insert: {
-          first_name?: string | null;
-          id: string;
-          last_name?: string | null;
-        };
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+        }
         Update: {
-          first_name?: string | null;
-          id?: string;
-          last_name?: string | null;
-        };
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey";
-            columns: ["id"];
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       "testing-work-flow-action": {
         Row: {
-          created_at: string | null;
-          id: number;
-        };
+          created_at: string | null
+          id: number
+        }
         Insert: {
-          created_at?: string | null;
-          id?: number;
-        };
+          created_at?: string | null
+          id?: number
+        }
         Update: {
-          created_at?: string | null;
-          id?: number;
-        };
-        Relationships: [];
-      };
+          created_at?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
       TestTable: {
         Row: {
-          id: number;
-          testing: string | null;
-        };
+          id: number
+          testing: string | null
+        }
         Insert: {
-          id?: number;
-          testing?: string | null;
-        };
+          id?: number
+          testing?: string | null
+        }
         Update: {
-          id?: number;
-          testing?: string | null;
-        };
-        Relationships: [];
-      };
-    };
+          id?: number
+          testing?: string | null
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+      [_ in never]: never
+    }
+  }
 }
