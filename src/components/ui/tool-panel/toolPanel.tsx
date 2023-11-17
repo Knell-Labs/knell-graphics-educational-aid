@@ -1,27 +1,27 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import { Dispatch, SetStateAction } from "react";
-import { handleSTLFileChange } from '../../../components/ui/button/importSTL';
-import * as THREE from 'three';
-import {Tooltip as ReactTooltip} from 'react-tooltip';
+import { handleSTLFileChange } from "../../../components/ui/button/importSTL";
+import * as THREE from "three";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
-import DropdownButton from '../button/dropdown'
-import Button from '../button'
+import DropdownButton from "../button/dropdown";
+import Button from "../button";
 
-import { Session } from '@/types/auth';
-import { DropdownItem } from '@/types/components'
+import { Session } from "@/types/auth";
+import { DropdownItem } from "@/types/components";
 
 interface ToolPanelProps {
-  session                   : Session | null
-  handleLogout              : () => void;
-  handleShowLoginForm       : () => void;
-  isObjectButtonPressed     : boolean;
-  setIsObjectButtonPressed  : Dispatch<SetStateAction<boolean>>;
-  objectTypePressed         : string;
-  setObjectTypePressed      : Dispatch<SetStateAction<string>>;
-  addObjectToScene          : (type: string, props?: any) => void;
-  isSketchButtonPressed     : boolean;
-  setIsSketchButtonPressed  : Dispatch<SetStateAction<boolean>>;
-  setObjectClicked          : Dispatch<SetStateAction<THREE.Mesh | null>>;
+  session: Session | null;
+  handleLogout: () => void;
+  handleShowLoginForm: () => void;
+  isObjectButtonPressed: boolean;
+  setIsObjectButtonPressed: Dispatch<SetStateAction<boolean>>;
+  objectTypePressed: string;
+  setObjectTypePressed: Dispatch<SetStateAction<string>>;
+  addObjectToScene: (type: string, props?: any) => void;
+  isSketchButtonPressed: boolean;
+  setIsSketchButtonPressed: Dispatch<SetStateAction<boolean>>;
+  setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
 }
 
 export function ToolPanel({
@@ -35,63 +35,72 @@ export function ToolPanel({
   addObjectToScene,
   isSketchButtonPressed,
   setIsSketchButtonPressed,
-  setObjectClicked
+  setObjectClicked,
 }: ToolPanelProps) {
-
-  const shapePressList: {[key: string]: boolean} = {
-    cube:         false,
-    sphere:       false,
-    cylinder:     false,
-    cone:         false,
-    tetrahedron:  false,
-    pyramid:      false,
-    hemisphere:   false,
+  const shapePressList: { [key: string]: boolean } = {
+    cube: false,
+    sphere: false,
+    cylinder: false,
+    cone: false,
+    tetrahedron: false,
+    pyramid: false,
+    hemisphere: false,
   };
 
-  const [isShapeButtonPressed, setIsShapeButtonPressed] = useState(shapePressList);
-  const selectionChecked = Object.values(isShapeButtonPressed).every(val => !val)
-  
-  const buttonShape        = "hover:bg-blueHover rounded-lg p-1 w-8 h-8";
+  const [isShapeButtonPressed, setIsShapeButtonPressed] =
+    useState(shapePressList);
+  const selectionChecked = Object.values(isShapeButtonPressed).every(
+    (val) => !val,
+  );
+
+  const buttonShape = "hover:bg-blueHover rounded-lg p-1 w-8 h-8";
   const buttonShapePressed = "bg-blueHover rounded-lg p-1 w-8 h-8";
-  const buttonText         = "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
+  const buttonText =
+    "bg-graySubFill text-white hover:bg-blueHover w-fit px-3 py-1 mx-1 rounded-lg";
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Use the useSTLImporter hook to get the handleFileChange function
-  const handleFileChange = handleSTLFileChange(addObjectToScene, setObjectClicked, fileInputRef);
-  
+  const handleFileChange = handleSTLFileChange(
+    addObjectToScene,
+    setObjectClicked,
+    fileInputRef,
+  );
+
   const toggleButtonPressed = (objectType: string) => {
     // If button A is pressed and the user presses button B
     // --> Button A is automatically unpressed
     let existingPressedButton = false;
-    for(let shape in shapePressList){
-      if(shape !== objectType && isShapeButtonPressed[shape] === true){
+    for (let shape in shapePressList) {
+      if (shape !== objectType && isShapeButtonPressed[shape] === true) {
         existingPressedButton = true;
-        setIsShapeButtonPressed( prevState => ({
+        setIsShapeButtonPressed((prevState) => ({
           ...prevState,
           [shape]: false,
         }));
         break;
       }
     }
-    if(!existingPressedButton){
+    if (!existingPressedButton) {
       setIsObjectButtonPressed(!isObjectButtonPressed);
     }
     setObjectTypePressed(objectType);
-    setIsShapeButtonPressed( prevState => ({
+    setIsShapeButtonPressed((prevState) => ({
       ...prevState,
       [objectType]: !prevState[objectType],
     }));
   };
 
   const [isBoxButtonPressed, setBoxButtonPressed] = useState<boolean>(true);
-  const boxImageSrc = isBoxButtonPressed ? "boxUnpressed.svg" : "boxPressed.svg";
+  const boxImageSrc = isBoxButtonPressed
+    ? "boxUnpressed.svg"
+    : "boxPressed.svg";
 
   const handleLoadButtonClick = () => {
     fileInputRef.current?.click();
   };
 
-  const profileMenuOpts : DropdownItem[] = [
+  const profileMenuOpts: DropdownItem[] = [
     { label: session && session?.user?.email, isText: true },
     { isDivider: true },
     {
@@ -99,38 +108,54 @@ export function ToolPanel({
       // isFormAction: true,
       // formActionUrl: "/auth/logout",
       // formMethod: "POST"
-      callback: handleLogout
-    }
-  ]
+      callback: handleLogout,
+    },
+  ];
 
-  const Divider = () => <div style={{
-    background: 'gray',
-    height: '25px',
-    width: '3px',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-    margin: '0 5px',
-    borderRadius: '20px',
-  }}/>
+  const Divider = () => (
+    <div
+      style={{
+        background: "gray",
+        height: "25px",
+        width: "3px",
+        display: "inline-block",
+        verticalAlign: "middle",
+        margin: "0 5px",
+        borderRadius: "20px",
+      }}
+    />
+  );
 
   return (
-    <div className="absolute top-0 left-1/2 m-2 flex items-center gap-2  p-2 rounded-lg select-none"
+    <div
+      className="absolute top-0 left-1/2 m-2 flex items-center gap-2  p-2 rounded-lg select-none"
       style={{
-        transform: 'translateX(-50%)',
-        background: 'rgb(30,29,32)',
-        padding: '5px 10px',
-        userSelect: 'none',
-        borderRadius: '10px',
+        transform: "translateX(-50%)",
+        background: "rgb(30,29,32)",
+        padding: "5px 10px",
+        userSelect: "none",
+        borderRadius: "10px",
       }}
     >
-      { !!session ? (
+      {!!session ? (
         <DropdownButton
-          items     = {profileMenuOpts}
-          variant   = 'primary-link'
-          className = 'ps-2 pe-1 pb-0 pt-0 flex items-center'
+          items={profileMenuOpts}
+          variant="primary-link"
+          className="ps-2 pe-1 pb-0 pt-0 flex items-center"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 block">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8 block"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+            />
           </svg>
         </DropdownButton>
       ) : (
@@ -141,7 +166,7 @@ export function ToolPanel({
 
       <Divider />
 
-      <Button 
+      <Button
         type="button"
         size="small"
         variant="secondary"
@@ -153,32 +178,33 @@ export function ToolPanel({
         {"Sketch"}
       </Button>
 
-      <Divider/>
+      <Divider />
 
-      <Button 
-        type    = "button"
-        size    = "small"
-        variant = "secondary"
-        onClick = { () => fileInputRef.current?.click() }
+      <Button
+        type="button"
+        size="small"
+        variant="secondary"
+        onClick={() => fileInputRef.current?.click()}
       >
         {"Load"}
-        <input 
-          type     = "file" 
-          ref      = { fileInputRef } 
-          style    = { { display: 'none' } } 
-          accept   = ".stl" 
-          onChange = { handleFileChange } 
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          accept=".stl"
+          onChange={handleFileChange}
         />
       </Button>
-      
-      <Divider/>
-      
-      <button className={ selectionChecked ? buttonShapePressed : buttonShape}
-        onClick = { () => {
+
+      <Divider />
+
+      <button
+        className={selectionChecked ? buttonShapePressed : buttonShape}
+        onClick={() => {
           setIsObjectButtonPressed(false);
-          for(let shape in shapePressList){
-            if(isShapeButtonPressed[shape] === true){
-              setIsShapeButtonPressed( prevState => ({
+          for (let shape in shapePressList) {
+            if (isShapeButtonPressed[shape] === true) {
+              setIsShapeButtonPressed((prevState) => ({
                 ...prevState,
                 [shape]: false,
               }));
@@ -186,63 +212,93 @@ export function ToolPanel({
             }
           }
         }}
-        data-tooltip-id="tooltip" data-tooltip-content="cursor">
-        <img src="CursorSelect.svg"/>
+        data-tooltip-id="tooltip"
+        data-tooltip-content="cursor"
+      >
+        <img src="CursorSelect.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.cube ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cube")} 
-        data-tooltip-id="tooltip" data-tooltip-content="cube">
-        <img src="cube.svg"/>
+      <button
+        className={isShapeButtonPressed.cube ? buttonShapePressed : buttonShape}
+        onClick={() => toggleButtonPressed("cube")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="cube"
+      >
+        <img src="cube.svg" />
       </button>
 
-
-      <button className={isShapeButtonPressed.sphere ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("sphere") }
-        data-tooltip-id="tooltip" data-tooltip-content="sphere">
-        <img src="sphere.svg"/>
+      <button
+        className={
+          isShapeButtonPressed.sphere ? buttonShapePressed : buttonShape
+        }
+        onClick={() => toggleButtonPressed("sphere")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="sphere"
+      >
+        <img src="sphere.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.cylinder ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cylinder") }
-        data-tooltip-id="tooltip" data-tooltip-content="cylinder">
-        <img src="cylinder.svg"/>
+      <button
+        className={
+          isShapeButtonPressed.cylinder ? buttonShapePressed : buttonShape
+        }
+        onClick={() => toggleButtonPressed("cylinder")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="cylinder"
+      >
+        <img src="cylinder.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.cone ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("cone") }
-        data-tooltip-id="tooltip" data-tooltip-content="cone">
-        <img src="cone.svg"/>
+      <button
+        className={isShapeButtonPressed.cone ? buttonShapePressed : buttonShape}
+        onClick={() => toggleButtonPressed("cone")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="cone"
+      >
+        <img src="cone.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.tetrahedron ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("tetrahedron") }
-        data-tooltip-id="tooltip" data-tooltip-content="tetrahedron">
-        <img src="tetrahedron.svg"/>
+      <button
+        className={
+          isShapeButtonPressed.tetrahedron ? buttonShapePressed : buttonShape
+        }
+        onClick={() => toggleButtonPressed("tetrahedron")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="tetrahedron"
+      >
+        <img src="tetrahedron.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.pyramid ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("pyramid") }
-        data-tooltip-id="tooltip" data-tooltip-content="pyramid">
-        <img src="pyramid.svg"/>
+      <button
+        className={
+          isShapeButtonPressed.pyramid ? buttonShapePressed : buttonShape
+        }
+        onClick={() => toggleButtonPressed("pyramid")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="pyramid"
+      >
+        <img src="pyramid.svg" />
       </button>
 
-      <button className={isShapeButtonPressed.hemisphere ? buttonShapePressed : buttonShape}
-        onClick = { () => toggleButtonPressed("hemisphere") }
-        data-tooltip-id="tooltip" data-tooltip-content="hemisphere">
-        <img src="hemisphere.svg"/>
+      <button
+        className={
+          isShapeButtonPressed.hemisphere ? buttonShapePressed : buttonShape
+        }
+        onClick={() => toggleButtonPressed("hemisphere")}
+        data-tooltip-id="tooltip"
+        data-tooltip-content="hemisphere"
+      >
+        <img src="hemisphere.svg" />
       </button>
-      
-      <ReactTooltip 
-        id = "tooltip" 
+
+      <ReactTooltip
+        id="tooltip"
         place="bottom"
         style={{
-          borderRadius: '20%',
-          padding: '1px 10px 4px 10px',
+          borderRadius: "20%",
+          padding: "1px 10px 4px 10px",
         }}
       />
-
-
     </div>
-  )
+  );
 }
