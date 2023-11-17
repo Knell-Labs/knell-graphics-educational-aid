@@ -2,6 +2,7 @@ import React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { PerspectiveCamera, OrthographicCamera } from "@react-three/drei";
 
+
 interface props {
   isOrthographic: boolean;
   setIsOrthographic: Dispatch<SetStateAction<boolean>>;
