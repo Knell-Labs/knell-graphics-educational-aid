@@ -12,7 +12,7 @@ import { STLImporter } from "../ui/button/importSTL";
 import { CustomShapePanel } from "../ui/custom-shape-panel/customShapePanel";
 
 import { Session } from "@/types/auth";
-import { ShapeType, ShapeProps } from "@/types/scene";
+import { ShapeType, ShapeProps, CylindricalHole, Point} from "@/types/scene";
 
 interface SceneProps {
   session: Session | null;
@@ -26,7 +26,7 @@ const Scene: React.FC<SceneProps> = ({
   handleShowLoginForm,
 }) => {
   const [selectedObject, setSelectedObject] = useState<THREE.Mesh | null>(null);
-  const [mainCanvasView, setMainCanvasView] = useState<boolean>(true);
+  const [mainCanvasView, setMainCanvasView] = useState<boolean>(false);
 
   const [objectClicked, setObjectClicked] = useState<THREE.Mesh | null>();
   const [objectClickedUUID, setObjectClickedUUID] = useState<string | null>();
@@ -47,17 +47,8 @@ const Scene: React.FC<SceneProps> = ({
 
   const [objects, setObjects] = useState<any[]>([]);
 
-  // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
-  //   setObjects(prevObjects =>
-  //     [
-  //       {
-  //         type: shapeType,
-  //         props
-  //       },
-  //       ...prevObjects
-  //     ]
-  //   );
-  // };
+  const [lineHistory, setLineHistory] = useState<Point[]>([],);
+  const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
 
   const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
     const Shape = !!props.mesh ? STLImporter : getCreateShape(shapeType);
@@ -165,7 +156,9 @@ const Scene: React.FC<SceneProps> = ({
           <Help />
         </>
       ) : (
-        <CustomShapePanel />
+        <CustomShapePanel 
+            
+        />
       )}
     </>
   );

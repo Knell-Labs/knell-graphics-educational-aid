@@ -1,5 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { CustomShapes } from "../../objects/CustomShapes";
+
+import { CylindricalHole, Point} from "@/types/scene";
+
+
+type CustomShapePanel = {
+    lineHistory: Point;
+    setLineHistory : Dispatch<SetStateAction<Point>>;
+    holeHistory : CylindricalHole;
+    setHoleHistory : Dispatch<SetStateAction<CylindricalHole>>;
+}
+
+//Dispatch<SetStateAction<THREE.Mesh | null>>;
+
 
 enum lineField {
   x,
@@ -15,6 +28,8 @@ enum holeField {
   clockwise,
 }
 
+
+
 export function CustomShapePanel() {
   const lineFields = Object.values(lineField).filter((field) =>
     isNaN(Number(field)),
@@ -23,29 +38,11 @@ export function CustomShapePanel() {
     isNaN(Number(field)),
   );
 
-  const [lineHistory, setLineHistory] = useState<{ x: string; y: string }[]>(
+  const [lineHistory, setLineHistory] = useState<Point[]>(
     [],
   );
-  const [holeHistory, setHoleHistory] = useState<
-    {
-      x: string;
-      y: string;
-      radius: string;
-      startAngle: string;
-      endAngle: string;
-      clockwise: string;
-    }[]
-  >([]);
+  const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
 
-  // const renderDivs = () => {
-  // 	const divArray = [];
-  // 	for(let i = 0; i < lineCount; i++){
-  // 		divArray.push("Line", fieldProperty(i+1));
-  // 	}
-  // 	return divArray;
-  // };
-
-  // console.log("TEST?");
 
   const fieldProperty = (
     sectionName: string,
@@ -69,11 +66,7 @@ export function CustomShapePanel() {
             id={`${sectionName.toLowerCase()}_${field}`}
             contentEditable={true}
             suppressContentEditableWarning={true}
-            // onBlur={() => {
-            // 	updateProperty(`${sectionName.toLowerCase()}_${field}`,objectClicked,2);
-            // }}
           >
-            {/* {formatNumber(objectClicked![sectionName.toLowerCase() as keyof typeof objectClicked][field as keyof typeof lineField] * ratio, 2)} */}
             0
           </div>
         </div>
