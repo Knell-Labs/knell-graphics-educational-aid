@@ -157,7 +157,10 @@ const Scene: React.FC<SceneProps> = ({
         </>
       ) : (
         <CustomShapePanel 
-            
+            lineHistory={lineHistory}   
+            setLineHistory={setLineHistory}
+            holeHistory={holeHistory}
+            setHoleHistory={setHoleHistory}
         />
       )}
     </>

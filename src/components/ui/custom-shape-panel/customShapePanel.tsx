@@ -4,15 +4,12 @@ import { CustomShapes } from "../../objects/CustomShapes";
 import { CylindricalHole, Point} from "@/types/scene";
 
 
-type CustomShapePanel = {
-    lineHistory: Point;
-    setLineHistory : Dispatch<SetStateAction<Point>>;
-    holeHistory : CylindricalHole;
-    setHoleHistory : Dispatch<SetStateAction<CylindricalHole>>;
+type CustomShapePanelProps = {
+    lineHistory: Point[];
+    setLineHistory : Dispatch<SetStateAction<Point[]>>;
+    holeHistory : CylindricalHole[];
+    setHoleHistory : Dispatch<SetStateAction<CylindricalHole[]>>;
 }
-
-//Dispatch<SetStateAction<THREE.Mesh | null>>;
-
 
 enum lineField {
   x,
@@ -30,18 +27,19 @@ enum holeField {
 
 
 
-export function CustomShapePanel() {
+
+
+export function CustomShapePanel(props: CustomShapePanelProps) {
+
+  const {lineHistory, setLineHistory, holeHistory, setHoleHistory} = props;
+
+
   const lineFields = Object.values(lineField).filter((field) =>
     isNaN(Number(field)),
   );
   const holeFields = Object.values(holeField).filter((field) =>
     isNaN(Number(field)),
   );
-
-  const [lineHistory, setLineHistory] = useState<Point[]>(
-    [],
-  );
-  const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
 
 
   const fieldProperty = (
