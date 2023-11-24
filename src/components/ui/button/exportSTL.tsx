@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
 
 // Custom STL Exporter with parse method
 class CustomSTLExporter {
@@ -8,12 +7,47 @@ class CustomSTLExporter {
 
         scene.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
-                const geometry = object.geometry;
+                let geometry = object.geometry; // Changed from const to let
                 const matrixWorld = object.matrixWorld;
                 const normalMatrixWorld = new THREE.Matrix3().getNormalMatrix(matrixWorld);
 
                 if (geometry instanceof THREE.BufferGeometry) {
-                    // Need to adapt the logic to handle BufferGeometry
+                    // Ensure the geometry is non-indexed for simplicity
+                    if (geometry.index !== null) {
+                        geometry = geometry.toNonIndexed();
+                    }
+
+                    const positionAttribute = geometry.attributes.position;
+                    const normalAttribute = geometry.attributes.normal;
+
+                    for (let i = 0; i < positionAttribute.count; i += 3) {
+                        // Process each triangle
+                        let p1 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
+                        let p2 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 1);
+                        let p3 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 2);
+
+                        // Transform the points by the object's world matrix
+                        p1.applyMatrix4(matrixWorld);
+                        p2.applyMatrix4(matrixWorld);
+                        p3.applyMatrix4(matrixWorld);
+
+                        // Calculate or retrieve the normal for the face
+                        let normal = new THREE.Vector3();
+                        if (normalAttribute) {
+                            normal.fromBufferAttribute(normalAttribute, i).applyMatrix3(normalMatrixWorld).normalize();
+                        } else {
+                            normal = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).cross(p2.clone().sub(p1)).cross(p3.clone().sub(p1)).normalize();
+                        }
+
+                        // Write the face and vertices to the STL string
+                        output += `\tfacet normal ${normal.x} ${normal.y} ${normal.z}\n`;
+                        output += "\t\touter loop\n";
+                        output += `\t\t\tvertex ${p1.x} ${p1.y} ${p1.z}\n`;
+                        output += `\t\t\tvertex ${p2.x} ${p2.y} ${p2.z}\n`;
+                        output += `\t\t\tvertex ${p3.x} ${p3.y} ${p3.z}\n`;
+                        output += "\t\tendloop\n";
+                        output += "\tendfacet\n";
+                    }
                 }
             }
         });
