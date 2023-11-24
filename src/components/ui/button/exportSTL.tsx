@@ -1,36 +1,31 @@
 import * as THREE from 'three';
-import BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-//import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
 
-export function mergeGeometriesCustom(scene = new THREE.Scene()) {
-    let geometries = [];
+// Custom STL Exporter with parse method
+class CustomSTLExporter {
+    parse(scene) {
+        let output = "solid exported\n";
 
-    scene.traverse((child) => {
-        if (child.isMesh) {
-            const clonedGeometry = child.geometry.clone();
-            clonedGeometry.applyMatrix4(child.matrixWorld);
-            geometries.push(clonedGeometry);
-        }
-    });
+        scene.traverse(function (object) {
+            if (object instanceof THREE.Mesh) {
+                const geometry = object.geometry;
+                const matrixWorld = object.matrixWorld;
+                const normalMatrixWorld = new THREE.Matrix3().getNormalMatrix(matrixWorld);
 
-    return mergeGeometries(geometries);
+                if (geometry instanceof THREE.BufferGeometry) {
+                    // Need to adapt the logic to handle BufferGeometry
+                }
+            }
+        });
+
+        output += "endsolid exported\n";
+        return output;
+    }
 }
 
 export function exportSTL(scene) {
-
-    //const mergedGeometry = mergeGeometries(scene);
-    const mergedGeometry = mergeGeometriesCustom(scene);
-
-    if (!mergedGeometry) {
-        console.error("Failed to merge geometries");
-        return;
-    }
-
-    //const mergedGeometry = mergeGeometries(scene);
-    const exporter = new STLExporter();
-    const stlString = exporter.parse(mergedGeometry);
+    const exporter = new CustomSTLExporter();
+    const stlString = exporter.parse(scene);
 
     // Create a blob from the STL string
     const blob = new Blob([stlString], { type: 'text/plain' });
@@ -48,4 +43,3 @@ export function exportSTL(scene) {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
 }
-
