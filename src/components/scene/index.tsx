@@ -47,6 +47,8 @@ const Scene: React.FC<SceneProps> = ({
 
   const [objects, setObjects] = useState<any[]>([]);
 
+  const [sceneExp, setSceneExp] = useState<THREE.Scene | null>(null);
+
   // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
   //   setObjects(prevObjects =>
   //     [
@@ -99,6 +101,7 @@ const Scene: React.FC<SceneProps> = ({
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
+          setSceneExp={setSceneExp}
         />
       ) : (
         <SceneCanvas
@@ -114,6 +117,7 @@ const Scene: React.FC<SceneProps> = ({
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
+          setSceneExp={setSceneExp}
         />
       )}
 
@@ -155,6 +159,7 @@ const Scene: React.FC<SceneProps> = ({
             addObjectToScene={addObjectToScene}
             isSketchButtonPressed={isSketchButtonPressed}
             setIsSketchButtonPressed={setIsSketchButtonPressed}
+            exportedScene={sceneExp}
           />
 
           <CameraSwitch

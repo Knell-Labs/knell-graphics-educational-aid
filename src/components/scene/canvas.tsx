@@ -39,6 +39,7 @@ interface SceneCanvasProps {
   setSceneInfo: (info: any) => void; // Define more specific type if possible
   setSceneMain: (main: any) => void; // Define more specific type if possible
   isSketchButtonPressed: boolean;
+  setSceneExp: (scene: THREE.Scene | null) => void;
 }
 
 const SceneCanvas: React.FC<SceneCanvasProps> = ({
@@ -54,6 +55,7 @@ const SceneCanvas: React.FC<SceneCanvasProps> = ({
   setSceneInfo,
   setSceneMain,
   isSketchButtonPressed,
+  setSceneExp,
 }) => {
   const [cameraCoordinates, setCameraCoordinates] = useState<number[]>([
     15, 15, 15,
@@ -76,18 +78,19 @@ const SceneCanvas: React.FC<SceneCanvasProps> = ({
 
   const GetSceneInfo = () => {
     const { scene } = useThree();
-
+  
     useEffect(() => {
       setSceneInfo(scene.children);
       if (scene.name === "") {
         scene.name = "Untitled";
       }
       setSceneMain(scene);
+      setSceneExp(scene); // Update the sceneExp state in the parent component
       if (!fetchedObjects) {
         setFetchedObjects(true);
       }
-    }, [objects]);
-
+    }, [objects, setSceneExp]); // Add setSceneExp to the dependency array
+  
     return null;
   };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { handleSTLFileChange } from "../../../components/ui/button/importSTL";
+import { exportSTL } from '../../../components/ui/button/exportSTL';
 import * as THREE from "three";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
@@ -22,6 +23,7 @@ interface ToolPanelProps {
   isSketchButtonPressed: boolean;
   setIsSketchButtonPressed: Dispatch<SetStateAction<boolean>>;
   setObjectClicked: Dispatch<SetStateAction<THREE.Mesh | null>>;
+  exportedScene: THREE.Scene;
 }
 
 export function ToolPanel({
@@ -36,6 +38,7 @@ export function ToolPanel({
   isSketchButtonPressed,
   setIsSketchButtonPressed,
   setObjectClicked,
+  exportedScene,
 }: ToolPanelProps) {
   const shapePressList: { [key: string]: boolean } = {
     cube: false,
@@ -181,18 +184,27 @@ export function ToolPanel({
       <Divider />
 
       <Button
-        type="button"
-        size="small"
-        variant="secondary"
-        onClick={() => fileInputRef.current?.click()}
+        type    = "button"
+        size    = "small"
+        variant = "secondary"
+        onClick = { () => exportSTL(exportedScene) }
+      >
+        {"Save"}
+      </Button>
+
+      <Button
+        type    = "button"
+        size    = "small"
+        variant = "secondary"
+        onClick = { () => fileInputRef.current?.click() }
       >
         {"Load"}
         <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          accept=".stl"
-          onChange={handleFileChange}
+          type     = "file"
+          ref      = { fileInputRef }
+          style    = { { display: "none" } }
+          accept   = ".stl"
+          onChange = { handleFileChange }
         />
       </Button>
 
