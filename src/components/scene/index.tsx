@@ -14,6 +14,9 @@ import { CustomShapePanel } from "../ui/custom-shape-panel/customShapePanel";
 import { Session } from "@/types/auth";
 import { ShapeType, ShapeProps, CylindricalHole, Point} from "@/types/scene";
 
+
+import { CustomShapes } from "../objects/CustomShapes";
+
 interface SceneProps {
   session: Session | null;
   handleLogout: () => void;
@@ -49,6 +52,7 @@ const Scene: React.FC<SceneProps> = ({
 
   const [lineHistory, setLineHistory] = useState<Point[]>([],);
   const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
+  const [extrude, setExtrude] = useState<boolean>(false);
 
   const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
     const Shape = !!props.mesh ? STLImporter : getCreateShape(shapeType);
@@ -156,12 +160,22 @@ const Scene: React.FC<SceneProps> = ({
           <Help />
         </>
       ) : (
-        <CustomShapePanel 
-            lineHistory={lineHistory}   
-            setLineHistory={setLineHistory}
-            holeHistory={holeHistory}
-            setHoleHistory={setHoleHistory}
-        />
+        <>
+          <CustomShapePanel 
+              lineHistory={lineHistory}   
+              setLineHistory={setLineHistory}
+              holeHistory={holeHistory}
+              setHoleHistory={setHoleHistory}
+              extrude={extrude}
+              setExturde={setExtrude}
+          />
+          <CustomShapes
+              lineHistory={lineHistory}   
+              setLineHistory={setLineHistory}
+              holeHistory={holeHistory}
+              setHoleHistory={setHoleHistory}
+          />
+        </>
       )}
     </>
   );

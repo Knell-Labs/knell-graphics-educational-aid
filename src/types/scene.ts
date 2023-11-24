@@ -52,10 +52,10 @@ export interface Point {
 export interface CylindricalHole {
     x: number;
     y: number;
-    radiuj: number;
+    radius: number;
     startAngle: number,
     endAngle: number;
-    clockWise: number;
+    clockWise: boolean;
 }
 
 

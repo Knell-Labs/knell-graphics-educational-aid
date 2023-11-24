@@ -9,6 +9,8 @@ type CustomShapePanelProps = {
     setLineHistory : Dispatch<SetStateAction<Point[]>>;
     holeHistory : CylindricalHole[];
     setHoleHistory : Dispatch<SetStateAction<CylindricalHole[]>>;
+    extrude : boolean;
+    setExtrude : Dispatch<SetStateAction<boolean>>;
 }
 
 enum lineField {
@@ -31,7 +33,7 @@ enum holeField {
 
 export function CustomShapePanel(props: CustomShapePanelProps) {
 
-  const {lineHistory, setLineHistory, holeHistory, setHoleHistory} = props;
+  const {lineHistory, setLineHistory, holeHistory, setHoleHistory, extrude, setExtrude} = props;
 
 
   const lineFields = Object.values(lineField).filter((field) =>
@@ -71,6 +73,11 @@ export function CustomShapePanel(props: CustomShapePanelProps) {
       ))}
     </div>
   );
+
+
+  const exturdeSettings = () => {
+    setExtrude(true);
+  }
 
   const addLine = () => {
     const x = document.getElementById("line_x") as HTMLDivElement;
@@ -164,6 +171,12 @@ export function CustomShapePanel(props: CustomShapePanelProps) {
             onClick={addLine}
           >
             add line
+          </button>
+          <button
+            className="bg-graySubFill mt-2 hover:bg-blueHover rounded-lg"
+            onClick={addLine}
+          >
+            extrude
           </button>
         </div>{" "}
         {/* end of Add Line */}
