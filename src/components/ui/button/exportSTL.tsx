@@ -7,10 +7,24 @@ class CustomSTLExporter {
 
         scene.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
-                let geometry = object.geometry; // Changed from const to let
-                const matrixWorld = object.matrixWorld;
-                const normalMatrixWorld = new THREE.Matrix3().getNormalMatrix(matrixWorld);
 
+                if (object instanceof THREE.AxesHelper) {
+                    return; // Skip the AxesHelper
+                }
+
+                if (['init-grid', 'grid-plane-hidden-helper', 'AmbientLight', 'DirectionalLight', 'workarea', 'sceneLight'].includes(object.name)) {
+                    return; // Skip this object
+                }
+
+                let geometry = object.geometry; // Changed from const to let
+                const matrixWorld = object.matrixWorld.clone(); // Clone the matrix
+
+                // Inverse scale and rotation
+                const inverseScale = new THREE.Vector3(10, 10, 10); // Inverse of 0.1 scale
+                const inverseRotation = new THREE.Euler(Math.PI / 2, 0, 0, 'XYZ'); // Inverse of -Math.PI / 2 rotation on X
+                const quaternion = new THREE.Quaternion().setFromEuler(inverseRotation);
+
+                // Apply inverse transformations to each vertex
                 if (geometry instanceof THREE.BufferGeometry) {
                     // Ensure the geometry is non-indexed for simplicity
                     if (geometry.index !== null) {
@@ -26,20 +40,23 @@ class CustomSTLExporter {
                         let p2 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 1);
                         let p3 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 2);
 
-                        // Transform the points by the object's world matrix
+                        // Apply object's world matrix to vertices
                         p1.applyMatrix4(matrixWorld);
                         p2.applyMatrix4(matrixWorld);
                         p3.applyMatrix4(matrixWorld);
 
-                        // Calculate or retrieve the normal for the face
+                        // Apply inverse scale and rotation
+                        p1.multiply(inverseScale).applyQuaternion(quaternion);
+                        p2.multiply(inverseScale).applyQuaternion(quaternion);
+                        p3.multiply(inverseScale).applyQuaternion(quaternion);
+
                         let normal = new THREE.Vector3();
                         if (normalAttribute) {
-                            normal.fromBufferAttribute(normalAttribute, i).applyMatrix3(normalMatrixWorld).normalize();
+                            normal.fromBufferAttribute(normalAttribute, i).normalize();
                         } else {
-                            normal = new THREE.Vector3().fromBufferAttribute(positionAttribute, i).cross(p2.clone().sub(p1)).cross(p3.clone().sub(p1)).normalize();
+                            normal = p2.clone().sub(p1).cross(p3.clone().sub(p1)).normalize();
                         }
 
-                        // Write the face and vertices to the STL string
                         output += `\tfacet normal ${normal.x} ${normal.y} ${normal.z}\n`;
                         output += "\t\touter loop\n";
                         output += `\t\t\tvertex ${p1.x} ${p1.y} ${p1.z}\n`;
