@@ -6,16 +6,16 @@ class CustomSTLExporter {
         let output = "solid exported\n";
 
         scene.traverse(function (object) {
+            console.log(`Object Type: ${object.type}, Name: ${object.name}`);
+
+            // Skip specific object types and names
+            if (['AmbientLight', 'DirectionalLight', 'PerspectiveCamera', 'GridHelper', 'Group', 'Line', 'Line2'].includes(object.type) ||
+                ['init-grid', 'grid-plane-hidden-helper', 'AxesHelperExclude', 'DirLightGroup', 'DirectionalLightHelper', 'axes-helper'].includes(object.name)) {
+                console.log(`Skipping: ${object.type}, Name: ${object.name}`);
+                return;
+            }
+
             if (object instanceof THREE.Mesh) {
-
-                if (object instanceof THREE.AxesHelper) {
-                    return; // Skip the AxesHelper
-                }
-
-                if (['init-grid', 'grid-plane-hidden-helper', 'AmbientLight', 'DirectionalLight', 'workarea', 'sceneLight'].includes(object.name)) {
-                    return; // Skip this object
-                }
-
                 let geometry = object.geometry; // Changed from const to let
                 const matrixWorld = object.matrixWorld.clone(); // Clone the matrix
 
@@ -50,12 +50,8 @@ class CustomSTLExporter {
                         p2.multiply(inverseScale).applyQuaternion(quaternion);
                         p3.multiply(inverseScale).applyQuaternion(quaternion);
 
-                        let normal = new THREE.Vector3();
-                        if (normalAttribute) {
-                            normal.fromBufferAttribute(normalAttribute, i).normalize();
-                        } else {
-                            normal = p2.clone().sub(p1).cross(p3.clone().sub(p1)).normalize();
-                        }
+                        let normal = normalAttribute ? new THREE.Vector3().fromBufferAttribute(normalAttribute, i).normalize() :
+                            p2.clone().sub(p1).cross(p3.clone().sub(p1)).normalize();
 
                         output += `\tfacet normal ${normal.x} ${normal.y} ${normal.z}\n`;
                         output += "\t\touter loop\n";
