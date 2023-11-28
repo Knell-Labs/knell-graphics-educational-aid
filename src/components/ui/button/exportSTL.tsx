@@ -6,14 +6,22 @@ class CustomSTLExporter {
         let output = "solid exported\n";
 
         scene.traverse(function (object) {
-            console.log(`Object Type: ${object.type}, Name: ${object.name}`);
-
+            //console.log(`Object Type: ${object.type}, Name: ${object.name}`);
+    
             // Skip specific object types and names
-            if (['AmbientLight', 'DirectionalLight', 'PerspectiveCamera', 'GridHelper', 'Group', 'Line', 'Line2'].includes(object.type) ||
-                ['init-grid', 'grid-plane-hidden-helper', 'AxesHelperExclude', 'DirLightGroup', 'DirectionalLightHelper', 'axes-helper'].includes(object.name)) {
-                console.log(`Skipping: ${object.type}, Name: ${object.name}`);
+            if (['AmbientLight', 'DirectionalLight', 'PerspectiveCamera', 'GridHelper', 'Group', 'Line', 'Line2', 'DirLightGroup', 'DirectionalLightHelper'].includes(object.type) ||
+                ['AmbientLight', 'DirectionalLight', 'init-grid', 'grid-plane-hidden-helper', 'AxesHelperExclude', 'axes-helper', 'DirLightGroup', 'DirectionalLightHelper', 'ExcludeDirLight'].includes(object.name)) {
+                //console.log(`Skipping: ${object.type}, Name: ${object.name}`);
                 return;
             }
+
+            if (object.parent && object.parent.type === 'DirLightGroup') {
+                console.log(`Skipping Mesh in DirLightGroup: `, object);
+                return;
+            }
+    
+            // Log non-skipped objects
+            console.log(`Processing: ${object.type}, Name: ${object.name}`);
 
             if (object instanceof THREE.Mesh) {
                 let geometry = object.geometry; // Changed from const to let
