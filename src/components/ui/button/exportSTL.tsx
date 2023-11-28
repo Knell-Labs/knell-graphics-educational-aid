@@ -72,7 +72,24 @@ class CustomSTLExporter {
     }
 }
 
+function hasActiveTransformControls(scene) {
+    let hasControls = false;
+    scene.traverse(function (object) {
+        if (object.type === 'TransformControlsPlane') {
+            hasControls = true;
+        }
+    });
+    return hasControls;
+}
+
 export function exportSTL(scene) {
+
+    // Check if Transform Custom Controls are active
+    if (hasActiveTransformControls(scene)) {
+        console.warn("Aborting export: Transform Custom Controls are active.");
+        return; // Abort the export
+    }
+
     const exporter = new CustomSTLExporter();
     const stlString = exporter.parse(scene);
 

@@ -188,6 +188,8 @@ export function ToolPanel({
         size    = "small"
         variant = "secondary"
         onClick = { () => exportSTL(exportedScene) }
+        data-tooltip-id = "tooltip"
+        data-tooltip-content = "Will NOT work if TransformCustomControls is Active"
       >
         {"Download"}
       </Button>
