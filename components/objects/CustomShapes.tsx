@@ -1,19 +1,64 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export function CustomShapes() {
+interface lineProp{
+  x: string | null,
+  y: string | null,
+}
+
+interface props{
+  lineProperty: lineProp;
+}
+
+export function CustomShapes({lineProperty}: props) {
+  
   const mesh = useRef();
-
+  
   const length = 4, width = 4;
-
+  // console.log("TEST");
+  
   // Create the main shape
+  // const shape2 = new THREE.Shape();
+  // setShape(shape.moveTo(0,0));
+  // const [shape, setShape] = useState(new THREE.Shape());
   const shape = new THREE.Shape();
+  
   shape.moveTo(0, 0);
-  shape.lineTo(0, width);
-  shape.lineTo(length, width);
-  shape.lineTo(length, 0);
   shape.lineTo(0, 0);
+  shape.lineTo(0, width);
+  shape.lineTo(width, length);
+  shape.lineTo(length, 0);
+  
+  // shape.moveTo(-2, -2);
+  // shape.lineTo(-2, -2);
+  // shape.lineTo(-2, -4);
+  // shape.lineTo(-4, -4);
+  // shape.lineTo(-4, -2);
+  
+  // let num: number = 0;
+  const [num, setNum] = useState<number>(0);
+
+  useEffect( () => {
+    if(lineProperty.x != null && lineProperty.y != null){
+      
+      // console.log(lineProperty.x);
+      // console.log(lineProperty.y);
+      const newShape = new THREE.Shape();
+      // newShape.moveTo(0,0);
+      // newShape.curves = shape.curves.slice();
+      // shape.lineTo(parseFloat(lineProperty.x),parseFloat(lineProperty.y));
+      // shape.lineTo(parseFloat(lineProperty.x),parseFloat(lineProperty.y)+4);
+      // shape.lineTo(parseFloat(lineProperty.x)+4,parseFloat(lineProperty.y)+4);
+      // shape.lineTo(parseFloat(lineProperty.x)+4,parseFloat(lineProperty.y));
+      // setShape(newShape);
+      console.log("Before " + (num + 1));
+      setNum(num + 1);
+      // console.log(shape.curves);
+    }
+    console.log("After " + num);
+  }, [lineProperty]);
+  // console.log(shape.curves);
 
   // Define the hole
   const hole = new THREE.Path();
@@ -23,7 +68,7 @@ export function CustomShapes() {
   //.quadraticCurveTo( 2, 6, 0, 4)
   //.quadraticCurveTo(-.5, 3, 0, 2)
 
-  //hole.moveTo( 2, 2 ).absarc( 1, 1, .5, 0, Math.PI , true );
+  // hole.moveTo( 2, 2 ).absarc( 1, 1, .5, 0, Math.PI , true );
   //const holeRadius = 2; // Set the radius of the hole
   //const holePositionX = length / 2 + 1; // Center of the shape in X
   //const holePositionY = width / 2 + 1;  // Center of the shape in Y

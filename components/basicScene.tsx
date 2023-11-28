@@ -79,6 +79,11 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
 
   const [mainCanvasView, setMainCanvasView] = useState<boolean>(false);
 
+  const [lineProperty, setLineProperty] = useState({
+    x: "0",
+    y: "0",
+  });
+
   useEffect(() => {
     // console.log(`orthographic set to : ${isOrthographic}`);
   }, [isOrthographic]);
@@ -255,7 +260,9 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
               />
             }
 
-            <CustomShapes/>
+            <CustomShapes
+              lineProperty = { lineProperty }
+            />
 
             <RayCaster
               isObjectButtonPressed = { isObjectButtonPressed }
@@ -340,7 +347,10 @@ export const BasicScene : React.FC<BasicSceneProps> = ({
           />
         }
 
-        { !mainCanvasView && <CustomShapePanel/> }
+        { !mainCanvasView && <CustomShapePanel
+          // lineProperty = {lineProperty}
+          setLineProperty = {setLineProperty}
+        /> }
     </>
   )
 }
