@@ -92,3 +92,47 @@ export function exportSTL(scene) {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
 }
+
+// My attempt at setting up a prompt for the user to choose a file name and then download
+
+/*
+export function ExportSTLModal({ onDownload, onCancel }) {
+  const [fileName, setFileName] = useState('scene');
+
+  return (
+    <div className="export-stl-modal">
+      <input
+        type="text"
+        value={fileName}
+        onChange={(e) => setFileName(e.target.value)}
+        placeholder="Enter file name"
+      />
+      <button onClick={() => onDownload(fileName)}>Download</button>
+      <button onClick={onCancel}>Cancel</button>
+    </div>
+  );
+}
+
+export function exportSTL(scene) {
+  const exporter = new CustomSTLExporter();
+  const stlString = exporter.parse(scene);
+
+  const handleDownload = (fileName) => {
+    const blob = new Blob([stlString], { type: 'model/stl' });
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    link.href = URL.createObjectURL(blob);
+    link.download = `${fileName}.stl`;
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  // Show the modal to the user
+  // You need to integrate this part with your UI framework or library
+  showModal(<ExportSTLModal onDownload={handleDownload} onCancel={hideModal} />);
+}
+*/

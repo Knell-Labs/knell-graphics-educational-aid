@@ -189,7 +189,7 @@ export function ToolPanel({
         variant = "secondary"
         onClick = { () => exportSTL(exportedScene) }
       >
-        {"Save As"}
+        {"Download"}
       </Button>
 
       <Button
