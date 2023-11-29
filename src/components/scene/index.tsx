@@ -53,6 +53,19 @@ const Scene: React.FC<SceneProps> = ({
   const [lineHistory, setLineHistory] = useState<Point[]>([],);
   const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
   const [extrude, setExtrude] = useState<boolean>(false);
+  const [sceneExp, setSceneExp] = useState<THREE.Scene | null>(null);
+
+  // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
+  //   setObjects(prevObjects =>
+  //     [
+  //       {
+  //         type: shapeType,
+  //         props
+  //       },
+  //       ...prevObjects
+  //     ]
+  //   );
+  // };
 
   const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
     const Shape = !!props.mesh ? STLImporter : getCreateShape(shapeType);
@@ -94,6 +107,7 @@ const Scene: React.FC<SceneProps> = ({
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
+          setSceneExp={setSceneExp}
         />
       ) : (
         <SceneCanvas
@@ -109,6 +123,7 @@ const Scene: React.FC<SceneProps> = ({
           setSceneInfo={setSceneInfo}
           setSceneMain={setSceneMain}
           isSketchButtonPressed={isSketchButtonPressed}
+          setSceneExp={setSceneExp}
         />
       )}
 
@@ -150,6 +165,7 @@ const Scene: React.FC<SceneProps> = ({
             addObjectToScene={addObjectToScene}
             isSketchButtonPressed={isSketchButtonPressed}
             setIsSketchButtonPressed={setIsSketchButtonPressed}
+            exportedScene={sceneExp}
           />
 
           <CameraSwitch

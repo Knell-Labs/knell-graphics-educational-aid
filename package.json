@@ -38,6 +38,10 @@
     "@types/animejs": "3.1.7",
     "@types/three": "0.152.1",
     "prettier": "3.1.0",
+<<<<<<< HEAD
     "supabase": "^1.113.2"
+=======
+    "supabase": "^1.115.4"
+>>>>>>> main
   }
 }
