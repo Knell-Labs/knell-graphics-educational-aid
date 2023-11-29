@@ -15,37 +15,26 @@ type CustomShapePanelProps = {
 
 
 export function CustomShapes(props: CustomShapePanelProps) {
-  const {lineHistory, setLineHistory, holeHistory, setHoleHistory, extrude, setExtrude} = props;
-  const [lineHistoryIndex, setLineHistoryIndex] = useState<number>(0);
-  const [holeHistoryIndex, setHoleHistoryIndex] = useState<number>(0);
-
-
+  //const {lineHistory, setLineHistory, holeHistory, setHoleHistory, extrude, setExtrude} = props;
+  //const [lineHistoryIndex, setLineHistoryIndex] = useState<number>(0);
+  //const [holeHistoryIndex, setHoleHistoryIndex] = useState<number>(0);
 
   const mesh = useRef();
+
+  const length = 4, width = 4;
 
   // Create the main shape
   const shape = new THREE.Shape();
   shape.moveTo(0, 0);
-
-
-
-  const length = 4;
-  const width = 4;
-
   shape.lineTo(0, width);
   shape.lineTo(length, width);
   shape.lineTo(length, 0);
   shape.lineTo(0, 0);
 
-  
-
-  
-
-
-
   // Define the hole
   const hole = new THREE.Path();
-  //hole.moveTo(0, 2).quadraticCurveTo(2, 4, 4, 2);
+  hole.moveTo( 0, 2 )
+  .quadraticCurveTo( 2, 4, 4, 2)
   //.bezierCurveTo(5, 2.5, 5, 3, 4, 4)
   //.quadraticCurveTo( 2, 6, 0, 4)
   //.quadraticCurveTo(-.5, 3, 0, 2)
@@ -59,41 +48,6 @@ export function CustomShapes(props: CustomShapePanelProps) {
   // Add the hole to the shape
   shape.holes.push(hole);
 
-
-
-  useEffect(() => {
-    if(lineHistory != undefined && lineHistory.length > 0) {
-      //console.log("added line");
-      shape.lineTo(lineHistory[lineHistoryIndex].x, lineHistory[lineHistoryIndex].y);
-      setLineHistoryIndex((curNum) => curNum + 1)
-    }
-  }, [lineHistory]);
-
-
-  useEffect(() => {
-    if(holeHistory != undefined && holeHistory.length > 0){
-        shape.absarc(
-            holeHistory[holeHistoryIndex].x,   
-            holeHistory[holeHistoryIndex].y,
-            holeHistory[holeHistoryIndex].radius,
-            holeHistory[holeHistoryIndex].startAngle,
-            holeHistory[holeHistoryIndex].endAngle,
-            holeHistory[holeHistoryIndex].clockWise,
-        )
-        shape.holes.push(hole);
-    }
-  }, [holeHistory]);
-
-
-  useEffect(() => {
-    if(extrude){
-      // Create the geometry with the hole
-      const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-      const edges = useMemo(() => new THREE.EdgesGeometry(geometry), [geometry]);
-    }
-  }, [extrude]);
-
-
   // Define the extrude settings
   const extrudeSettings = {
     steps: 1,
@@ -102,14 +56,22 @@ export function CustomShapes(props: CustomShapePanelProps) {
     bevelThickness: 1,
     bevelSize: 1,
     bevelOffset: 1,
-    bevelSegments: 12,
+    bevelSegments: 12
   };
 
+  // Create the geometry with the hole
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+  const edges = useMemo(() => new THREE.EdgesGeometry(geometry), [geometry]);
 
 
   return (
     <>
-      <mesh ref={mesh} geometry={geometry} position={[0, 0, 0]}>
+      <mesh
+        ref={mesh}
+        geometry={geometry}
+        position={[0, 0, 0]}
+      >
         <meshBasicMaterial attach="material" color={0x00ff00} />
       </mesh>
       <lineSegments geometry={edges}>
@@ -117,4 +79,4 @@ export function CustomShapes(props: CustomShapePanelProps) {
       </lineSegments>
     </>
   );
-}
+};

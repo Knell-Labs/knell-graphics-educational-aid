@@ -50,7 +50,7 @@ const Scene: React.FC<SceneProps> = ({
 
   const [objects, setObjects] = useState<any[]>([]);
 
-  const [lineHistory, setLineHistory] = useState<Point[]>([],);
+  const [lineHistory, setLineHistory] = useState<Point[]>([]);
   const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
   const [extrude, setExtrude] = useState<boolean>(false);
   const [sceneExp, setSceneExp] = useState<THREE.Scene | null>(null);
@@ -183,13 +183,15 @@ const Scene: React.FC<SceneProps> = ({
               holeHistory={holeHistory}
               setHoleHistory={setHoleHistory}
               extrude={extrude}
-              setExturde={setExtrude}
+              setExtrude={setExtrude}
           />
           <CustomShapes
               lineHistory={lineHistory}   
               setLineHistory={setLineHistory}
               holeHistory={holeHistory}
               setHoleHistory={setHoleHistory}
+              extrude={extrude}
+              setExtrude={setExtrude}
           />
         </>
       )}
