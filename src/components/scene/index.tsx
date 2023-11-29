@@ -52,7 +52,7 @@ const Scene: React.FC<SceneProps> = ({
 
   const [lineHistory, setLineHistory] = useState<Point[]>([]);
   const [holeHistory, setHoleHistory] = useState< CylindricalHole[]>([]);
-  const [extrude, setExtrude] = useState<boolean>(false);
+  const [extrudeActivated, setExtrudeActivated] = useState<boolean>(true);
   const [sceneExp, setSceneExp] = useState<THREE.Scene | null>(null);
 
   // const addObjectToScene = (shapeType: ShapeType, props: ShapeProps = {}) => {
@@ -182,16 +182,18 @@ const Scene: React.FC<SceneProps> = ({
               setLineHistory={setLineHistory}
               holeHistory={holeHistory}
               setHoleHistory={setHoleHistory}
-              extrude={extrude}
-              setExtrude={setExtrude}
+              extrude={extrudeActivated}
+              setExtrude={setExtrudeActivated}
           />
+
+ 
           <CustomShapes
               lineHistory={lineHistory}   
               setLineHistory={setLineHistory}
               holeHistory={holeHistory}
               setHoleHistory={setHoleHistory}
-              extrude={extrude}
-              setExtrude={setExtrude}
+              extrudeActivated={extrudeActivated}
+              setExtrudeActivated={setExtrudeActivated}
           />
         </>
       )}
@@ -200,3 +202,17 @@ const Scene: React.FC<SceneProps> = ({
 };
 
 export default Scene;
+
+
+/*
+ 
+          <CustomShapes
+              lineHistory={lineHistory}   
+              setLineHistory={setLineHistory}
+              holeHistory={holeHistory}
+              setHoleHistory={setHoleHistory}
+              extrudeActivated={extrudeActivated}
+              setExtrudeActivated={setExtrudeActivated}
+          />
+ 
+*/

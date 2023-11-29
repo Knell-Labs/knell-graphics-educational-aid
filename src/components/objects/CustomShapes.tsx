@@ -9,15 +9,15 @@ type CustomShapePanelProps = {
     setLineHistory : Dispatch<SetStateAction<Point[]>>;
     holeHistory : CylindricalHole[];
     setHoleHistory : Dispatch<SetStateAction<CylindricalHole[]>>;
-    extrude : boolean;
-    setExtrude : Dispatch<SetStateAction<boolean>>;
+    extrudeActivated : boolean;
+    setExtrudeActivated: Dispatch<SetStateAction<boolean>>;
 }
 
 
 export function CustomShapes(props: CustomShapePanelProps) {
-  //const {lineHistory, setLineHistory, holeHistory, setHoleHistory, extrude, setExtrude} = props;
-  //const [lineHistoryIndex, setLineHistoryIndex] = useState<number>(0);
-  //const [holeHistoryIndex, setHoleHistoryIndex] = useState<number>(0);
+  const {lineHistory, setLineHistory, holeHistory, setHoleHistory, extrudeActivated, setExtrudeActivated} = props;
+  const [lineHistoryIndex, setLineHistoryIndex] = useState<number>(0);
+  const [holeHistoryIndex, setHoleHistoryIndex] = useState<number>(0);
 
   const mesh = useRef();
 
@@ -64,19 +64,27 @@ export function CustomShapes(props: CustomShapePanelProps) {
 
   const edges = useMemo(() => new THREE.EdgesGeometry(geometry), [geometry]);
 
+  function custom(){
+    return(
+      <>
+        <mesh
+          ref={mesh}
+          geometry={geometry}
+          position={[0, 0, 0]}
+        >
+          <meshBasicMaterial attach="material" color={0x00ff00} />
+        </mesh>
+        <lineSegments geometry={edges}>
+          <lineBasicMaterial attach="material" color={0x000000} />
+        </lineSegments>
+      </>
+    )
+  }
 
-  return (
-    <>
-      <mesh
-        ref={mesh}
-        geometry={geometry}
-        position={[0, 0, 0]}
-      >
-        <meshBasicMaterial attach="material" color={0x00ff00} />
-      </mesh>
-      <lineSegments geometry={edges}>
-        <lineBasicMaterial attach="material" color={0x000000} />
-      </lineSegments>
-    </>
-  );
+
+  useEffect(() => {
+    console.log(extrudeActivated);
+  })
+
+  return true ? custom() : <></>;
 };

@@ -76,7 +76,7 @@ export function CustomShapePanel(props: CustomShapePanelProps) {
 
 
   const exturdeSettings = () => {
-    setExtrude(true);
+    //setExtrude(true);
   }
 
   const addLine = () => {

@@ -127,8 +127,7 @@ const SceneCanvas: React.FC<SceneCanvasProps> = ({
           // />
         })
       ) : (
-        <CustomShapes />
-
+        <></>
       )}
       {/* 
             {objects.map((object, idx) => {
